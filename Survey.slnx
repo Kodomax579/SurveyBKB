@@ -3,8 +3,7 @@
     <Project Path="Survey.ApiGateway/Survey.ApiGateway.csproj" Id="d9131f8f-f6de-4910-a507-7e6d307cb165" />
   </Folder>
   <Folder Name="/Frontend/">
-    <Project Path="Survey/Survey.Client/Survey.Client.csproj" />
-    <Project Path="Survey/Survey/Survey.csproj" />
+    <Project Path="SchulFunk_Webprojekt/SchulFunk_Webprojekt.csproj" Id="e4882d4b-0218-463a-9edd-73d5295a13cc" />
   </Folder>
   <Folder Name="/Services/">
     <Project Path="SurveyService/SurveyService.csproj" Id="4c841898-39bd-4346-a52f-28ff03d9f68e" />
