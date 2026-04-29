@@ -1,7 +1,149 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>SchulFunk</PageTitle>
 
-<h1>Ole ist ein Knecht, weil er nicht pusht!</h1>
+<section class="home-hero">
+    <div class="home-hero-box sf-panel" id="aktuelle-nachrichten">
 
-Welcome to your new app.
+        <div class="home-news-header">
+            <div class="home-news-icon">
+                <img src="lib/images/Icon-News.png" alt="Aktuelle Nachrichten Icon" />
+            </div>
+
+            <h2>Neuigkeiten aus deiner Schule</h2>
+        </div>
+
+        <div class="home-news-preview">
+            <article class="home-news-item">
+                <span>Heute</span>
+                <h3>Neue Projektwoche geplant</h3>
+                <p>
+                    Bald startet eine neue Projektwoche. Weitere Informationen folgen über SchulFunk.
+                </p>
+            </article>
+
+            <article class="home-news-item">
+                <span>Diese Woche</span>
+                <h3>Umfrage zur Pausengestaltung</h3>
+                <p>
+                    Die Schülervertretung sammelt Meinungen zur Gestaltung der Pausenbereiche.
+                </p>
+            </article>
+        </div>
+    </div>
+
+    <div class="home-survey-preview sf-panel" id="umfragen">
+        <div class="home-preview-header">
+            <img src="lib/images/Icon-Survey.png" alt="Umfrage Icon" />
+
+            <div>
+                <h3>Aktuelle Umfrage</h3>
+                <p>Schülervertretung</p>
+            </div>
+        </div>
+
+        <h4>Welches Thema soll als Nächstes besprochen werden?</h4>
+
+        <div class="home-vote-card active">
+            <span>Mehr Aufenthaltsmöglichkeiten</span>
+            <strong>42%</strong>
+        </div>
+
+        <div class="home-vote-card">
+            <span>Neue Schul-Events</span>
+            <strong>31%</strong>
+        </div>
+
+        <div class="home-vote-card">
+            <span>Besseres Mensa-Angebot</span>
+            <strong>27%</strong>
+        </div>
+    </div>
+</section>
+
+<section class="home-useful-links">
+    <article class="home-link-card sf-panel">
+        <div class="home-link-icon">
+            <img src="lib/images/Icon-Calender.png" alt="Untis Icon" />
+        </div>
+
+        <h3>Untis</h3>
+
+        <p>
+            Öffne deinen Stundenplan, Vertretungsplan und aktuelle Planänderungen.
+        </p>
+
+        <a href="https://bkbeckum.webuntis.com/WebUntis/?school=bkbeckum#/basic/login"
+                class="sf-button sf-button-dark"
+               target="_blank"
+               rel="noopener noreferrer">
+            Zu Untis
+        </a>
+    </article>
+
+    <article class="home-link-card sf-panel">
+        <div class="home-link-icon">
+            <img src="lib/images/Icon-News.png" alt="Moodle Icon" />
+        </div>
+
+        <h3>Moodle</h3>
+
+        <p>
+            Greife auf Kurse, Aufgaben, Materialien und digitale Lerninhalte zu.
+        </p>
+
+        <a href="https://bkb-ecampus.de/login/index.php"
+               class="sf-button sf-button-dark"
+               target="_blank"
+               rel="noopener noreferrer">
+            Zu Moodle
+        </a>
+    </article>
+
+    <article class="home-link-card sf-panel">
+        <div class="home-link-icon">
+            <img src="lib/images/Icon-Messages.png" alt="Erasmus Icon" />
+        </div>
+
+        <h3>Erasmus</h3>
+
+        <p>
+            Informiere dich über Austauschprogramme, Projekte und internationale Angebote.
+        </p>
+
+        <a href="https://bkb-erasmus.de/" 
+            class="sf-button sf-button-dark"
+            target="_blank"
+            rel="noopener noreferrer">
+            Zu Erasmus
+    </a>
+    </article>
+</section>
+
+<footer class="home-impressum sf-panel" id="impressum">
+    <div>
+        <h2>Impressum</h2>
+
+        <p>
+            SchulFunk ist ein Webprojekt zur Darstellung von Umfragen, Schulnachrichten
+            und nützlichen Links für Schülerinnen und Schüler.
+        </p>
+    </div>
+
+    <div class="home-impressum-grid">
+        <div>
+            <h3>Projekt</h3>
+            <p>SchulFunk Webprojekt</p>
+        </div>
+
+        <div>
+            <h3>Verantwortlich</h3>
+            <p>Schülerprojekt / Projektgruppe SchulFunk</p>
+        </div>
+
+        <div>
+            <h3>Kontakt</h3>
+            <p>Bitte hier später eure Schul- oder Projektadresse eintragen.</p>
+        </div>
+    </div>
+</footer>
