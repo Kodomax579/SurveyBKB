@@ -10,7 +10,11 @@
     <Folder Include="Protos\" />
   </ItemGroup>
 
-  <ItemGroup>
+	<ItemGroup>
+		<Protobuf Include="Protos\*.proto" GrpcServices="Both" />
+	</ItemGroup>
+
+	<ItemGroup>
     <PackageReference Include="Google.Protobuf" Version="3.34.1" />
     <PackageReference Include="Grpc.Net.Client" Version="2.76.0" />
     <PackageReference Include="Grpc.Tools" Version="2.80.0">
