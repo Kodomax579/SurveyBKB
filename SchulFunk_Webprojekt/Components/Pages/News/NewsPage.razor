@@ -1,3 +1,75 @@
 ﻿@page "/news"
+@using SchulFunk_Webprojekt.Model
 
-<h3>NewsPage</h3>
+<PageTitle>Aktuelle Nachrichten</PageTitle>
+
+<section class="news-page-header sf-panel">
+    <div class="news-page-title">
+        <img src="lib/images/Icon-News.png" alt="News Icon" />
+
+        <div>
+            <h2>Aktuelle Nachrichten</h2>
+            <p>Hier findest du neue Meldungen, Ankündigungen und Informationen deiner Schule.</p>
+        </div>
+    </div>
+</section>
+
+<section class="news-card-grid">
+    @foreach (var news in NewsListe)
+    {
+        <NewsCard Category="@news.Tag"
+                  Title="@news.Title"
+                  Description="@news.Description"
+                  Date="@news.Date"
+                  IconPath="@news.IconPath"
+                  OnMehrLesenClicked="MehrLesen" />
+    }
+</section>
+
+@if (!string.IsNullOrWhiteSpace(buttonGedrueckt))
+{
+    <div class="news-click-output sf-panel">
+        <strong>Geklickte Nachricht:</strong>
+        <p>@buttonGedrueckt</p>
+    </div>
+}
+
+@code {
+    private string buttonGedrueckt = "";
+
+    private List<NewsItem> NewsListe = new()
+    {
+        new NewsItem
+        {
+            Tag = "Projekte",
+            Title = "Neue Projektwoche geplant",
+            Description = "Bald startet eine neue Projektwoche. Weitere Informationen folgen über SchulFunk.",
+            Date = "Heute",
+            Artikel = "",
+            IconPath = "lib/images/Icon-News.png"
+        },
+        new NewsItem
+        {
+            Tag = "Essen",
+            Title = "Neue Cafeteria-Öffnungszeiten",
+            Description = "Ab nächster Woche gelten neue Öffnungszeiten für die Cafeteria.",
+            Date = "Heute",
+            Artikel = "",
+            IconPath = "lib/images/Icon-News.png"
+        },
+        new NewsItem
+        {
+            Tag = "Info",
+            Title = "Informationen zur Projektpräsentation",
+            Description = "Die Präsentationen der aktuellen Projekte finden am Freitag statt.",
+            Date = "Diese Woche",
+            Artikel = "",
+            IconPath = "lib/images/Icon-News.png"
+        }
+    };
+
+    private void MehrLesen(string news)
+    {
+        buttonGedrueckt = news;
+    }
+}
