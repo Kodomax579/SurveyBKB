@@ -11,6 +11,13 @@
     </div>
 
     <nav class="sf-navbar">
+        @if (IstLehrer)
+        {
+            <NavLink href="/admin" class="sf-nav-button sf-admin-button">
+                Admin Panel
+            </NavLink>
+        }
+
         <NavLink href="#umfragen" class="sf-nav-button sf-nav-button-dark">
             Umfragen ansehen
         </NavLink>
@@ -24,4 +31,10 @@
             Einstellungen
         </NavLink>
     </nav>
+
+    @code
+    {
+        private bool IstLehrer = true;
+    }
+
 </header>
