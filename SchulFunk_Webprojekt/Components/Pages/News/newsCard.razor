@@ -1,13 +1,45 @@
-﻿
-<div>
-    <h1>@Header</h1>
-    <p>@Text</p>
-</div>
+﻿<article class="news-card">
+    <div class="news-card-top">
+        <img src="@IconPath" alt="" class="news-card-icon" />
+
+        <div>
+            <span class="news-card-category">@Category</span>
+            <h3>@Title</h3>
+        </div>
+    </div>
+
+    <p>@Description</p>
+
+    <div class="news-card-footer">
+        <span>@Date</span>
+
+        <button type="button" class="sf-button sf-button-dark" @onclick="ButtonWurdeGeklickt">
+            Mehr lesen
+        </button>
+    </div>
+</article>
 
 @code {
     [Parameter]
-    public string Header { get; set; }
+    public string Title { get; set; } = "";
 
     [Parameter]
-    public string Text { get; set; }
+    public string Description { get; set; } = "";
+
+    [Parameter]
+    public string Category { get; set; } = "";
+
+    [Parameter]
+    public string Date { get; set; } = "";
+
+    [Parameter]
+    public string IconPath { get; set; } = "lib/images/Icon-News.png";
+
+    [Parameter]
+    public EventCallback<string> OnMehrLesenClicked { get; set; }
+
+    private async Task ButtonWurdeGeklickt()
+    {
+        await OnMehrLesenClicked.InvokeAsync(Title);
+    }
 }
