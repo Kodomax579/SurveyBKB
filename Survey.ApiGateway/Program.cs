@@ -1,6 +1,8 @@
+using Contracts.Protos;
 
 namespace Survey.ApiGateway
 {
+
     public class Program
     {
         public static void Main(string[] args)
@@ -8,7 +10,13 @@ namespace Survey.ApiGateway
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+            builder.Services.AddGrpcClient<User.UserClient>(options =>
+            {
+                options.Address = new Uri(builder.Configuration["GrpcSettings:UserServiceUrl"]);
+            });
 
+
+            builder.Services.AddSwaggerGen();
             builder.Services.AddControllers();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
@@ -19,6 +27,8 @@ namespace Survey.ApiGateway
             if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
+                app.UseSwagger();
+                app.UseSwaggerUI();
             }
 
             app.UseHttpsRedirection();

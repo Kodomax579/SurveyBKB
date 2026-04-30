@@ -1,6 +1,6 @@
 using Grpc.Core;
 
-namespace UserService.Services
+namespace NewsService.Services
 {
     public class GreeterService(ILogger<GreeterService> logger) : Greeter.GreeterBase
     {

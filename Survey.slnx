@@ -6,6 +6,7 @@
     <Project Path="SchulFunk_Webprojekt/SchulFunk_Webprojekt.csproj" Id="e4882d4b-0218-463a-9edd-73d5295a13cc" />
   </Folder>
   <Folder Name="/Services/">
+    <Project Path="NewsService/NewsService.csproj" Id="563d3c8b-1926-4a59-b911-183a96867ab3" />
     <Project Path="SurveyService/SurveyService.csproj" Id="4c841898-39bd-4346-a52f-28ff03d9f68e" />
     <Project Path="UserService/UserService.csproj" Id="8138f7de-16a8-401d-a864-0d7ed1b16818" />
   </Folder>

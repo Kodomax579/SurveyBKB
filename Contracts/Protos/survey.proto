@@ -1,0 +1,68 @@
+syntax = "proto3";
+
+option csharp_namespace = "Contracts.Protos";
+
+package survey;
+
+message SurveyMessage{
+	int32 Id = 1;
+	string Title = 2;
+	int32 CreatedUserId = 3;
+	repeated string Classes = 4;
+	repeated QuestionMessage Questions = 5;
+}
+
+message QuestionMessage{
+	int32 Id = 1;
+	string Text = 2;
+	repeated string Options = 3;
+}
+
+service Survey{
+	rpc GetSurveyById(GetSurveyByIdRequest) returns (GetSurveyByIdResponse);
+	rpc GetAllSurveys(GetAllSurveysRequest) returns (GetAllSurveysResponse);
+	rpc CreateSurvey(CreateSurveyRequest) returns (CreateSurveyResponse);
+	rpc UpdateSurvey(UpdateSurveyRequest) returns (UpdateSurveyResponse);
+	rpc DeleteSurvey(DeleteSurveyRequest) returns (DeleteSurveyResponse);
+}
+
+// Get Survey by id message
+message GetSurveyByIdRequest{
+	int32 Id = 1;
+}
+
+message GetSurveyByIdResponse{
+	SurveyMessage Survey = 1;
+}
+
+// Get All Surveys message
+message GetAllSurveysRequest{}
+
+message GetAllSurveysResponse{
+	repeated SurveyMessage Surveys = 1;
+}
+
+// Create Survey message
+message CreateSurveyRequest{
+	SurveyMessage Survey = 1;
+}
+
+message CreateSurveyResponse{
+	bool Success = 1;
+}
+
+// Update Survey message
+message UpdateSurveyRequest{
+	SurveyMessage Survey = 1;
+}
+message UpdateSurveyResponse{
+	bool Success = 1;
+}
+
+// Delete Survey message
+message DeleteSurveyRequest{
+	int32 Id = 1;
+}
+message DeleteSurveyResponse{
+	bool Success = 1;
+}

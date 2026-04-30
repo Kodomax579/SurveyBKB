@@ -1,0 +1,97 @@
+syntax = "proto3";
+
+option csharp_namespace = "Contracts.Protos";
+
+package user;
+
+enum UserGroup{
+	STUDENT = 0;
+    TEACHER = 1;
+    ADMIN = 2;
+    STUDENT_REPRESENTATIVES = 3;
+    CLASS_REPRESENTATIVES = 4;
+}
+
+message ClassMessage{
+	int32 Id = 1;
+	string Name = 2;
+}
+
+message UserMessage{
+	int32 Id = 1;
+	string Name = 2;
+	string Lastname = 3;
+	string Email = 4;
+	string Password = 5;
+	ClassMessage Class = 6;
+	string Username = 7;
+	UserGroup Group = 8;
+}
+
+service User{
+	rpc GetUserByPasswordAndEmail(GetUserByPasswordAndEmailRequest) returns (GetUserByPasswordAndEmailResponse);
+	rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse);
+	rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+	rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
+	rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+	rpc GetAllClasses(GetAllClassesRequest) returns (GetAllClassesResponse);
+	rpc CreateClass (CreateClassRequest) returns (CreateClassResponse);
+}
+
+// Get User by password and email message
+message GetUserByPasswordAndEmailRequest{
+	string Email = 1;
+	string Password = 2;
+}
+
+message GetUserByPasswordAndEmailResponse{
+	UserMessage User = 1;
+}
+
+// Create Users message
+message GetAllUsersRequest{}
+
+message GetAllUsersResponse{
+	repeated UserMessage Users = 1;
+}
+
+// Create User message
+message CreateUserRequest{
+	UserMessage User = 1;
+}
+
+message CreateUserResponse{
+	bool Success = 1;
+}
+
+// Update User message
+message UpdateUserRequest{
+	int32 Id = 1;
+	UserMessage User = 2;
+}
+message UpdateUserResponse{
+	bool Success = 1;
+}
+
+// Delete User message
+message DeleteUserRequest{
+	int32 Id = 1;
+}
+message DeleteUserResponse{
+	bool Success = 1;
+}
+
+//Get ALl Classes message
+message GetAllClassesRequest{}
+
+message GetAllClassesResponse{
+	repeated ClassMessage Classes = 1;
+}
+
+// Create Class message
+message CreateClassRequest{
+	ClassMessage Class = 1;
+}
+message CreateClassResponse{
+	bool Success = 1;
+}
