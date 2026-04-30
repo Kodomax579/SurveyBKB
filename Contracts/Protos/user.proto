@@ -28,6 +28,7 @@ message UserMessage{
 
 service User{
 	rpc GetUserByPasswordAndEmail(GetUserByPasswordAndEmailRequest) returns (GetUserByPasswordAndEmailResponse);
+	rpc GetUserById(GetUserByIdRequest) returns (GetUserByIdResponse);
 	rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse);
 	rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
 	rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
@@ -43,6 +44,14 @@ message GetUserByPasswordAndEmailRequest{
 }
 
 message GetUserByPasswordAndEmailResponse{
+	UserMessage User = 1;
+}
+
+// Get User by Id message
+message GetUserByIdRequest{
+	int32 Id = 1;
+}
+message GetUserByIdResponse{
 	UserMessage User = 1;
 }
 

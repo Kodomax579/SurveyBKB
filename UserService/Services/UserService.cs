@@ -49,6 +49,38 @@ namespace UserService.Service
             }
         }
 
+        public override async Task<GetUserByIdResponse> GetUserById(GetUserByIdRequest request, ServerCallContext context)
+        {
+            try
+            {
+                var response = new GetUserByIdResponse();
+
+                var user = await _context.Users.Include(u => u.Class).FirstOrDefaultAsync(u => u.Id == request.Id);
+
+                if (user != null)
+                {
+                    response.User = new UserMessage
+                    {
+                        Name = user.Name,
+                        Lastname = user.Lastname,
+                        Email = user.Email,
+                        Group = (UserGroup)user.GroupId,
+                        Class = new ClassMessage
+                        {
+                            Name = user.Class.ClassName
+                        },
+                        Password = user.PasswordHash,
+                        Username = user.Username,
+                    };
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                return new GetUserByIdResponse();
+            }
+        }
+
         public override async Task<GetUserByPasswordAndEmailResponse> GetUserByPasswordAndEmail(GetUserByPasswordAndEmailRequest request, ServerCallContext context)
         {
             var response = new GetUserByPasswordAndEmailResponse();
