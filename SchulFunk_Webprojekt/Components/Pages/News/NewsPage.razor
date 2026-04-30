@@ -7,17 +7,25 @@
     <div class="news-page-title">
         <img src="lib/images/Icon-News.png" alt="News Icon" />
 
-        <div>
+        <div class="news-page-title-text">
             <h2>Aktuelle Nachrichten</h2>
             <p>Hier findest du neue Meldungen, Ankündigungen und Informationen deiner Schule.</p>
         </div>
     </div>
+
+    <div class="news-search-box">
+        <input type="text"
+               class="news-search-input"
+               placeholder="Nach Titel suchen..."
+               @bind="Suchtext"
+               @bind:event="oninput" />
+    </div>
 </section>
 
 <section class="news-card-grid">
-    @foreach (var news in NewsListe)
+    @foreach (var news in GefilterteNewsListe)
     {
-        <NewsCard Category="@news.Tag"
+        <NewsCard Tag="@news.Tag"
                   Title="@news.Title"
                   Description="@news.Description"
                   Date="@news.Date"
@@ -36,6 +44,13 @@
 
 @code {
     private string buttonGedrueckt = "";
+    private string Suchtext = "";
+
+    private IEnumerable<NewsItem> GefilterteNewsListe =>
+    string.IsNullOrWhiteSpace(Suchtext)
+        ? NewsListe
+        : NewsListe.Where(news =>
+            news.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
 
     private List<NewsItem> NewsListe = new()
     {

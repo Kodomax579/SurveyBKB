@@ -3,7 +3,7 @@
         <img src="@IconPath" alt="" class="news-card-icon" />
 
         <div>
-            <span class="news-card-category">@Category</span>
+            <span class="news-card-category">@Tag</span>
             <h3>@Title</h3>
         </div>
     </div>
@@ -27,7 +27,7 @@
     public string Description { get; set; } = "";
 
     [Parameter]
-    public string Category { get; set; } = "";
+    public string Tag { get; set; } = "";
 
     [Parameter]
     public string Date { get; set; } = "";
