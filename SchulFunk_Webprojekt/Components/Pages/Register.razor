@@ -1,0 +1,59 @@
+﻿@page "/register"
+@layout EmptyLayout
+@inject NavigationManager NavManager
+
+<PageTitle>Registrieren - SchulFunk</PageTitle>
+
+<div class="auth-wrapper">
+    <div class="sf-panel auth-panel">
+        
+        <div class="auth-header">
+            <h2>Konto <span>erstellen</span></h2>
+            <p>Werde jetzt Teil von SchulFunk.</p>
+        </div>
+
+        <div class="auth-form">
+            <!-- Vorname und Nachname nebeneinander -->
+            <div class="row-group">
+                <div class="form-group half-width">
+                    <label>Vorname</label>
+                    <input type="text" class="sf-input" placeholder="Max" />
+                </div>
+                <div class="form-group half-width">
+                    <label>Nachname</label>
+                    <input type="text" class="sf-input" placeholder="Mustermann" />
+                </div>
+            </div>
+
+            <!-- NEU: Klasse / Stufe -->
+            <div class="form-group">
+                <label>Klasse / Stufe</label>
+                <input type="text" class="sf-input" placeholder="z.B. 10a oder Q1" />
+            </div>
+
+            <div class="form-group">
+                <label>E-Mail Adresse</label>
+                <input type="email" class="sf-input" placeholder="max.mustermann@schule.de" />
+            </div>
+            
+            <div class="form-group">
+                <label>Passwort wählen</label>
+                <input type="password" class="sf-input" placeholder="••••••••" />
+            </div>
+            
+            <button class="sf-button w-100" @onclick="Registrieren">Registrieren</button>
+        </div>
+
+        <div class="auth-footer">
+            <p>Bereits ein Konto? <NavLink href="/">Zur Anmeldung</NavLink></p>
+        </div>
+
+    </div>
+</div>
+
+@code {
+    private void Registrieren()
+    {
+        NavManager.NavigateTo("/");
+    }
+}

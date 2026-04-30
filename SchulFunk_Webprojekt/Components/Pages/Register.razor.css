@@ -1,0 +1,99 @@
+﻿.auth-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+}
+
+.auth-panel {
+    width: 100%;
+    max-width: 480px;
+    padding: 40px;
+    text-align: center;
+    background: #ffffff;
+}
+
+.auth-header h2 {
+    color: var(--sf-navy);
+    margin-bottom: 8px;
+    font-size: 2.2rem;
+    letter-spacing: -0.05em;
+}
+
+    .auth-header h2 span {
+        color: var(--sf-turquoise);
+    }
+
+.auth-header p {
+    color: var(--sf-muted);
+    margin-bottom: 30px;
+}
+
+.auth-form {
+    text-align: left;
+}
+
+.form-group {
+    margin-bottom: 20px;
+}
+
+    .form-group label {
+        display: block;
+        color: var(--sf-navy);
+        font-weight: 700;
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+    }
+
+.sf-input {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid rgba(6, 43, 85, 0.1);
+    border-radius: 16px;
+    background: var(--sf-bg);
+    color: var(--sf-text);
+    font-size: 1rem;
+    transition: 0.2s ease;
+    box-sizing: border-box;
+}
+
+    .sf-input:focus {
+        outline: none;
+        border-color: var(--sf-turquoise);
+        background: var(--sf-white);
+        box-shadow: 0 0 0 4px rgba(24, 191, 192, 0.15);
+    }
+
+/* Vorname & Nachname nebeneinander */
+.row-group {
+    display: flex;
+    gap: 15px;
+}
+
+.half-width {
+    flex: 1;
+}
+
+.w-100 {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.auth-footer {
+    margin-top: 25px;
+    font-size: 0.95rem;
+    color: var(--sf-muted);
+    text-align: center;
+}
+
+    .auth-footer a {
+        color: var(--sf-turquoise-dark);
+        font-weight: 800;
+        transition: 0.2s;
+        text-decoration: none;
+    }
+
+        .auth-footer a:hover {
+            color: var(--sf-navy);
+            text-decoration: underline;
+        }

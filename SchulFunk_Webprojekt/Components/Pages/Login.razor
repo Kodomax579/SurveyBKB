@@ -1,7 +1,42 @@
-﻿@page "/login"
+﻿@page "/"
+@layout EmptyLayout
+@inject NavigationManager NavManager
 
-<h3>Login</h3>
+<PageTitle>Login - SchulFunk</PageTitle>
+
+<div class="auth-wrapper">
+    <div class="sf-panel auth-panel">
+        
+        <div class="auth-header">
+            <img src="lib/images/SchulFunk-Logo.png" alt="SchulFunk Logo" class="auth-logo" />
+            <h2>Schul<span>Funk</span></h2>
+            <p>Bitte melde dich an, um fortzufahren.</p>
+        </div>
+
+        <div class="auth-form">
+            <div class="form-group">
+                <label>E-Mail Adresse</label>
+                <input type="email" class="sf-input" placeholder="schueler@schule.de" />
+            </div>
+            
+            <div class="form-group">
+                <label>Passwort</label>
+                <input type="password" class="sf-input" placeholder="••••••••" />
+            </div>
+            
+            <button class="sf-button w-100" @onclick="Einloggen">Anmelden</button>
+        </div>
+
+        <div class="auth-footer">
+            <p>Noch kein Konto? <NavLink href="register">Jetzt registrieren</NavLink></p>
+        </div>
+
+    </div>
+</div>
 
 @code {
-
+    private void Einloggen()
+    {
+        NavManager.NavigateTo("/home");
+    }
 }
