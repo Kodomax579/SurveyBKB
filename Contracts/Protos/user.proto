@@ -13,23 +13,22 @@ enum UserGroup{
 }
 
 message ClassMessage{
-	int32 Id = 1;
-	string Name = 2;
+	string Name = 1;
 }
 
 message UserMessage{
-	int32 Id = 1;
-	string Name = 2;
-	string Lastname = 3;
-	string Email = 4;
-	string Password = 5;
-	ClassMessage Class = 6;
-	string Username = 7;
-	UserGroup Group = 8;
+	string Name = 1;
+	string Lastname = 2;
+	string Email = 3;
+	string Password = 4;
+	ClassMessage Class = 5;
+	string Username = 6;
+	UserGroup Group = 7;
 }
 
 service User{
 	rpc GetUserByPasswordAndEmail(GetUserByPasswordAndEmailRequest) returns (GetUserByPasswordAndEmailResponse);
+	rpc GetUserById(GetUserByIdRequest) returns (GetUserByIdResponse);
 	rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse);
 	rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
 	rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
@@ -45,6 +44,14 @@ message GetUserByPasswordAndEmailRequest{
 }
 
 message GetUserByPasswordAndEmailResponse{
+	UserMessage User = 1;
+}
+
+// Get User by Id message
+message GetUserByIdRequest{
+	int32 Id = 1;
+}
+message GetUserByIdResponse{
 	UserMessage User = 1;
 }
 

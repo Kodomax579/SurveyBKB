@@ -28,14 +28,12 @@ namespace UserService.Service
                 {
                     response.Users.Add(new UserMessage
                     {
-                        Id = user.Id,
                         Name = user.Name,
                         Lastname = user.Lastname,
                         Email = user.Email,
                         Group = (UserGroup)user.GroupId,
                         Class = new ClassMessage
                         {
-                            Id = user.Class.Id,
                             Name = user.Class.ClassName
                         },
                         Password = user.PasswordHash,
@@ -51,6 +49,38 @@ namespace UserService.Service
             }
         }
 
+        public override async Task<GetUserByIdResponse> GetUserById(GetUserByIdRequest request, ServerCallContext context)
+        {
+            try
+            {
+                var response = new GetUserByIdResponse();
+
+                var user = await _context.Users.Include(u => u.Class).FirstOrDefaultAsync(u => u.Id == request.Id);
+
+                if (user != null)
+                {
+                    response.User = new UserMessage
+                    {
+                        Name = user.Name,
+                        Lastname = user.Lastname,
+                        Email = user.Email,
+                        Group = (UserGroup)user.GroupId,
+                        Class = new ClassMessage
+                        {
+                            Name = user.Class.ClassName
+                        },
+                        Password = user.PasswordHash,
+                        Username = user.Username,
+                    };
+                }
+                return response;
+            }
+            catch (Exception ex)
+            {
+                return new GetUserByIdResponse();
+            }
+        }
+
         public override async Task<GetUserByPasswordAndEmailResponse> GetUserByPasswordAndEmail(GetUserByPasswordAndEmailRequest request, ServerCallContext context)
         {
             var response = new GetUserByPasswordAndEmailResponse();
@@ -60,14 +90,12 @@ namespace UserService.Service
             {
                 response.User = new UserMessage
                 {
-                    Id = user.Id,
                     Name = user.Name,
                     Lastname = user.Lastname,
                     Email = user.Email,
                     Group = (UserGroup)user.GroupId,
                     Class = new ClassMessage
                     {
-                        Id = user.Class.Id,
                         Name = user.Class.ClassName
                     },
                     Password = user.PasswordHash,
@@ -100,7 +128,7 @@ namespace UserService.Service
                     PasswordHash = request.User.Password,
                     Username = request.User.Username,
                 };
-                var selectedClass = await _context.Classes.FirstOrDefaultAsync(c => c.Id == request.User.Class.Id);
+                var selectedClass = await _context.Classes.FirstOrDefaultAsync(c => c.ClassName == request.User.Class.Name);
                 
                 if(selectedClass == null)
                 {
@@ -164,12 +192,19 @@ namespace UserService.Service
                     return response;
                 }
 
+                var selectedClass = await _context.Classes.FirstOrDefaultAsync(c => c.ClassName == request.User.Class.Name);
+                if(selectedClass == null)
+                {
+                    response.Success = false;
+                    return response;
+                }
+
                 UserToUpdate.Username = request.User.Username;
                 UserToUpdate.Name = request.User.Name;
                 UserToUpdate.Email = request.User.Email;
                 UserToUpdate.Lastname = request.User.Lastname;
                 UserToUpdate.Class.ClassName = request.User.Class.Name;
-                UserToUpdate.Class.Id = request.User.Class.Id;
+                UserToUpdate.Class.Id = selectedClass.Id;
                 UserToUpdate.GroupId = (int)request.User.Group;
                 UserToUpdate.Username = request.User.Username;
 
@@ -198,7 +233,6 @@ namespace UserService.Service
                 {
                     response.Classes.Add(new ClassMessage
                     {
-                        Id = classModel.Id,
                         Name = classModel.ClassName
                     });
                 }

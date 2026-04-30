@@ -47,7 +47,6 @@ namespace Survey.ApiGateway.Controllers
                     Password = model.Password,
                     Class = new ClassMessage()
                     {
-                        Id = model.Class.Id,
                         Name = model.Class.ClassName,
                     },
                     Username = model.Username,
@@ -72,7 +71,6 @@ namespace Survey.ApiGateway.Controllers
                     Password = user.Password,
                     Class = new ClassMessage()
                     {
-                        Id = user.Class.Id,
                         Name = user.Class.ClassName,
                     },
                     Username = user.Username,
@@ -107,7 +105,6 @@ namespace Survey.ApiGateway.Controllers
             {
                 Class = new ClassMessage()
                 {
-                    Id = model.Id,
                     Name = model.ClassName
                 }
             };

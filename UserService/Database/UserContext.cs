@@ -11,5 +11,5 @@ namespace UserService.Database
         public DbSet<UserModel> Users { get; set; }
         public DbSet<ClassModel> Classes { get; set; }
 
-        }
+    }
 }
