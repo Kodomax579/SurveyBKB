@@ -181,6 +181,16 @@ select {
         object-fit: contain;
     }
 
+.sf-admin-button {
+    background: var(--sf-navy-light);
+    color: var(--sf-white);
+}
+
+    .sf-admin-button:hover {
+        background: var(--sf-navy);
+        color: var(--sf-white);
+    }
+
 /* Wiederverwendbare Elemente */
 
 .sf-panel {
