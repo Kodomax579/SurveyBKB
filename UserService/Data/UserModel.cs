@@ -1,6 +1,4 @@
-﻿using Survey.ApiGateway.Models.Enum;
-
-namespace Survey.ApiGateway.Models
+﻿namespace UserService.Data
 {
     public class UserModel
     {
@@ -8,9 +6,9 @@ namespace Survey.ApiGateway.Models
         public string Name { get; set; } = string.Empty;
         public string Lastname { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
-        public string Password { get; set; } = string.Empty;
+        public string PasswordHash { get; set; } = string.Empty; // Hier kannst du DB-spezifische Dinge tun
         public ClassModel Class { get; set; } = new ClassModel();
         public string Username { get; set; } = string.Empty;
-        public Groups Group{ get; set; }
+        public int GroupId { get; set; }
     }
 }

@@ -1,0 +1,63 @@
+syntax = "proto3";
+
+option csharp_namespace = "Contracts.Protos";
+
+package news;
+
+message NewsMessage{
+	int32 Id = 1;
+	string Title = 2;
+	int32 CreatedUserId = 3;
+	string PreviewText = 4;
+	string MainText = 5;
+	string CreatedAt = 6;
+}
+
+service News{
+	rpc GetNewsById(GetNewsByIdRequest) returns (GetNewsByIdResponse);
+	rpc GetAllNews(GetAllNewsRequest) returns (GetAllNewsResponse);
+	rpc CreateNews(CreateNewsRequest) returns (CreateNewsResponse);
+	rpc UpdateNews(UpdateNewsRequest) returns (UpdateNewsResponse);
+	rpc DeleteNews(DeleteNewsRequest) returns (DeleteNewsResponse);
+}
+
+// Get News by id message
+message GetNewsByIdRequest{
+	int32 Id = 1;
+}
+
+message GetNewsByIdResponse{
+	NewsMessage News = 1;
+}
+
+// Get All News message
+message GetAllNewsRequest{}
+
+message GetAllNewsResponse{
+	repeated NewsMessage News = 1;
+}
+
+// Create News message
+message CreateNewsRequest{
+	NewsMessage News = 1;
+}
+
+message CreateNewsResponse{
+	bool Success = 1;
+}
+
+// Update News message
+message UpdateNewsRequest{
+	NewsMessage News = 1;
+}
+message UpdateNewsResponse{
+	bool Success = 1;
+}
+
+// Delete News message
+message DeleteNewsRequest{
+	int32 Id = 1;
+}
+message DeleteNewsResponse{
+	bool Success = 1;
+}

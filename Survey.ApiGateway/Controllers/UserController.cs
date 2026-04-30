@@ -17,40 +17,102 @@ namespace Survey.ApiGateway.Controllers
         }
 
         [HttpGet("GetAllUsers")]
-        public IActionResult GetAllUsers()
+        public async Task<IActionResult> GetAllUsers()
         {
-            var grpcClient = new GetAllUsersRequest();
+            var grpcRequest = new GetAllUsersRequest();
 
-            var grpcResponse = _grpcClient.GetAllUsers(grpcClient);
-            return Ok(new[] { "User1", "User2", "User3" });
+            var grpcResponse = await _grpcClient.GetAllUsersAsync(grpcRequest);
+            return Ok(grpcResponse.Users);
         }
 
-        [HttpGet("GetUserById/{id}")]
-        public IActionResult GetUserById(int id)
+        [HttpGet("GetUserByPasswordAndEmail")]
+        public async Task<IActionResult> GetUserByPasswordAndEmail(string email, string password)
         {
-            // Placeholder for getting a user by ID
-            return Ok($"User{id}");
+            var grpcRequest = new GetUserByPasswordAndEmailRequest() { Email = email, Password = password };
+
+            var grpcResponse = await _grpcClient.GetUserByPasswordAndEmailAsync(grpcRequest);
+            return Ok(grpcResponse.User);
         }
 
         [HttpPost("CreateUser")]
-        public IActionResult CreateUser([FromBody] UserModel model)
+        public async Task<IActionResult> CreateUser([FromBody] UserModel model)
         {
-            // Placeholder for creating a user
-            return Ok($"User '{model}' created successfully.");
+            var grpcRequest = new CreateUserRequest()
+            {
+                User = new UserMessage()
+                {
+                    Name = model.Name,
+                    Lastname = model.Lastname,
+                    Email = model.Email,
+                    Password = model.Password,
+                    Class = new ClassMessage()
+                    {
+                        Id = model.Class.Id,
+                        Name = model.Class.ClassName,
+                    },
+                    Username = model.Username,
+                    Group = (UserGroup)model.Group
+                }
+            };
+            var grpcResponse = await _grpcClient.CreateUserAsync(grpcRequest);
+
+            return Ok(grpcResponse.Success);
         }
 
         [HttpPut("UpdateUser/{id}")]
-        public IActionResult UpdateUser(int id, [FromBody] UserModel user)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserModel user)
         {
-            // Placeholder for updating a user
-            return Ok($"User '{id}' updated successfully.");
+            var grpcRequest = new UpdateUserRequest()
+            {
+                User = new UserMessage()
+                {
+                    Name = user.Name,
+                    Lastname = user.Lastname,
+                    Email = user.Email,
+                    Password = user.Password,
+                    Class = new ClassMessage()
+                    {
+                        Id = user.Class.Id,
+                        Name = user.Class.ClassName,
+                    },
+                    Username = user.Username,
+                    Group = (UserGroup)user.Group
+                },
+                Id = id
+            };
+            var grpcResponse = await _grpcClient.UpdateUserAsync(grpcRequest); 
+            return Ok(grpcResponse.Success);
         }
 
         [HttpDelete("DeleteUser/{id}")]
-        public IActionResult DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            // Placeholder for deleting a user
-            return Ok($"User '{id}' deleted successfully.");
+            var grpcRequest = new DeleteUserRequest() { Id = id };
+            var grpcResponse = await _grpcClient.DeleteUserAsync(grpcRequest);
+            return Ok(grpcResponse.Success);
+        }
+
+        [HttpGet("GetAllClasses")]
+        public async Task<IActionResult> GetAllClasses()
+        {
+            var grpcRequest = new GetAllClassesRequest();
+            var grpcResponse = await _grpcClient.GetAllClassesAsync(grpcRequest);
+            return Ok(grpcResponse.Classes);
+        }
+
+        [HttpPost("CreateClass")]
+        public async Task<IActionResult> GetClassById([FromBody] ClassModel model)
+        {
+            var grpcRequest = new CreateClassRequest()
+            {
+                Class = new ClassMessage()
+                {
+                    Id = model.Id,
+                    Name = model.ClassName
+                }
+            };
+            var grpcResponse = await _grpcClient.CreateClassAsync(grpcRequest);
+            return Ok(grpcResponse.Success);
         }
     }
 }

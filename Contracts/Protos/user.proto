@@ -12,32 +12,39 @@ enum UserGroup{
     CLASS_REPRESENTATIVES = 4;
 }
 
+message ClassMessage{
+	int32 Id = 1;
+	string Name = 2;
+}
+
 message UserMessage{
 	int32 Id = 1;
 	string Name = 2;
 	string Lastname = 3;
 	string Email = 4;
 	string Password = 5;
-	string Klasse = 6;
-	string Class = 7;
-	string Username = 8;
-	UserGroup Group = 9;
+	ClassMessage Class = 6;
+	string Username = 7;
+	UserGroup Group = 8;
 }
 
 service User{
-	rpc GetUserById(GetUserByIdRequest) returns (GetUserByIdResponse);
+	rpc GetUserByPasswordAndEmail(GetUserByPasswordAndEmailRequest) returns (GetUserByPasswordAndEmailResponse);
 	rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse);
 	rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
 	rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
 	rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse);
+	rpc GetAllClasses(GetAllClassesRequest) returns (GetAllClassesResponse);
+	rpc CreateClass (CreateClassRequest) returns (CreateClassResponse);
 }
 
-// Get User by id message
-message GetUserByIdRequest{
-	int32 Id = 1;
+// Get User by password and email message
+message GetUserByPasswordAndEmailRequest{
+	string Email = 1;
+	string Password = 2;
 }
 
-message GetUserByIdResponse{
+message GetUserByPasswordAndEmailResponse{
 	UserMessage User = 1;
 }
 
@@ -59,7 +66,8 @@ message CreateUserResponse{
 
 // Update User message
 message UpdateUserRequest{
-	UserMessage User = 1;
+	int32 Id = 1;
+	UserMessage User = 2;
 }
 message UpdateUserResponse{
 	bool Success = 1;
@@ -70,5 +78,20 @@ message DeleteUserRequest{
 	int32 Id = 1;
 }
 message DeleteUserResponse{
+	bool Success = 1;
+}
+
+//Get ALl Classes message
+message GetAllClassesRequest{}
+
+message GetAllClassesResponse{
+	repeated ClassMessage Classes = 1;
+}
+
+// Create Class message
+message CreateClassRequest{
+	ClassMessage Class = 1;
+}
+message CreateClassResponse{
 	bool Success = 1;
 }
