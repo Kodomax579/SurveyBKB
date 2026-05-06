@@ -1,4 +1,5 @@
 ﻿@page "/home"
+@using SchulFunk_Webprojekt.Model
 
 <PageTitle>SchulFunk</PageTitle>
 
@@ -14,21 +15,16 @@
         </div>
 
         <div class="home-news-preview">
-            <article class="home-news-item">
-                <span>Heute</span>
-                <h3>Neue Projektwoche geplant</h3>
-                <p>
-                    Bald startet eine neue Projektwoche. Weitere Informationen folgen über SchulFunk.
-                </p>
-            </article>
+            @foreach (var news in AktuellsteNews)
+            {
+                <a href="/news/@news.Id" class="home-news-item home-news-link">
+                    <span>@news.Date</span>
 
-            <article class="home-news-item">
-                <span>Diese Woche</span>
-                <h3>Umfrage zur Pausengestaltung</h3>
-                <p>
-                    Die Schülervertretung sammelt Meinungen zur Gestaltung der Pausenbereiche.
-                </p>
-            </article>
+                    <h3>@news.Title</h3>
+
+                    <p>@news.Description</p>
+                </a>
+            }
         </div>
     </div>
 
@@ -147,3 +143,10 @@
         </div>
     </div>
 </footer>
+
+@code {
+    private IEnumerable<NewsItem> AktuellsteNews =>
+        NewsData.NewsListe
+            .OrderByDescending(news => news.Id)
+            .Take(2);
+}

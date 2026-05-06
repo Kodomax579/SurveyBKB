@@ -1,0 +1,54 @@
+﻿@page "/news/{Id:int}"
+@using SchulFunk_Webprojekt.Model
+
+<PageTitle>@(News?.Title ?? "Nachricht")</PageTitle>
+
+@if (News is null)
+{
+    <section class="news-detail-page sf-panel">
+        <h2>Nachricht nicht gefunden</h2>
+        <p>Die gewünschte Nachricht konnte nicht gefunden werden.</p>
+
+        <a href="/news" class="sf-button sf-button-dark">
+            Zurück zu den Nachrichten
+        </a>
+    </section>
+}
+else
+{
+    <section class="news-detail-page sf-panel">
+        <div class="news-detail-header">
+            <img src="@News.IconPath" alt="" />
+
+            <div>
+                <span>@News.Tag</span>
+                <h2>@News.Title</h2>
+                <p>@News.Date</p>
+            </div>
+        </div>
+
+        <p class="news-detail-description">
+            @News.Description
+        </p>
+
+        <article class="news-detail-article">
+            @News.Artikel
+        </article>
+
+        <a href="/news" class="sf-button sf-button-dark news-detail-back">
+            Zurück zu den Nachrichten
+        </a>
+    </section>
+}
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+
+    private NewsItem? News;
+
+    protected override void OnParametersSet()
+    {
+        News = NewsData.NewsListe.FirstOrDefault(news => news.Id == Id);
+    }
+}
