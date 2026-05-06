@@ -8,7 +8,6 @@
         public string Description { get; set; } = "";
         public string Date { get; set; } = "";
         public string Artikel { get; set; } = "";
-        public string IconPath { get; set; } = "lib/images/Icon-News.png";
         public byte[] Image { get; set; } = Array.Empty<byte>();
     }
 }

@@ -1,0 +1,44 @@
+﻿@using SchulFunk_Webprojekt.Model
+
+<article class="survey-card">
+    <div class="survey-card-top">
+        <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" class="survey-card-icon" />
+
+        <div>
+            <span class="survey-card-category">Umfrage</span>
+            <h3>@Item.Title</h3>
+        </div>
+    </div>
+
+    <p class="survey-card-description">
+        @Item.Description
+    </p>
+
+    <div class="survey-card-creator">
+        <strong>Erstellt von:</strong>
+        <span>@Item.CreatorName</span>
+    </div>
+
+    <div class="survey-card-info">
+        <div>
+            <strong>@Item.Questions.Count</strong>
+            <span>Fragen</span>
+        </div>
+    </div>
+
+    <div class="survey-card-dates">
+        <span>Erstellt: @Item.CreatedAt.ToString("dd.MM.yyyy")</span>
+        <span>Läuft bis: @Item.OnlineUntil.ToString("dd.MM.yyyy")</span>
+    </div>
+
+    <div class="survey-card-footer">
+        <a href="/survey/@Item.GroupId" class="sf-button sf-button-dark">
+            Teilnehmen
+        </a>
+    </div>
+</article>
+
+@code {
+    [Parameter]
+    public SurveyModel Item { get; set; } = new();
+}
