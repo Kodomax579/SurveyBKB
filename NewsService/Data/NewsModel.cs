@@ -1,4 +1,4 @@
-﻿namespace Survey.ApiGateway.Models
+﻿namespace NewsService.Data
 {
     public class NewsModel
     {

@@ -4,13 +4,17 @@ option csharp_namespace = "Contracts.Protos";
 
 package news;
 
-message NewsMessage{
-	int32 Id = 1;
-	string Title = 2;
-	int32 CreatedUserId = 3;
-	string PreviewText = 4;
-	string MainText = 5;
-	string CreatedAt = 6;
+import "google/protobuf/timestamp.proto"; 
+
+message NewsMessage {
+  int32 id = 1;
+  string titel = 2;         
+  string tag = 3;           
+  string preview_text = 4;
+  string main_text = 5;
+  bytes image = 6;          
+  google.protobuf.Timestamp created_at = 7; 
+  int32 created_user_id = 8;
 }
 
 service News{
