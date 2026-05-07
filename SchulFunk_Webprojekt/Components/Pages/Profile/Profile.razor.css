@@ -1,0 +1,115 @@
+﻿.profile-header {
+    padding: 34px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+}
+
+.profile-title {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+    .profile-title img {
+        width: 86px;
+        height: 86px;
+        object-fit: contain;
+    }
+
+    .profile-title h2 {
+        margin: 0;
+        color: var(--sf-navy);
+        font-size: clamp(2rem, 4vw, 3.2rem);
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+    }
+
+    .profile-title p {
+        margin: 10px 0 0;
+        color: var(--sf-muted);
+        font-size: 1.1rem;
+        line-height: 1.6;
+    }
+
+.profile-edit-button {
+    flex: 0 0 auto;
+}
+
+.profile-info {
+    width: 100%;
+    padding: 34px;
+}
+
+    .profile-info h3 {
+        margin: 0 0 22px;
+        color: var(--sf-navy);
+        font-size: 1.8rem;
+    }
+
+.profile-info-list {
+    display: grid;
+    gap: 16px;
+}
+
+.profile-info-row {
+    padding: 20px;
+    border-radius: 22px;
+    background: #f6fbfc;
+    border: 1px solid rgba(6, 43, 85, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+}
+
+    .profile-info-row span {
+        color: var(--sf-muted);
+        font-weight: 800;
+    }
+
+    .profile-info-row strong {
+        color: var(--sf-navy);
+        font-weight: 900;
+        text-align: right;
+    }
+
+@media (max-width: 900px) {
+    .profile-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .profile-edit-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 680px) {
+    .profile-header,
+    .profile-info {
+        padding: 24px;
+        border-radius: 24px;
+    }
+
+    .profile-title {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+        .profile-title img {
+            width: 72px;
+            height: 72px;
+        }
+
+    .profile-info-row {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+        .profile-info-row strong {
+            text-align: left;
+        }
+}

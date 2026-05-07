@@ -1,6 +1,6 @@
 ﻿<header class="sf-header">
     <NavLink href="/home" class="sf-brand">
-        <img src="lib/images/SchulFunk-Logo.png" alt="SchulFunk Logo" class="sf-logo" />
+        <img src="/lib/images/SchulFunk-Logo.png" alt="SchulFunk Logo" class="sf-logo" />
 
         <div class="sf-brand-text">
             <h1>
@@ -25,15 +25,83 @@
             Aktuelle Nachrichten
         </NavLink>
 
-        <NavLink href="#einstellungen" class="sf-nav-button sf-settings-button">
-            <img src="lib/images/Icon-User.png" alt="" />
-            Einstellungen
-        </NavLink>
-    </nav>
+        <div class="sf-settings-dropdown">
+            <button type="button"
+                    class="sf-nav-button sf-settings-button"
+                    @onclick="ToggleSettingsMenu">
+                <img src="/lib/images/Icon-User.png" alt="" />
+                Einstellungen
+            </button>
 
-    @code
+            @if (SettingsMenuVisible)
+            {
+                <div class="sf-settings-menu @(SettingsMenuClosing ? "sf-settings-menu-closing" : "")">
+                    <div class="sf-settings-user">
+                        <strong>@UserName</strong>
+                        <span>@UserClass</span>
+                        <span>@UserRole</span>
+                    </div>
+
+                    <a href="/profile"
+                           class="sf-settings-menu-item"
+                           @onclick="CloseSettingsMenu">
+                        Profil ansehen
+                    </a>
+
+                    <button type="button"
+                            class="sf-settings-menu-item sf-settings-logout"
+                            @onclick="Logout">
+                        Ausloggen
+                    </button>
+                </div>
+            }
+        </div>
+    </nav>
+</header>
+
+@code {
+    private bool IstLehrer = true;
+
+    private bool SettingsMenuVisible = false;
+    private bool SettingsMenuClosing = false;
+
+    // Testdaten fürs Frontend.
+    // Später kommen diese Werte aus dem Login/Auth-System.
+    private string UserName = "Max Mustermann";
+    private string UserClass = "10A";
+    private string UserRole = "Klassensprecher";
+
+    private async Task ToggleSettingsMenu()
     {
-        private bool IstLehrer = true;
+        if (SettingsMenuVisible)
+        {
+            await CloseSettingsMenu();
+        }
+        else
+        {
+            SettingsMenuClosing = false;
+            SettingsMenuVisible = true;
+        }
     }
 
-</header>
+    private async Task CloseSettingsMenu()
+    {
+        if (!SettingsMenuVisible)
+        {
+            return;
+        }
+
+        SettingsMenuClosing = true;
+        await Task.Delay(180);
+
+        SettingsMenuVisible = false;
+        SettingsMenuClosing = false;
+    }
+
+    private async Task Logout()
+    {
+        await CloseSettingsMenu();
+
+        // Später kommt hier die echte Logout-Logik hin.
+    }
+}

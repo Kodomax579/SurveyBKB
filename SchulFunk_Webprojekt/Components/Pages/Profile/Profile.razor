@@ -1,0 +1,47 @@
+﻿@page "/profile"
+
+<PageTitle>Profil</PageTitle>
+
+<section class="profile-header sf-panel">
+    <div class="profile-title">
+        <img src="/lib/images/Icon-User.png" alt="Profil Icon" />
+
+        <div>
+            <h2>Mein Profil</h2>
+            <p>Hier kannst du deine persönlichen SchulFunk-Daten einsehen.</p>
+        </div>
+    </div>
+
+    <a href="/profile/edit" class="sf-button sf-button-dark profile-edit-button">
+        Profil bearbeiten
+    </a>
+</section>
+
+<section class="profile-info sf-panel">
+    <h3>Profildaten</h3>
+
+    <div class="profile-info-list">
+        <div class="profile-info-row">
+            <span>Name</span>
+            <strong>@UserName</strong>
+        </div>
+
+        <div class="profile-info-row">
+            <span>Klasse</span>
+            <strong>@UserClass</strong>
+        </div>
+
+        <div class="profile-info-row">
+            <span>Rolle</span>
+            <strong>@UserRole</strong>
+        </div>
+    </div>
+</section>
+
+@code {
+    // Testdaten fürs Frontend.
+    // Später kommen diese Werte aus dem Login/Auth-System.
+    private string UserName = "Max Mustermann";
+    private string UserClass = "10A";
+    private string UserRole = "Klassensprecher";
+}
