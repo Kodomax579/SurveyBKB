@@ -1,45 +1,27 @@
-﻿<article class="news-card">
+﻿@using SchulFunk_Webprojekt.Model
+
+<article class="news-card">
     <div class="news-card-top">
-        <img src="@IconPath" alt="" class="news-card-icon" />
+        <img src="/lib/images/Icon-News.png" alt="News Icon" class="news-card-icon" />
 
         <div>
-            <span class="news-card-category">@Category</span>
-            <h3>@Title</h3>
+            <span class="news-card-category">@Item.Tag</span>
+            <h3>@Item.Title</h3>
         </div>
     </div>
 
-    <p>@Description</p>
+    <p>@Item.Description</p>
 
     <div class="news-card-footer">
-        <span>@Date</span>
+        <span>@Item.Date</span>
 
-        <button type="button" class="sf-button sf-button-dark" @onclick="ButtonWurdeGeklickt">
+        <a href="/news/@Item.Id" class="sf-button sf-button-dark">
             Mehr lesen
-        </button>
+        </a>
     </div>
 </article>
 
 @code {
     [Parameter]
-    public string Title { get; set; } = "";
-
-    [Parameter]
-    public string Description { get; set; } = "";
-
-    [Parameter]
-    public string Category { get; set; } = "";
-
-    [Parameter]
-    public string Date { get; set; } = "";
-
-    [Parameter]
-    public string IconPath { get; set; } = "lib/images/Icon-News.png";
-
-    [Parameter]
-    public EventCallback<string> OnMehrLesenClicked { get; set; }
-
-    private async Task ButtonWurdeGeklickt()
-    {
-        await OnMehrLesenClicked.InvokeAsync(Title);
-    }
+    public NewsItem Item { get; set; } = new();
 }

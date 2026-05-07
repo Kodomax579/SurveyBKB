@@ -1,4 +1,5 @@
 ﻿@page "/news"
+@rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
 
 <PageTitle>Aktuelle Nachrichten</PageTitle>
@@ -7,69 +8,36 @@
     <div class="news-page-title">
         <img src="lib/images/Icon-News.png" alt="News Icon" />
 
-        <div>
+        <div class="news-page-title-text">
             <h2>Aktuelle Nachrichten</h2>
             <p>Hier findest du neue Meldungen, Ankündigungen und Informationen deiner Schule.</p>
         </div>
     </div>
+
+    <div class="news-search-box">
+        <input type="text"
+               class="news-search-input"
+               placeholder="Nach Titel suchen..."
+               @bind="Suchtext"
+               @bind:event="oninput" />
+    </div>
 </section>
 
 <section class="news-card-grid">
-    @foreach (var news in NewsListe)
+    @foreach (var news in GefilterteNewsListe)
     {
-        <NewsCard Category="@news.Tag"
-                  Title="@news.Title"
-                  Description="@news.Description"
-                  Date="@news.Date"
-                  IconPath="@news.IconPath"
-                  OnMehrLesenClicked="MehrLesen" />
+        <NewsCard Item="@news" />
     }
 </section>
 
-@if (!string.IsNullOrWhiteSpace(buttonGedrueckt))
-{
-    <div class="news-click-output sf-panel">
-        <strong>Geklickte Nachricht:</strong>
-        <p>@buttonGedrueckt</p>
-    </div>
-}
-
 @code {
-    private string buttonGedrueckt = "";
+    private string Suchtext = "";
 
-    private List<NewsItem> NewsListe = new()
-    {
-        new NewsItem
-        {
-            Tag = "Projekte",
-            Title = "Neue Projektwoche geplant",
-            Description = "Bald startet eine neue Projektwoche. Weitere Informationen folgen über SchulFunk.",
-            Date = "Heute",
-            Artikel = "",
-            IconPath = "lib/images/Icon-News.png"
-        },
-        new NewsItem
-        {
-            Tag = "Essen",
-            Title = "Neue Cafeteria-Öffnungszeiten",
-            Description = "Ab nächster Woche gelten neue Öffnungszeiten für die Cafeteria.",
-            Date = "Heute",
-            Artikel = "",
-            IconPath = "lib/images/Icon-News.png"
-        },
-        new NewsItem
-        {
-            Tag = "Info",
-            Title = "Informationen zur Projektpräsentation",
-            Description = "Die Präsentationen der aktuellen Projekte finden am Freitag statt.",
-            Date = "Diese Woche",
-            Artikel = "",
-            IconPath = "lib/images/Icon-News.png"
-        }
-    };
+    private List<NewsItem> NewsListe = NewsData.NewsListe;
 
-    private void MehrLesen(string news)
-    {
-        buttonGedrueckt = news;
-    }
+    private IEnumerable<NewsItem> GefilterteNewsListe =>
+        string.IsNullOrWhiteSpace(Suchtext)
+            ? NewsListe
+            : NewsListe.Where(news =>
+                news.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
 }

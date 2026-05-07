@@ -1,14 +1,13 @@
 ﻿<header class="sf-header">
-    <div class="sf-brand">
+    <NavLink href="/home" class="sf-brand">
         <img src="lib/images/SchulFunk-Logo.png" alt="SchulFunk Logo" class="sf-logo" />
 
         <div class="sf-brand-text">
             <h1>
                 Schul<span>Funk</span>
             </h1>
-
         </div>
-    </div>
+    </NavLink>
 
     <nav class="sf-navbar">
         @if (IstLehrer)
@@ -18,7 +17,7 @@
             </NavLink>
         }
 
-        <NavLink href="#umfragen" class="sf-nav-button sf-nav-button-dark">
+        <NavLink href="/survey" class="sf-nav-button sf-nav-button-dark">
             Umfragen ansehen
         </NavLink>
 

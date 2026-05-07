@@ -1,0 +1,50 @@
+﻿@page "/survey"
+@rendermode InteractiveServer
+@using SchulFunk_Webprojekt.Model
+
+<PageTitle>Umfragen</PageTitle>
+
+<section class="survey-page-header sf-panel">
+    <div class="survey-page-title">
+        <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" />
+
+        <div class="survey-page-title-text">
+            <h2>Aktuelle Umfragen</h2>
+            <p>Hier findest du aktuelle Umfragen deiner Schule.</p>
+        </div>
+    </div>
+
+    <div class="survey-page-actions">
+        <div class="survey-search-box">
+            <input type="text"
+                   class="survey-search-input"
+                   placeholder="Nach Umfrage suchen..."
+                   @bind="Suchtext"
+                   @bind:event="oninput" />
+        </div>
+
+        <a href="/survey/results" class="sf-button sf-button-dark">
+            Ausgewertete Umfragen
+        </a>
+    </div>
+</section>
+
+<section class="survey-card-grid">
+    @foreach (var survey in GefilterteSurveyListe)
+    {
+        <SurveyCard Item="@survey" />
+    }
+</section>
+
+@code {
+    private string Suchtext = "";
+
+    private List<SurveyModel> SurveyListe = SurveyData.SurveyListe;
+
+    private IEnumerable<SurveyModel> GefilterteSurveyListe =>
+    SurveyListe
+        .Where(survey => survey.OnlineUntil >= DateOnly.FromDateTime(DateTime.Today))
+        .Where(survey =>
+            string.IsNullOrWhiteSpace(Suchtext) ||
+            survey.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
+}

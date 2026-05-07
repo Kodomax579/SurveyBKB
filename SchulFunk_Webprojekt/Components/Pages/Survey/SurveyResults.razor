@@ -1,0 +1,120 @@
+﻿@page "/survey/results"
+@rendermode InteractiveServer
+@using SchulFunk_Webprojekt.Model
+
+<PageTitle>Ausgewertete Umfragen</PageTitle>
+
+<section class="survey-results-header sf-panel">
+    <div class="survey-results-title">
+        <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" />
+
+        <div class="survey-results-title-text">
+            <h2>Ausgewertete Umfragen</h2>
+            <p>Hier findest du Umfragen, die bereits abgelaufen und ausgewertet wurden.</p>
+        </div>
+    </div>
+
+    <div class="survey-results-actions">
+        <input type="text"
+               class="survey-results-search-input"
+               placeholder="Nach ausgewerteter Umfrage suchen..."
+               @bind="Suchtext"
+               @bind:event="oninput" />
+
+        <a href="/survey" class="sf-button sf-button-dark">
+            Aktive Umfragen
+        </a>
+    </div>
+</section>
+
+<section class="survey-results-grid">
+    @foreach (var survey in GefilterteAusgewerteteSurveyListe)
+    {
+        <article class="survey-result-card sf-panel">
+            <div class="survey-result-top">
+                <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" />
+
+                <div>
+                    <span>Ausgewertet</span>
+                    <h3>@survey.Title</h3>
+                </div>
+            </div>
+
+            <p class="survey-result-description">
+                @survey.Description
+            </p>
+
+            <div class="survey-result-meta">
+                <div>
+                    <strong>@survey.Questions.Count</strong>
+                    <span>Fragen</span>
+                </div>
+
+                <div>
+                    <strong>@survey.CreatedAt.ToString("dd.MM.yyyy")</strong>
+                    <span>Erstellt am</span>
+                </div>
+
+                <div>
+                    <strong>@survey.OnlineUntil.ToString("dd.MM.yyyy")</strong>
+                    <span>Abgelaufen am</span>
+                </div>
+            </div>
+
+            <div class="survey-result-footer">
+                <span>Erstellt von @survey.CreatorName</span>
+
+                <a href="/survey/@survey.GroupId" class="sf-button sf-button-dark">
+                    Ergebnisse ansehen
+                </a>
+            </div>
+        </article>
+    }
+</section>
+
+@if (!GefilterteAusgewerteteSurveyListe.Any())
+{
+    <section class="survey-results-empty sf-panel">
+        <h3>Keine ausgewerteten Umfragen gefunden</h3>
+        <p>Aktuell gibt es keine abgelaufenen Umfragen, die du sehen darfst.</p>
+    </section>
+}
+
+@code {
+    private string Suchtext = "";
+
+    // Testdaten für Frontend.
+    // Später kommt das aus dem Login/Auth-System.
+    private string UserRole = "Klassensprecher";
+    private string UserClass = "10A";
+
+    private List<SurveyModel> SurveyListe = SurveyData.SurveyListe;
+
+    private IEnumerable<SurveyModel> GefilterteAusgewerteteSurveyListe =>
+        SurveyListe
+            .Where(survey => survey.OnlineUntil < DateOnly.FromDateTime(DateTime.Today))
+            .Where(survey => DarfUserSurveySehen(survey))
+            .Where(survey =>
+                string.IsNullOrWhiteSpace(Suchtext) ||
+                survey.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
+
+    private bool DarfUserSurveySehen(SurveyModel survey)
+    {
+        if (UserRole == "Lehrer")
+        {
+            return true;
+        }
+
+        if (UserRole == "Schülersprecher")
+        {
+            return true;
+        }
+
+        if (UserRole == "Klassensprecher")
+        {
+            return survey.Classes.Any(klasse => klasse.ClassName == UserClass);
+        }
+
+        return survey.Classes.Any(klasse => klasse.ClassName == UserClass);
+    }
+}

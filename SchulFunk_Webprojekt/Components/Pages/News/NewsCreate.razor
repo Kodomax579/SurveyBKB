@@ -1,0 +1,134 @@
+﻿@page "/news/create"
+
+<PageTitle>Nachricht erstellen</PageTitle>
+
+<section class="news-create-header sf-panel">
+    <div class="news-create-title">
+        <img src="lib/images/Icon-News.png" alt="News Icon" />
+
+        <div>
+            <h2>Artikel erstellen</h2>
+            <p>Erstelle hier neue Schulnachrichten für SchulFunk.</p>
+        </div>
+    </div>
+</section>
+
+<section class="news-create-layout">
+    <div class="news-create-form sf-panel">
+
+        <div class="form-group">
+            <label for="news-title">Titel</label>
+            <input id="news-title"
+                   type="text"
+                   class="form-control"
+                   placeholder="Titel der Nachricht eingeben"
+                   @bind="Titel"
+                   @bind:event="oninput" />
+        </div>
+
+        <div class="form-group">
+            <label for="news-tag">Tag</label>
+            <input id="news-tag"
+                   type="text"
+                   class="form-control"
+                   placeholder="Zum Beispiel: Schulnews, Projektwoche, Wichtig"
+                   @bind="Tag"
+                   @bind:event="oninput" />
+        </div>
+
+        <div class="form-group">
+            <label for="news-description">Kurzbeschreibung</label>
+            <textarea id="news-description"
+                      class="form-control"
+                      rows="4"
+                      placeholder="Kurze Beschreibung der Nachricht eingeben"
+                      @bind="Description"
+                      @bind:event="oninput"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="news-artikel">Kompletter Artikel</label>
+            <textarea id="news-artikel"
+                      class="form-control"
+                      rows="8"
+                      placeholder="Hier kommt später der komplette Artikeltext rein"></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="news-image">Bild hochladen</label>
+
+            <label class="image-upload-box" for="news-image">
+                <img src="lib/images/Icon-News.png" alt="" />
+                <span>Bild auswählen</span>
+                <small>PNG, JPG oder JPEG</small>
+            </label>
+
+            <InputFile id="news-image"
+                       class="image-upload-input"
+                       style="display: none;"
+                       hidden
+                       accept="image/png,image/jpeg,image/jpg"
+                       OnChange="BildAusgewaehlt" />
+        </div>
+
+        <div class="form-actions">
+            <button type="button" class="sf-button sf-button-dark">
+                Artikel veröffentlichen
+            </button>
+        </div>
+    </div>
+
+    <aside class="news-create-preview sf-panel">
+        <span class="preview-label">Vorschau</span>
+
+        <div class="preview-image">
+            @if (!string.IsNullOrWhiteSpace(BildVorschauUrl))
+            {
+                <img src="@BildVorschauUrl" alt="Bildvorschau" />
+            }
+            else
+            {
+                <img src="lib/images/Icon-News.png" alt="Standard News Icon" />
+            }
+        </div>
+
+        <h3>@(string.IsNullOrWhiteSpace(Titel) ? "Nachrichtentitel" : Titel)</h3>
+
+        <span class="preview-tag">
+            @(string.IsNullOrWhiteSpace(Tag) ? "Tag" : Tag)
+        </span>
+
+        <p>
+            @(string.IsNullOrWhiteSpace(Description)
+                ? "Hier wird später eine Vorschau der Nachricht angezeigt."
+                : Description)
+        </p>
+    </aside>
+</section>
+
+@code {
+    private string Titel = "";
+    private string Tag = "";
+    private string Description = "";
+    private string BildVorschauUrl = "";
+
+    private async Task BildAusgewaehlt(InputFileChangeEventArgs e)
+    {
+        var datei = e.File;
+
+        if (datei is null)
+        {
+            return;
+        }
+
+        using var stream = datei.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
+        using var memoryStream = new MemoryStream();
+
+        await stream.CopyToAsync(memoryStream);
+
+        var bytes = memoryStream.ToArray();
+        var base64 = Convert.ToBase64String(bytes);
+
+        BildVorschauUrl = $"data:{datei.ContentType};base64,{base64}";
+    }
+}

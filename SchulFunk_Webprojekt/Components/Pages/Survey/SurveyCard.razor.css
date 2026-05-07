@@ -1,0 +1,128 @@
+﻿.survey-card {
+    padding: 28px;
+    background: rgba(255, 255, 255, 0.96);
+    border: 2px solid var(--sf-border);
+    border-radius: var(--sf-radius);
+    box-shadow: var(--sf-shadow);
+    transition: 0.2s ease;
+}
+
+    .survey-card:hover {
+        transform: translateY(-6px);
+        border-color: var(--sf-turquoise);
+    }
+
+.survey-card-top {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    margin-bottom: 22px;
+}
+
+.survey-card-icon {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    flex: 0 0 auto;
+}
+
+.survey-card-category {
+    color: var(--sf-turquoise-dark);
+    font-weight: 900;
+    font-size: 0.95rem;
+}
+
+.survey-card h3 {
+    margin: 6px 0 0 0;
+    color: var(--sf-navy);
+    font-size: 1.45rem;
+    line-height: 1.2;
+}
+
+.survey-card-description {
+    margin: 0 0 18px 0;
+    color: var(--sf-muted);
+    line-height: 1.6;
+}
+
+.survey-card-creator {
+    margin-bottom: 18px;
+    padding: 14px 16px;
+    border-radius: 18px;
+    background: #f6fbfc;
+    border: 1px solid rgba(6, 43, 85, 0.08);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+    .survey-card-creator strong {
+        color: var(--sf-navy);
+    }
+
+    .survey-card-creator span {
+        color: var(--sf-turquoise-dark);
+        font-weight: 900;
+    }
+
+.survey-card-info {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    margin-bottom: 18px;
+}
+
+    .survey-card-info div {
+        padding: 16px;
+        border-radius: 20px;
+        background: #f6fbfc;
+        border: 1px solid rgba(6, 43, 85, 0.08);
+    }
+
+    .survey-card-info strong {
+        display: block;
+        color: var(--sf-navy);
+        font-size: 1.4rem;
+        line-height: 1;
+    }
+
+    .survey-card-info span {
+        display: block;
+        margin-top: 6px;
+        color: var(--sf-muted);
+        font-weight: 700;
+    }
+
+.survey-card-dates {
+    display: grid;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+    .survey-card-dates span {
+        color: var(--sf-muted);
+        font-weight: 700;
+    }
+
+.survey-card-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+@media (max-width: 680px) {
+    .survey-card {
+        padding: 22px;
+    }
+
+    .survey-card-top {
+        align-items: flex-start;
+    }
+
+    .survey-card-footer .sf-button {
+        width: 100%;
+    }
+
+    .survey-card-creator {
+        flex-direction: column;
+    }
+}
