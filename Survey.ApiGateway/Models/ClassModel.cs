@@ -1,4 +1,4 @@
-﻿namespace Survey.ApiGateway.Models
+﻿    namespace Survey.ApiGateway.Models
 {
     public class ClassModel
     {

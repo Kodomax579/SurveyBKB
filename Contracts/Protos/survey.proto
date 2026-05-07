@@ -1,65 +1,62 @@
 syntax = "proto3";
 
 option csharp_namespace = "Contracts.Protos";
-
 package survey;
 
-message SurveyMessage{
-	int32 Id = 1;
-	string Title = 2;
-	int32 CreatedUserId = 3;
-	repeated string Classes = 4;
-	repeated QuestionMessage Questions = 5;
+import "google/protobuf/timestamp.proto"; 
+
+
+message AnswerMessage {
+	string options = 1;
+	int32 number_of_selected_answer = 2;
 }
 
-message QuestionMessage{
-	int32 Id = 1;
-	string Text = 2;
-	repeated string Options = 3;
+message QuestionMessage {
+	string question = 1;
+	repeated AnswerMessage options = 2;
 }
 
-service Survey{
-	rpc GetSurveyById(GetSurveyByIdRequest) returns (GetSurveyByIdResponse);
+message SurveyMessage {
+	int32 id = 1; 
+	string title = 2;
+	int32 group_id = 3;
+	repeated string classes = 4;
+
+	google.protobuf.Timestamp created_at = 5;
+	google.protobuf.Timestamp online_until = 6;
+	
+	repeated int32 user_i_ds = 7; 
+	repeated QuestionMessage questions = 8;
+}
+
+
+service Survey {
 	rpc GetAllSurveys(GetAllSurveysRequest) returns (GetAllSurveysResponse);
 	rpc CreateSurvey(CreateSurveyRequest) returns (CreateSurveyResponse);
-	rpc UpdateSurvey(UpdateSurveyRequest) returns (UpdateSurveyResponse);
+	rpc UpdateSurveyAnswer(UpdateSurveyAnswerRequest) returns (UpdateSurveyAnswerResponse);
 	rpc DeleteSurvey(DeleteSurveyRequest) returns (DeleteSurveyResponse);
 }
 
-// Get Survey by id message
-message GetSurveyByIdRequest{
-	int32 Id = 1;
-}
-
-message GetSurveyByIdResponse{
-	SurveyMessage Survey = 1;
-}
-
-// Get All Surveys message
 message GetAllSurveysRequest{}
-
 message GetAllSurveysResponse{
 	repeated SurveyMessage Surveys = 1;
 }
 
-// Create Survey message
 message CreateSurveyRequest{
 	SurveyMessage Survey = 1;
 }
-
 message CreateSurveyResponse{
 	bool Success = 1;
 }
 
-// Update Survey message
-message UpdateSurveyRequest{
-	SurveyMessage Survey = 1;
+message UpdateSurveyAnswerRequest{
+	int32 userId = 1;
+	int32 answerId = 2;
 }
-message UpdateSurveyResponse{
+message UpdateSurveyAnswerResponse{
 	bool Success = 1;
 }
 
-// Delete Survey message
 message DeleteSurveyRequest{
 	int32 Id = 1;
 }

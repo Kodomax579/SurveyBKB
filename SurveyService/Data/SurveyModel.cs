@@ -1,7 +1,8 @@
-﻿namespace Survey.ApiGateway.Models
+﻿namespace SurveyService.Data
 {
     public class SurveyModel
     {
+        public int Id { get; set; }
         public string Title { get; set; } = string.Empty;
         public int GroupId { get; set; }
         public DateOnly CreatedAt { get; set; }
