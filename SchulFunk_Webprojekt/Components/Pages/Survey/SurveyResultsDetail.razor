@@ -1,0 +1,90 @@
+﻿@page "/survey/results/{GroupId:int}"
+@using SchulFunk_Webprojekt.Model
+
+<PageTitle>@(Survey?.Title ?? "Umfrage-Ergebnisse")</PageTitle>
+
+@if (Survey is null)
+{
+    <section class="survey-results-detail-page sf-panel">
+        <h2>Auswertung nicht gefunden</h2>
+        <p>Die gewünschte Umfrage-Auswertung konnte nicht gefunden werden.</p>
+
+        <a href="/survey/results" class="sf-button sf-button-dark">
+            Zurück zu den Auswertungen
+        </a>
+    </section>
+}
+else
+{
+    <section class="survey-results-detail-page sf-panel">
+        <div class="survey-results-detail-header">
+            <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" />
+
+            <div>
+                <span>Ausgewertete Umfrage</span>
+                <h2>@Survey.Title</h2>
+
+                <p>
+                    Erstellt von @Survey.CreatorName ·
+                    Erstellt am @Survey.CreatedAt.ToString("dd.MM.yyyy") ·
+                    Abgelaufen am @Survey.OnlineUntil.ToString("dd.MM.yyyy")
+                </p>
+            </div>
+        </div>
+
+        <p class="survey-results-detail-description">
+            @Survey.Description
+        </p>
+
+        <div class="survey-results-question-list">
+            @for (var questionIndex = 0; questionIndex < Survey.Questions.Count; questionIndex++)
+            {
+                var question = Survey.Questions[questionIndex];
+
+                <article class="survey-results-question-block">
+                    <h3>Frage @(questionIndex + 1)</h3>
+                    <p>@question.Question</p>
+
+                    <div class="survey-results-answer-list">
+                        @foreach (var answer in question.Options)
+                        {
+                            var totalVotes = question.Options.Sum(option => option.NumberOfSelectedAnswer);
+                            var percentage = totalVotes == 0
+                                ? 0
+                                : Math.Round((double)answer.NumberOfSelectedAnswer / totalVotes * 100);
+
+                            <div class="survey-results-answer">
+                                <div class="survey-results-answer-top">
+                                    <strong>@answer.options</strong>
+                                    <span>@percentage%</span>
+                                </div>
+
+                                <div class="survey-results-bar">
+                                    <div style="width: @percentage%"></div>
+                                </div>
+
+                                <small>@answer.NumberOfSelectedAnswer Stimmen</small>
+                            </div>
+                        }
+                    </div>
+                </article>
+            }
+        </div>
+
+        <a href="/survey/results" class="sf-button sf-button-dark survey-results-detail-back">
+            Zurück zu den Auswertungen
+        </a>
+    </section>
+}
+
+@code {
+    [Parameter]
+    public int GroupId { get; set; }
+
+    private SurveyModel? Survey;
+
+    protected override void OnParametersSet()
+    {
+        Survey = SurveyData.SurveyListe.FirstOrDefault(survey => survey.GroupId == GroupId);
+    }
+}

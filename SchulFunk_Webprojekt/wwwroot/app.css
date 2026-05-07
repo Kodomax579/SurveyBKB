@@ -285,3 +285,144 @@ select {
         width: 100%;
     }
 }
+/* Einstellungen Dropdown */
+
+.sf-settings-dropdown {
+    position: relative;
+    display: inline-flex;
+}
+
+.sf-settings-button {
+    cursor: pointer;
+}
+
+    .sf-settings-button img {
+        width: 28px;
+        height: 28px;
+        object-fit: contain;
+    }
+
+.sf-settings-menu {
+    position: absolute;
+    top: calc(100% + 14px);
+    right: 0;
+    z-index: 50;
+    width: 260px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.98);
+    border: 2px solid var(--sf-border);
+    border-radius: 24px;
+    box-shadow: var(--sf-shadow);
+    animation: sf-dropdown-open 0.22s ease forwards;
+    transform-origin: top right;
+}
+.sf-settings-menu-closing {
+    animation: sf-dropdown-close 0.18s ease forwards;
+}
+
+@keyframes sf-dropdown-open {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+@keyframes sf-dropdown-close {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.96);
+    }
+}
+    .sf-settings-menu::before {
+        content: "";
+        position: absolute;
+        top: -8px;
+        right: 34px;
+        width: 14px;
+        height: 14px;
+        background: rgba(255, 255, 255, 0.98);
+        border-left: 2px solid var(--sf-border);
+        border-top: 2px solid var(--sf-border);
+        transform: rotate(45deg);
+    }
+
+.sf-settings-user {
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border-radius: 18px;
+    background: #f6fbfc;
+    border: 1px solid rgba(6, 43, 85, 0.08);
+    display: grid;
+    gap: 5px;
+}
+
+    .sf-settings-user strong {
+        color: var(--sf-navy);
+        font-weight: 900;
+    }
+
+    .sf-settings-user span {
+        color: var(--sf-muted);
+        font-weight: 800;
+        font-size: 0.95rem;
+    }
+
+.sf-settings-menu-item {
+    width: 100%;
+    min-height: 46px;
+    padding: 12px 14px;
+    border: none;
+    border-radius: 16px;
+    background: transparent;
+    color: var(--sf-navy);
+    font-weight: 900;
+    text-align: left;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+    .sf-settings-menu-item:hover {
+        background: var(--sf-soft);
+        color: var(--sf-navy);
+    }
+
+.sf-settings-logout {
+    color: #b3261e;
+}
+
+    .sf-settings-logout:hover {
+        background: rgba(179, 38, 30, 0.08);
+        color: #b3261e;
+    }
+@media (max-width: 680px) {
+    .sf-settings-dropdown {
+        width: 100%;
+    }
+
+        .sf-settings-dropdown .sf-settings-button {
+            width: 100%;
+        }
+
+    .sf-settings-menu {
+        left: 0;
+        right: auto;
+        width: 100%;
+    }
+
+        .sf-settings-menu::before {
+            right: auto;
+            left: 34px;
+        }
+}

@@ -64,8 +64,8 @@
                 Description = "Mit dieser Umfrage sollen Ideen und Wünsche für das nächste Schulfest gesammelt werden.",
                 CreatorName = "Schülervertretung",
                 GroupId = 2,
-                CreatedAt = DateOnly.FromDateTime(DateTime.Today.AddDays(-2)),
-                OnlineUntil = DateOnly.FromDateTime(DateTime.Today.AddDays(21)),
+                CreatedAt = DateOnly.FromDateTime(DateTime.Today.AddDays(-6)),
+                OnlineUntil = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)),
                 Classes = AvailableClasses.ToList(),
                 Questions = new()
                 {
@@ -74,9 +74,9 @@
                         Question = "Welche Aktion soll es beim Schulfest geben?",
                         Options = new()
                         {
-                            new AnswerModel { options = "Essensstand" },
-                            new AnswerModel { options = "Sportturnier" },
-                            new AnswerModel { options = "Musikauftritt" }
+                            new AnswerModel { options = "Essensstand", NumberOfSelectedAnswer = 12 },
+                            new AnswerModel { options = "Sportturnier", NumberOfSelectedAnswer = 8 },
+                            new AnswerModel { options = "Musikauftritt", NumberOfSelectedAnswer = 5 }
                         }
                     }
                 }
