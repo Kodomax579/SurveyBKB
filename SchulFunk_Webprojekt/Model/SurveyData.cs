@@ -26,6 +26,7 @@
                 Description = "Mit dieser Umfrage möchten wir herausfinden, wie die Pausenbereiche verbessert werden können.",
                 CreatorName = "Max Mustermann",
                 GroupId = 1,
+                CreatedUserID = 1,
                 CreatedAt = DateOnly.FromDateTime(DateTime.Today),
                 OnlineUntil = DateOnly.FromDateTime(DateTime.Today.AddDays(14)),
                 Classes = new()
@@ -60,10 +61,50 @@
 
             new SurveyModel
             {
+                Title = "Untestützung weiterer Projekte",
+                Description = "Mit dieser Umfrage möchten wir herausfinden, welches Projekt wir mehr unterstützen sollten.",
+                CreatorName = "Max Mustermann",
+                GroupId = 2,
+                CreatedUserID = 1,
+                CreatedAt = DateOnly.FromDateTime(DateTime.Today.AddDays(-15)),
+                OnlineUntil = DateOnly.FromDateTime(DateTime.Today.AddDays(-10)),
+                Classes = new()
+                {
+                    new ClassModel { ClassName = "10A" },
+                    new ClassModel { ClassName = "10B" }
+                },
+                Questions = new()
+                {
+                    new QuestionModel
+                    {
+                        Question = "Welche Projekte sollte man mehr unterstützen?",
+                        Options = new()
+                        {
+                            new AnswerModel { options = "WWF Tierschutz", NumberOfSelectedAnswer = 15 },
+                            new AnswerModel { options = "Kleiner Prinz", NumberOfSelectedAnswer = 22 },
+                            new AnswerModel { options = "Aktion Mensch", NumberOfSelectedAnswer = 20 }
+                        }
+                    },
+                    new QuestionModel
+                    {
+                        Question = "Setzt du dich privat für sowas ein?",
+                        Options = new()
+                        {
+                            new AnswerModel { options = "Ja oft", NumberOfSelectedAnswer = 18 },
+                            new AnswerModel { options = "Manchmal", NumberOfSelectedAnswer = 32 },
+                            new AnswerModel { options = "Nie", NumberOfSelectedAnswer = 7 }
+                        }
+                    }
+                }
+            },
+
+            new SurveyModel
+            {
                 Title = "Schulfest Planung",
                 Description = "Mit dieser Umfrage sollen Ideen und Wünsche für das nächste Schulfest gesammelt werden.",
                 CreatorName = "Schülervertretung",
-                GroupId = 2,
+                GroupId = 3,
+                CreatedUserID = 1,
                 CreatedAt = DateOnly.FromDateTime(DateTime.Today.AddDays(-6)),
                 OnlineUntil = DateOnly.FromDateTime(DateTime.Today.AddDays(-1)),
                 Classes = AvailableClasses.ToList(),

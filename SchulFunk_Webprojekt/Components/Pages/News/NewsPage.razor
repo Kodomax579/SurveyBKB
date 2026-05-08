@@ -1,4 +1,4 @@
-﻿@page "/news"
+@page "/news"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
 
@@ -6,9 +6,9 @@
 
 <section class="news-page-header sf-panel">
     <div class="news-page-title">
-        <img src="lib/images/Icon-News.png" alt="News Icon" />
+        <img src="/lib/images/Icon-News.png" alt="News Icon" />
 
-        <div class="news-page-title-text">
+        <div>
             <h2>Aktuelle Nachrichten</h2>
             <p>Hier findest du neue Meldungen, Ankündigungen und Informationen deiner Schule.</p>
         </div>
@@ -32,12 +32,10 @@
 
 @code {
     private string Suchtext = "";
-
     private List<NewsItem> NewsListe = NewsData.NewsListe;
 
     private IEnumerable<NewsItem> GefilterteNewsListe =>
         string.IsNullOrWhiteSpace(Suchtext)
             ? NewsListe
-            : NewsListe.Where(news =>
-                news.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
+            : NewsListe.Where(news => news.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
 }

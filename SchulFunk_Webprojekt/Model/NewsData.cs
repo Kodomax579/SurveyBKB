@@ -7,6 +7,7 @@
             new NewsItem
             {
                 Id = 1,
+                CreatedUserID = 1,
                 Tag = "Projekte",
                 Title = "Neue Projektwoche geplant",
                 Description = "Bald startet eine neue Projektwoche. Weitere Informationen folgen über SchulFunk.",
@@ -16,6 +17,7 @@
             new NewsItem
             {
                 Id = 2,
+                CreatedUserID = 1,
                 Tag = "Essen",
                 Title = "Neue Cafeteria-Öffnungszeiten",
                 Description = "Ab nächster Woche gelten neue Öffnungszeiten für die Cafeteria.",
@@ -25,6 +27,7 @@
             new NewsItem
             {
                 Id = 3,
+                CreatedUserID = 1,
                 Tag = "Info",
                 Title = "Informationen zur Projektpräsentation",
                 Description = "Die Präsentationen der aktuellen Projekte finden am Freitag statt.",

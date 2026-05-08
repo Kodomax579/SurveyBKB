@@ -1,0 +1,244 @@
+﻿@page "/admin/news"
+@rendermode InteractiveServer
+@using SchulFunk_Webprojekt.Model
+
+<PageTitle>Nachrichten verwalten</PageTitle>
+
+<section class="admin-header sf-panel">
+    <div class="admin-title">
+        <img src="/lib/images/Icon-News.png" alt="News Icon" />
+
+        <div>
+            <h2>Nachrichten verwalten</h2>
+            <p>Bearbeite oder lösche Nachrichten, die du erstellt hast.</p>
+        </div>
+    </div>
+
+    @if (CanCreateNews)
+    {
+        <a href="/news/create" class="sf-button sf-button-dark">
+            Nachricht erstellen
+        </a>
+    }
+</section>
+
+@if (!CanAccessAdmin)
+{
+    <section class="admin-empty sf-panel">
+        <h3>Kein Zugriff</h3>
+        <p>Du darfst keine Nachrichten verwalten.</p>
+    </section>
+}
+else
+{
+    <section class="admin-toolbar sf-panel">
+        <input type="text"
+               class="admin-search-input"
+               placeholder="Nach Nachricht suchen..."
+               @bind="Suchtext"
+               @bind:event="oninput" />
+    </section>
+
+    @if (NewsInBearbeitung is not null)
+    {
+        <section class="admin-edit-panel sf-panel">
+            <h3>Nachricht bearbeiten</h3>
+
+            <div class="form-group">
+                <label>Titel</label>
+                <input class="form-control" @bind="EditTitle" @bind:event="oninput" />
+            </div>
+
+            <div class="form-group">
+                <label>Tag</label>
+                <input class="form-control" @bind="EditTag" @bind:event="oninput" />
+            </div>
+
+            <div class="form-group">
+                <label>Kurzbeschreibung</label>
+                <textarea class="form-control" rows="3" @bind="EditDescription" @bind:event="oninput"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Artikel</label>
+                <textarea class="form-control" rows="6" @bind="EditArtikel" @bind:event="oninput"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="sf-button sf-button-dark" @onclick="SaveNewsEdit">
+                    Änderungen speichern
+                </button>
+
+                <button type="button" class="sf-button" @onclick="CancelNewsEdit">
+                    Abbrechen
+                </button>
+            </div>
+        </section>
+    }
+
+    <section class="admin-list">
+        @foreach (var news in GefilterteNews)
+        {
+            <article class="admin-list-card sf-panel">
+                <div class="admin-list-card-main">
+                    <img src="/lib/images/Icon-News.png" alt="" />
+
+                    <div>
+                        <span>@news.Tag</span>
+                        <h3>@news.Title</h3>
+                        <p>@news.Description</p>
+
+                        <div class="admin-meta">
+                            <strong>Ersteller:</strong> @GetCreatorName(news.CreatedUserID) ·
+                            <strong>Datum:</strong> @news.Date
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-list-actions">
+                    <a href="/news/@news.Id" class="sf-button">
+                        Öffnen
+                    </a>
+
+                    @if (CanEditNews(news))
+                    {
+                        <button type="button"
+                                class="sf-button sf-button-dark"
+                                @onclick="() => StartNewsEdit(news)">
+                            Bearbeiten
+                        </button>
+                    }
+
+                    @if (CanDeleteNews(news))
+                    {
+                        <button type="button"
+                                class="sf-button sf-danger-button"
+                                @onclick="() => DeleteNews(news)">
+                            Löschen
+                        </button>
+                    }
+                </div>
+            </article>
+        }
+    </section>
+}
+
+@code {
+    private string Suchtext = "";
+
+    private UserModel CurrentUser = new()
+    {
+        Name = "Max",
+        Lastname = "Mustermann",
+        Email = "max.mustermann@schule.de",
+        Class = new ClassModel { ClassName = "10A" },
+        Group = Groups.Teacher
+    };
+
+    private List<NewsItem> NewsListe = NewsData.NewsListe.ToList();
+
+    private NewsItem? NewsInBearbeitung;
+
+    private string EditTitle = "";
+    private string EditTag = "";
+    private string EditDescription = "";
+    private string EditArtikel = "";
+
+    private bool CanAccessAdmin =>
+        CurrentUser.Group is Groups.Teacher
+            or Groups.StudentRepresentatives
+            or Groups.Admin
+        || NewsListe.Any(news => IsCreatedByCurrentUser(news.CreatedUserID));
+
+    private bool CanCreateNews =>
+        CurrentUser.Group is Groups.Teacher
+            or Groups.StudentRepresentatives
+            or Groups.Admin;
+
+    private IEnumerable<NewsItem> GefilterteNews =>
+        NewsListe
+            .Where(news => CanCreateNews || IsCreatedByCurrentUser(news.CreatedUserID))
+            .Where(news =>
+                string.IsNullOrWhiteSpace(Suchtext) ||
+                news.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
+
+    private bool CanEditNews(NewsItem news)
+    {
+        return CurrentUser.Group == Groups.Admin || IsCreatedByCurrentUser(news.CreatedUserID);
+    }
+
+    private bool CanDeleteNews(NewsItem news)
+    {
+        return CurrentUser.Group == Groups.Admin || IsCreatedByCurrentUser(news.CreatedUserID);
+    }
+
+    private bool IsCreatedByCurrentUser(int createdUserId)
+    {
+        return GetCreatorEmail(createdUserId) == CurrentUser.Email;
+    }
+
+    private static string GetCreatorEmail(int createdUserId)
+    {
+        return createdUserId switch
+        {
+            1 => "max.mustermann@schule.de",
+            2 => "schuelervertretung@schule.de",
+            3 => "klassensprecher@schule.de",
+            _ => ""
+        };
+    }
+
+    private static string GetCreatorName(int createdUserId)
+    {
+        return createdUserId switch
+        {
+            1 => "Max Mustermann",
+            2 => "Schülervertretung",
+            3 => "Klassensprecher",
+            _ => $"User #{createdUserId}"
+        };
+    }
+
+    private void StartNewsEdit(NewsItem news)
+    {
+        NewsInBearbeitung = news;
+        EditTitle = news.Title;
+        EditTag = news.Tag;
+        EditDescription = news.Description;
+        EditArtikel = news.Artikel;
+    }
+
+    private void SaveNewsEdit()
+    {
+        if (NewsInBearbeitung is null)
+        {
+            return;
+        }
+
+        NewsInBearbeitung.Title = EditTitle;
+        NewsInBearbeitung.Tag = EditTag;
+        NewsInBearbeitung.Description = EditDescription;
+        NewsInBearbeitung.Artikel = EditArtikel;
+
+        CancelNewsEdit();
+    }
+
+    private void CancelNewsEdit()
+    {
+        NewsInBearbeitung = null;
+        EditTitle = "";
+        EditTag = "";
+        EditDescription = "";
+        EditArtikel = "";
+    }
+
+    private void DeleteNews(NewsItem news)
+    {
+        NewsListe.Remove(news);
+
+        if (NewsInBearbeitung == news)
+        {
+            CancelNewsEdit();
+        }
+    }
+}

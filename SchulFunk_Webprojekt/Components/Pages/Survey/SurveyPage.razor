@@ -1,4 +1,4 @@
-﻿@page "/survey"
+@page "/survey"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
 
@@ -8,7 +8,7 @@
     <div class="survey-page-title">
         <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" />
 
-        <div class="survey-page-title-text">
+        <div>
             <h2>Aktuelle Umfragen</h2>
             <p>Hier findest du aktuelle Umfragen deiner Schule.</p>
         </div>
@@ -38,13 +38,11 @@
 
 @code {
     private string Suchtext = "";
-
     private List<SurveyModel> SurveyListe = SurveyData.SurveyListe;
 
     private IEnumerable<SurveyModel> GefilterteSurveyListe =>
-    SurveyListe
-        .Where(survey => survey.OnlineUntil >= DateOnly.FromDateTime(DateTime.Today))
-        .Where(survey =>
-            string.IsNullOrWhiteSpace(Suchtext) ||
-            survey.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
+        SurveyListe
+            .Where(survey => survey.OnlineUntil >= DateOnly.FromDateTime(DateTime.Today))
+            .Where(survey => string.IsNullOrWhiteSpace(Suchtext) ||
+                             survey.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
 }

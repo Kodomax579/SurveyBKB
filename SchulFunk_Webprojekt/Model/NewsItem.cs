@@ -9,5 +9,8 @@
         public string Date { get; set; } = "";
         public string Artikel { get; set; } = "";
         public byte[] Image { get; set; } = Array.Empty<byte>();
+        public DateTime CreatedAt { get; set; }
+        public DateTime ExpiredDate { get; set; }
+        public int CreatedUserID { get; set; }
     }
 }

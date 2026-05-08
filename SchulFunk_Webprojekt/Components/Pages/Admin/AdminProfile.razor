@@ -1,0 +1,152 @@
+﻿@page "/admin/users"
+@rendermode InteractiveServer
+@using SchulFunk_Webprojekt.Model
+
+<PageTitle>Benutzer bearbeiten</PageTitle>
+
+<section class="admin-header sf-panel">
+    <div class="admin-title">
+        <img src="/lib/images/Icon-User.png" alt="User Icon" />
+
+        <div>
+            <h2>Benutzer bearbeiten</h2>
+            <p>Ändere Klassen und Gruppen von Schülerinnen und Schülern.</p>
+        </div>
+    </div>
+</section>
+
+@if (!CanEditUsers)
+{
+    <section class="admin-empty sf-panel">
+        <h3>Kein Zugriff</h3>
+        <p>Nur Lehrer dürfen Benutzer bearbeiten.</p>
+    </section>
+}
+else
+{
+    <section class="admin-toolbar sf-panel">
+        <input type="text"
+               class="admin-search-input"
+               placeholder="Nach Benutzer suchen..."
+               @bind="Suchtext"
+               @bind:event="oninput" />
+    </section>
+
+    <section class="admin-user-grid">
+        @foreach (var user in GefilterteUsers)
+        {
+            <article class="admin-user-card sf-panel">
+                <div class="admin-user-head">
+                    <img src="/lib/images/Icon-User.png" alt="" />
+
+                    <div>
+                        <h3>@GetFullName(user)</h3>
+                        <p>@user.Email</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Klasse</label>
+
+                    <select class="form-control" @bind="user.Class.ClassName">
+                        @foreach (var klasse in AvailableClasses)
+                        {
+                            <option value="@klasse.ClassName">@klasse.ClassName</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Gruppe</label>
+
+                    <select class="form-control" @bind="user.Group">
+                        @foreach (var group in EditableGroups)
+                        {
+                            <option value="@group">@GetGroupLabel(group)</option>
+                        }
+                    </select>
+                </div>
+
+                <button type="button" class="sf-button sf-button-dark">
+                    Änderungen speichern
+                </button>
+            </article>
+        }
+    </section>
+}
+
+@code {
+    private string Suchtext = "";
+
+    private UserModel CurrentUser = new()
+    {
+        Name = "Max",
+        Lastname = "Mustermann",
+        Email = "max.mustermann@schule.de",
+        Class = new ClassModel { ClassName = "10A" },
+        Group = Groups.Teacher
+    };
+
+    private bool CanEditUsers =>
+        CurrentUser.Group is Groups.Teacher or Groups.Admin;
+
+    private List<ClassModel> AvailableClasses => SurveyData.AvailableClasses;
+
+    private List<Groups> EditableGroups = new()
+    {
+        Groups.Student,
+        Groups.ClassRepresentatives,
+        Groups.StudentRepresentatives
+    };
+
+    private List<UserModel> Users = new()
+    {
+        new UserModel
+        {
+            Name = "Lisa",
+            Lastname = "Schneider",
+            Email = "lisa.schneider@schule.de",
+            Class = new ClassModel { ClassName = "10A" },
+            Group = Groups.Student
+        },
+        new UserModel
+        {
+            Name = "Tim",
+            Lastname = "Müller",
+            Email = "tim.mueller@schule.de",
+            Class = new ClassModel { ClassName = "10B" },
+            Group = Groups.ClassRepresentatives
+        },
+        new UserModel
+        {
+            Name = "Sara",
+            Lastname = "Yilmaz",
+            Email = "sara.yilmaz@schule.de",
+            Class = new ClassModel { ClassName = "9A" },
+            Group = Groups.StudentRepresentatives
+        }
+    };
+
+    private IEnumerable<UserModel> GefilterteUsers =>
+        Users.Where(user =>
+            string.IsNullOrWhiteSpace(Suchtext) ||
+            GetFullName(user).Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
+            user.Email.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
+
+    private static string GetFullName(UserModel user)
+    {
+        return $"{user.Name} {user.Lastname}".Trim();
+    }
+
+    private static string GetGroupLabel(Groups group)
+    {
+        return group switch
+        {
+            Groups.Teacher => "Lehrer",
+            Groups.ClassRepresentatives => "Klassensprecher",
+            Groups.StudentRepresentatives => "Schülersprecher",
+            Groups.Admin => "Admin",
+            _ => "Schüler"
+        };
+    }
+}

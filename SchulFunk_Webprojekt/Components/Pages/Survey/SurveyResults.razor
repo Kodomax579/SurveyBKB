@@ -1,4 +1,4 @@
-﻿@page "/survey/results"
+@page "/survey/results"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
 
@@ -8,7 +8,7 @@
     <div class="survey-results-title">
         <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" />
 
-        <div class="survey-results-title-text">
+        <div>
             <h2>Ausgewertete Umfragen</h2>
             <p>Hier findest du Umfragen, die bereits abgelaufen und ausgewertet wurden.</p>
         </div>
@@ -40,9 +40,7 @@
                 </div>
             </div>
 
-            <p class="survey-result-description">
-                @survey.Description
-            </p>
+            <p class="survey-result-description">@survey.Description</p>
 
             <div class="survey-result-meta">
                 <div>
@@ -82,37 +80,22 @@
 
 @code {
     private string Suchtext = "";
-
-    // Testdaten für Frontend.
-    // Später kommt das aus dem Login/Auth-System.
     private string UserRole = "Klassensprecher";
     private string UserClass = "10A";
-
     private List<SurveyModel> SurveyListe = SurveyData.SurveyListe;
 
     private IEnumerable<SurveyModel> GefilterteAusgewerteteSurveyListe =>
         SurveyListe
             .Where(survey => survey.OnlineUntil < DateOnly.FromDateTime(DateTime.Today))
-            .Where(survey => DarfUserSurveySehen(survey))
-            .Where(survey =>
-                string.IsNullOrWhiteSpace(Suchtext) ||
-                survey.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
+            .Where(DarfUserSurveySehen)
+            .Where(survey => string.IsNullOrWhiteSpace(Suchtext) ||
+                             survey.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
 
     private bool DarfUserSurveySehen(SurveyModel survey)
     {
-        if (UserRole == "Lehrer")
+        if (UserRole is "Lehrer" or "Schülersprecher")
         {
             return true;
-        }
-
-        if (UserRole == "Schülersprecher")
-        {
-            return true;
-        }
-
-        if (UserRole == "Klassensprecher")
-        {
-            return survey.Classes.Any(klasse => klasse.ClassName == UserClass);
         }
 
         return survey.Classes.Any(klasse => klasse.ClassName == UserClass);

@@ -1,10 +1,11 @@
-﻿@page "/news/create"
+@page "/news/create"
+@rendermode InteractiveServer
 
 <PageTitle>Nachricht erstellen</PageTitle>
 
 <section class="news-create-header sf-panel">
     <div class="news-create-title">
-        <img src="lib/images/Icon-News.png" alt="News Icon" />
+        <img src="/lib/images/Icon-News.png" alt="News Icon" />
 
         <div>
             <h2>Artikel erstellen</h2>
@@ -15,7 +16,6 @@
 
 <section class="news-create-layout">
     <div class="news-create-form sf-panel">
-
         <div class="form-group">
             <label for="news-title">Titel</label>
             <input id="news-title"
@@ -51,14 +51,16 @@
             <textarea id="news-artikel"
                       class="form-control"
                       rows="8"
-                      placeholder="Hier kommt später der komplette Artikeltext rein"></textarea>
+                      placeholder="Hier kommt später der komplette Artikeltext rein"
+                      @bind="Artikel"
+                      @bind:event="oninput"></textarea>
         </div>
 
         <div class="form-group">
             <label for="news-image">Bild hochladen</label>
 
             <label class="image-upload-box" for="news-image">
-                <img src="lib/images/Icon-News.png" alt="" />
+                <img src="/lib/images/Icon-News.png" alt="" />
                 <span>Bild auswählen</span>
                 <small>PNG, JPG oder JPEG</small>
             </label>
@@ -88,7 +90,7 @@
             }
             else
             {
-                <img src="lib/images/Icon-News.png" alt="Standard News Icon" />
+                <img src="/lib/images/Icon-News.png" alt="Standard News Icon" />
             }
         </div>
 
@@ -110,6 +112,7 @@
     private string Titel = "";
     private string Tag = "";
     private string Description = "";
+    private string Artikel = "";
     private string BildVorschauUrl = "";
 
     private async Task BildAusgewaehlt(InputFileChangeEventArgs e)

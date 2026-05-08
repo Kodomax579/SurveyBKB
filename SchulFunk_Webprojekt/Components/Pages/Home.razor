@@ -1,14 +1,14 @@
-﻿@page "/home"
+@page "/home"
+@rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
 
 <PageTitle>SchulFunk</PageTitle>
 
 <section class="home-hero">
     <div class="home-hero-box sf-panel" id="aktuelle-nachrichten">
-
         <div class="home-news-header">
             <div class="home-news-icon">
-                <img src="lib/images/Icon-News.png" alt="Aktuelle Nachrichten Icon" />
+                <img src="/lib/images/Icon-News.png" alt="Aktuelle Nachrichten Icon" />
             </div>
 
             <h2>Neuigkeiten aus deiner Schule</h2>
@@ -19,9 +19,7 @@
             {
                 <a href="/news/@news.Id" class="home-news-item home-news-link">
                     <span>@news.Date</span>
-
                     <h3>@news.Title</h3>
-
                     <p>@news.Description</p>
                 </a>
             }
@@ -29,97 +27,128 @@
     </div>
 
     <div class="home-survey-preview sf-panel" id="umfragen">
-        <div class="home-preview-header">
-            <img src="lib/images/Icon-Survey.png" alt="Umfrage Icon" />
+        @if (AusgewerteteUmfragen.Any())
+        {
+            var aktuelleUmfrage = AusgewerteteUmfragen[AktuelleUmfrageIndex];
+            var ersteFrage = aktuelleUmfrage.Questions.FirstOrDefault();
 
-            <div>
-                <h3>Aktuelle Umfrage</h3>
-                <p>Schülervertretung</p>
+            <div class="home-survey-slide @SurveyAnimationClass" @key="AktuelleUmfrageIndex">
+                <div class="home-preview-header">
+                    <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" />
+
+                    <div>
+                        <h3>@aktuelleUmfrage.Title</h3>
+                        <p>@aktuelleUmfrage.CreatorName</p>
+                    </div>
+                </div>
+
+                <p class="home-survey-description">
+                    @aktuelleUmfrage.Description
+                </p>
+
+                @if (ersteFrage is not null)
+                {
+                    <h4>@ersteFrage.Question</h4>
+
+                    @foreach (var answer in ersteFrage.Options)
+                    {
+                        var percentage = BerechneProzent(ersteFrage, answer);
+
+                        <div class="home-vote-card @(percentage == HoechsterProzentwert(ersteFrage) ? "active" : "")">
+                            <span>@answer.options</span>
+                            <strong>@percentage%</strong>
+                        </div>
+                    }
+                }
+
+                <div class="home-survey-actions">
+                    <button type="button"
+                            class="home-survey-arrow"
+                            @onclick="VorherigeUmfrage"
+                            disabled="@(AusgewerteteUmfragen.Count <= 1)">
+                        ↑
+                    </button>
+
+                    <button type="button"
+                            class="home-survey-arrow"
+                            @onclick="NaechsteUmfrage"
+                            disabled="@(AusgewerteteUmfragen.Count <= 1)">
+                        ↓
+                    </button>
+                </div>
+
+                <a href="/survey/results/@aktuelleUmfrage.GroupId" class="sf-button sf-button-dark home-survey-link">
+                    Ergebnisse ansehen
+                </a>
             </div>
-        </div>
+        }
+        else
+        {
+            <div class="home-preview-header">
+                <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" />
 
-        <h4>Welches Thema soll als Nächstes besprochen werden?</h4>
-
-        <div class="home-vote-card active">
-            <span>Mehr Aufenthaltsmöglichkeiten</span>
-            <strong>42%</strong>
-        </div>
-
-        <div class="home-vote-card">
-            <span>Neue Schul-Events</span>
-            <strong>31%</strong>
-        </div>
-
-        <div class="home-vote-card">
-            <span>Besseres Mensa-Angebot</span>
-            <strong>27%</strong>
-        </div>
+                <div>
+                    <h3>Keine ausgewerteten Umfragen</h3>
+                    <p>Aktuell sind keine abgelaufenen Umfragen verfügbar.</p>
+                </div>
+            </div>
+        }
     </div>
 </section>
 
 <section class="home-useful-links">
     <article class="home-link-card sf-panel">
         <div class="home-link-icon">
-            <img src="lib/images/Icon-Calender.png" alt="Untis Icon" />
+            <img src="/lib/images/Icon-Calender.png" alt="Untis Icon" />
         </div>
 
         <h3>Untis</h3>
-
-        <p>
-            Öffne deinen Stundenplan, Vertretungsplan und aktuelle Planänderungen.
-        </p>
+        <p>Öffne deinen Stundenplan, Vertretungsplan und aktuelle Planänderungen.</p>
 
         <a href="https://bkbeckum.webuntis.com/WebUntis/?school=bkbeckum#/basic/login"
-                class="sf-button sf-button-dark"
-               target="_blank"
-               rel="noopener noreferrer">
+           class="sf-button sf-button-dark"
+           target="_blank"
+           rel="noopener noreferrer">
             Zu Untis
         </a>
     </article>
 
     <article class="home-link-card sf-panel">
         <div class="home-link-icon">
-            <img src="lib/images/Icon-News.png" alt="Moodle Icon" />
+            <img src="/lib/images/Icon-News.png" alt="Moodle Icon" />
         </div>
 
         <h3>Moodle</h3>
-
-        <p>
-            Greife auf Kurse, Aufgaben, Materialien und digitale Lerninhalte zu.
-        </p>
+        <p>Greife auf Kurse, Aufgaben, Materialien und digitale Lerninhalte zu.</p>
 
         <a href="https://bkb-ecampus.de/login/index.php"
-               class="sf-button sf-button-dark"
-               target="_blank"
-               rel="noopener noreferrer">
+           class="sf-button sf-button-dark"
+           target="_blank"
+           rel="noopener noreferrer">
             Zu Moodle
         </a>
     </article>
 
     <article class="home-link-card sf-panel">
         <div class="home-link-icon">
-            <img src="lib/images/Icon-Messages.png" alt="Erasmus Icon" />
+            <img src="/lib/images/Icon-Messages.png" alt="Erasmus Icon" />
         </div>
 
         <h3>Erasmus</h3>
+        <p>Informiere dich über Austauschprogramme, Projekte und internationale Angebote.</p>
 
-        <p>
-            Informiere dich über Austauschprogramme, Projekte und internationale Angebote.
-        </p>
-
-        <a href="https://bkb-erasmus.de/" 
-            class="sf-button sf-button-dark"
-            target="_blank"
-            rel="noopener noreferrer">
+        <a href="https://bkb-erasmus.de/"
+           class="sf-button sf-button-dark"
+           target="_blank"
+           rel="noopener noreferrer">
             Zu Erasmus
-    </a>
+        </a>
     </article>
 </section>
 
 <footer class="home-impressum sf-panel" id="impressum">
     <div>
         <h2>Impressum</h2>
-
         <p>
             SchulFunk ist ein Webprojekt zur Darstellung von Umfragen, Schulnachrichten
             und nützlichen Links für Schülerinnen und Schüler.
@@ -145,8 +174,82 @@
 </footer>
 
 @code {
+    private int AktuelleUmfrageIndex = 0;
+    private string SurveyAnimationClass = "slide-in";
+
     private IEnumerable<NewsItem> AktuellsteNews =>
         NewsData.NewsListe
             .OrderByDescending(news => news.Id)
-            .Take(2);
+            .Take(4);
+
+    private List<SurveyModel> AusgewerteteUmfragen =>
+        SurveyData.SurveyListe
+            .Where(survey => survey.OnlineUntil < DateOnly.FromDateTime(DateTime.Today))
+            .OrderByDescending(survey => survey.OnlineUntil)
+            .Take(3)
+            .ToList();
+
+    private async Task NaechsteUmfrage()
+    {
+        if (AusgewerteteUmfragen.Count == 0)
+        {
+            return;
+        }
+
+        SurveyAnimationClass = "slide-out-up";
+        await Task.Delay(140);
+
+        AktuelleUmfrageIndex++;
+
+        if (AktuelleUmfrageIndex >= AusgewerteteUmfragen.Count)
+        {
+            AktuelleUmfrageIndex = 0;
+        }
+
+        SurveyAnimationClass = "slide-in";
+    }
+
+    private async Task VorherigeUmfrage()
+    {
+        if (AusgewerteteUmfragen.Count == 0)
+        {
+            return;
+        }
+
+        SurveyAnimationClass = "slide-out-down";
+        await Task.Delay(140);
+
+        AktuelleUmfrageIndex--;
+
+        if (AktuelleUmfrageIndex < 0)
+        {
+            AktuelleUmfrageIndex = AusgewerteteUmfragen.Count - 1;
+        }
+
+        SurveyAnimationClass = "slide-in";
+    }
+
+    private int BerechneProzent(QuestionModel question, AnswerModel answer)
+    {
+        var gesamtStimmen = question.Options.Sum(option => option.NumberOfSelectedAnswer);
+
+        if (gesamtStimmen == 0)
+        {
+            return 0;
+        }
+
+        return (int)Math.Round((double)answer.NumberOfSelectedAnswer / gesamtStimmen * 100);
+    }
+
+    private int HoechsterProzentwert(QuestionModel question)
+    {
+        if (!question.Options.Any())
+        {
+            return 0;
+        }
+
+        return question.Options
+            .Select(answer => BerechneProzent(question, answer))
+            .Max();
+    }
 }

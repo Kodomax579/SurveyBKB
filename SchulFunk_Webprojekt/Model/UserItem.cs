@@ -14,8 +14,6 @@ public class UserModel
 
     public ClassModel Class { get; set; } = new ClassModel();
 
-    public string Username { get; set; } = string.Empty;
-
     public Groups Group { get; set; }
 
 }

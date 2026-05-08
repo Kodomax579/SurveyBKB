@@ -1,4 +1,4 @@
-﻿@page "/survey/create"
+@page "/survey/create"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
 
@@ -17,7 +17,6 @@
 
 <section class="survey-create-layout">
     <div class="survey-create-form sf-panel">
-
         <div class="form-group">
             <label for="survey-title">Thema / Überschrift</label>
             <input id="survey-title"
@@ -31,7 +30,6 @@
         <div class="form-row">
             <div class="form-group">
                 <label>Erstellt von</label>
-
                 <div class="readonly-info-box">
                     <strong>@CreatorName</strong>
                     <span>@UserRole</span>
@@ -40,7 +38,6 @@
 
             <div class="form-group">
                 <label>Erstellt am</label>
-
                 <div class="readonly-info-box">
                     <strong>@CreatedAt.ToString("dd.MM.yyyy")</strong>
                 </div>
@@ -49,7 +46,6 @@
 
         <div class="form-group">
             <label for="survey-online-until">Ablaufdatum</label>
-
             <input id="survey-online-until"
                    type="date"
                    class="form-control"
@@ -97,7 +93,6 @@
         {
             <div class="form-group">
                 <label>Zielgruppe</label>
-
                 <div class="readonly-info-box">
                     <strong>@ZielgruppenText</strong>
                 </div>
@@ -137,7 +132,6 @@
 
                     <div class="form-group">
                         <label>Fragetext</label>
-
                         <input type="text"
                                class="form-control"
                                placeholder="Frage eingeben"
@@ -243,19 +237,12 @@
 @code {
     private string SurveyTitle = "";
     private string Description = "";
-
     private string CreatorName = "Max Mustermann";
-
-    // Testrolle für Frontend.
-    // Später kommt das aus dem Login/Auth-System.
-    // Mögliche Werte: "Lehrer", "Schülersprecher", "Klassensprecher"
     private string UserRole = "Klassensprecher";
-
     private string UserClass = "10A";
 
     private DateTime CreatedAt = DateTime.Today;
     private DateTime OnlineUntil = DateTime.Today.AddDays(14);
-
     private DateTime MinimumOnlineUntil => CreatedAt.AddDays(1);
 
     private string ZielgruppenText =>
@@ -267,7 +254,6 @@
         };
 
     private List<ClassModel> AvailableClasses => SurveyData.AvailableClasses;
-
     private List<ClassModel> SelectedClasses = new();
 
     private List<QuestionModel> Questions = new()
@@ -310,11 +296,10 @@
         if (IstKlasseAusgewaehlt(klasse))
         {
             SelectedClasses.RemoveAll(selected => selected.ClassName == klasse.ClassName);
+            return;
         }
-        else
-        {
-            SelectedClasses.Add(klasse);
-        }
+
+        SelectedClasses.Add(klasse);
     }
 
     private void AddQuestion()
@@ -332,12 +317,10 @@
 
     private void RemoveQuestion(int questionIndex)
     {
-        if (Questions.Count <= 1)
+        if (Questions.Count > 1)
         {
-            return;
+            Questions.RemoveAt(questionIndex);
         }
-
-        Questions.RemoveAt(questionIndex);
     }
 
     private void AddAnswer(int questionIndex)
@@ -347,11 +330,9 @@
 
     private void RemoveAnswer(int questionIndex, int answerIndex)
     {
-        if (Questions[questionIndex].Options.Count <= 2)
+        if (Questions[questionIndex].Options.Count > 2)
         {
-            return;
+            Questions[questionIndex].Options.RemoveAt(answerIndex);
         }
-
-        Questions[questionIndex].Options.RemoveAt(answerIndex);
     }
 }

@@ -1,4 +1,4 @@
-﻿@page "/survey/results/{GroupId:int}"
+@page "/survey/results/{GroupId:int}"
 @using SchulFunk_Webprojekt.Model
 
 <PageTitle>@(Survey?.Title ?? "Umfrage-Ergebnisse")</PageTitle>
@@ -23,7 +23,6 @@ else
             <div>
                 <span>Ausgewertete Umfrage</span>
                 <h2>@Survey.Title</h2>
-
                 <p>
                     Erstellt von @Survey.CreatorName ·
                     Erstellt am @Survey.CreatedAt.ToString("dd.MM.yyyy") ·
@@ -32,9 +31,7 @@ else
             </div>
         </div>
 
-        <p class="survey-results-detail-description">
-            @Survey.Description
-        </p>
+        <p class="survey-results-detail-description">@Survey.Description</p>
 
         <div class="survey-results-question-list">
             @for (var questionIndex = 0; questionIndex < Survey.Questions.Count; questionIndex++)

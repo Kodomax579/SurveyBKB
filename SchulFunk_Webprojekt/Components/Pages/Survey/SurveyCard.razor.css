@@ -1,4 +1,4 @@
-﻿.survey-card {
+.survey-card {
     padding: 28px;
     background: rgba(255, 255, 255, 0.96);
     border: 2px solid var(--sf-border);
@@ -7,10 +7,10 @@
     transition: 0.2s ease;
 }
 
-    .survey-card:hover {
-        transform: translateY(-6px);
-        border-color: var(--sf-turquoise);
-    }
+.survey-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--sf-turquoise);
+}
 
 .survey-card-top {
     display: flex;
@@ -33,14 +33,14 @@
 }
 
 .survey-card h3 {
-    margin: 6px 0 0 0;
+    margin: 6px 0 0;
     color: var(--sf-navy);
     font-size: 1.45rem;
     line-height: 1.2;
 }
 
 .survey-card-description {
-    margin: 0 0 18px 0;
+    margin: 0 0 18px;
     color: var(--sf-muted);
     line-height: 1.6;
 }
@@ -56,14 +56,14 @@
     gap: 12px;
 }
 
-    .survey-card-creator strong {
-        color: var(--sf-navy);
-    }
+.survey-card-creator strong {
+    color: var(--sf-navy);
+}
 
-    .survey-card-creator span {
-        color: var(--sf-turquoise-dark);
-        font-weight: 900;
-    }
+.survey-card-creator span {
+    color: var(--sf-turquoise-dark);
+    font-weight: 900;
+}
 
 .survey-card-info {
     display: grid;
@@ -72,26 +72,26 @@
     margin-bottom: 18px;
 }
 
-    .survey-card-info div {
-        padding: 16px;
-        border-radius: 20px;
-        background: #f6fbfc;
-        border: 1px solid rgba(6, 43, 85, 0.08);
-    }
+.survey-card-info div {
+    padding: 16px;
+    border-radius: 20px;
+    background: #f6fbfc;
+    border: 1px solid rgba(6, 43, 85, 0.08);
+}
 
-    .survey-card-info strong {
-        display: block;
-        color: var(--sf-navy);
-        font-size: 1.4rem;
-        line-height: 1;
-    }
+.survey-card-info strong {
+    display: block;
+    color: var(--sf-navy);
+    font-size: 1.4rem;
+    line-height: 1;
+}
 
-    .survey-card-info span {
-        display: block;
-        margin-top: 6px;
-        color: var(--sf-muted);
-        font-weight: 700;
-    }
+.survey-card-info span {
+    display: block;
+    margin-top: 6px;
+    color: var(--sf-muted);
+    font-weight: 700;
+}
 
 .survey-card-dates {
     display: grid;
@@ -99,10 +99,10 @@
     margin-bottom: 24px;
 }
 
-    .survey-card-dates span {
-        color: var(--sf-muted);
-        font-weight: 700;
-    }
+.survey-card-dates span {
+    color: var(--sf-muted);
+    font-weight: 700;
+}
 
 .survey-card-footer {
     display: flex;
