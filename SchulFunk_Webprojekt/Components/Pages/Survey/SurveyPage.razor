@@ -5,28 +5,17 @@
 <PageTitle>Umfragen</PageTitle>
 
 <section class="survey-page-header sf-panel">
-    <div class="survey-page-title">
-        <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" />
-
-        <div>
-            <h2>Aktuelle Umfragen</h2>
-            <p>Hier findest du aktuelle Umfragen deiner Schule.</p>
-        </div>
+    <div class="survey-search-box">
+        <input type="text"
+               class="survey-search-input"
+               placeholder="Nach Umfrage suchen..."
+               @bind="Suchtext"
+               @bind:event="oninput" />
     </div>
 
-    <div class="survey-page-actions">
-        <div class="survey-search-box">
-            <input type="text"
-                   class="survey-search-input"
-                   placeholder="Nach Umfrage suchen..."
-                   @bind="Suchtext"
-                   @bind:event="oninput" />
-        </div>
-
-        <a href="/survey/results" class="sf-button sf-button-dark">
-            Ausgewertete Umfragen
-        </a>
-    </div>
+    <a href="/survey/results" class="sf-button sf-button-dark survey-results-button">
+        Ausgewertete Umfragen
+    </a>
 </section>
 
 <section class="survey-card-grid">
@@ -43,6 +32,7 @@
     private IEnumerable<SurveyModel> GefilterteSurveyListe =>
         SurveyListe
             .Where(survey => survey.OnlineUntil >= DateOnly.FromDateTime(DateTime.Today))
-            .Where(survey => string.IsNullOrWhiteSpace(Suchtext) ||
-                             survey.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
+            .Where(survey =>
+                string.IsNullOrWhiteSpace(Suchtext) ||
+                survey.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
 }

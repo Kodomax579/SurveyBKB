@@ -1,19 +1,9 @@
 @page "/profile/edit"
 @rendermode InteractiveServer
+@using SchulFunk_Webprojekt.Model
 @inject NavigationManager NavigationManager
 
 <PageTitle>Profil bearbeiten</PageTitle>
-
-<section class="profile-edit-header sf-panel">
-    <div class="profile-edit-title">
-        <img src="/lib/images/Icon-User.png" alt="Profil Icon" />
-
-        <div>
-            <h2>Profil bearbeiten</h2>
-            <p>Hier kannst du deine persönlichen Zugangsdaten ändern.</p>
-        </div>
-    </div>
-</section>
 
 <section class="profile-edit-layout">
     <div class="profile-edit-form sf-panel">
@@ -61,11 +51,21 @@
 </section>
 
 @code {
-    private string UserName = "Max Mustermann";
-    private string UserEmail = "max.mustermann@schule.de";
+    private UserModel CurrentUser => TestLoginData.CurrentUser;
+
+    private string UserName = "";
+    private string UserEmail = "";
     private string UserPassword = "12345678";
-    private string UserClass = "10A";
-    private string UserRole = "Klassensprecher";
+    private string UserClass = "";
+    private string UserRole = "";
+
+    protected override void OnInitialized()
+    {
+        UserName = $"{CurrentUser.Name} {CurrentUser.Lastname}".Trim();
+        UserEmail = CurrentUser.Email;
+        UserClass = CurrentUser.Class.ClassName;
+        UserRole = PermissionRules.GetGroupLabel(CurrentUser.Group);
+    }
 
     private void SaveProfile()
     {

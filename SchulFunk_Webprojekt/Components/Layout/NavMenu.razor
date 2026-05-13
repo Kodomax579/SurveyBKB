@@ -67,20 +67,10 @@
 
     // Testdaten fürs Frontend.
     // Später kommt dieser User aus eurem Login/Auth-System.
-    private UserModel CurrentUser = new()
-    {
-        Name = "Max",
-        Lastname = "Mustermann",
-        Email = "max.mustermann@schule.de",
-        Class = new ClassModel { ClassName = "10A" },
-        Group = Groups.Teacher
-    };
+    private UserModel CurrentUser => TestLoginData.CurrentUser;
 
     private bool CanSeeAdminPanel =>
-        CurrentUser.Group is Groups.Teacher
-            or Groups.ClassRepresentatives
-            or Groups.StudentRepresentatives
-            or Groups.Admin;
+    PermissionRules.HasPermission(CurrentUser, Permission.OpenAdminPanel);
 
     private string UserName =>
         $"{CurrentUser.Name} {CurrentUser.Lastname}".Trim();

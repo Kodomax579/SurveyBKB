@@ -4,252 +4,264 @@
 
 <PageTitle>Umfrage erstellen</PageTitle>
 
-<section class="survey-create-header sf-panel">
-    <div class="survey-create-title">
-        <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" />
-
-        <div>
-            <h2>Umfrage erstellen</h2>
-            <p>Erstelle hier eine neue SchulFunk-Umfrage mit mehreren Fragen und Antwortmöglichkeiten.</p>
-        </div>
-    </div>
-</section>
-
-<section class="survey-create-layout">
-    <div class="survey-create-form sf-panel">
-        <div class="form-group">
-            <label for="survey-title">Thema / Überschrift</label>
-            <input id="survey-title"
-                   type="text"
-                   class="form-control"
-                   placeholder="Zum Beispiel: Gestaltung der Pausenbereiche"
-                   @bind="SurveyTitle"
-                   @bind:event="oninput" />
-        </div>
-
-        <div class="form-row">
+@if (!CanCreateSurveys)
+{
+    <section class="admin-empty sf-panel">
+        <h3>Kein Zugriff</h3>
+        <p>Du darfst keine Umfragen erstellen.</p>
+    </section>
+}
+else
+{
+    <section class="survey-create-layout">
+        <div class="survey-create-form sf-panel">
             <div class="form-group">
-                <label>Erstellt von</label>
-                <div class="readonly-info-box">
-                    <strong>@CreatorName</strong>
-                    <span>@UserRole</span>
+                <label for="survey-title">Thema / Überschrift</label>
+                <input id="survey-title"
+                       type="text"
+                       class="form-control"
+                       placeholder="Zum Beispiel: Gestaltung der Pausenbereiche"
+                       @bind="SurveyTitle"
+                       @bind:event="oninput" />
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Erstellt von</label>
+                    <div class="readonly-info-box">
+                        <strong>@CreatorName</strong>
+                        <span>@UserRole</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Erstellt am</label>
+                    <div class="readonly-info-box">
+                        <strong>@CreatedAt.ToString("dd.MM.yyyy")</strong>
+                    </div>
                 </div>
             </div>
 
             <div class="form-group">
-                <label>Erstellt am</label>
-                <div class="readonly-info-box">
-                    <strong>@CreatedAt.ToString("dd.MM.yyyy")</strong>
-                </div>
+                <label for="survey-online-until">Ablaufdatum</label>
+                <input id="survey-online-until"
+                       type="date"
+                       class="form-control"
+                       min="@MinimumOnlineUntil.ToString("yyyy-MM-dd")"
+                       @bind="OnlineUntil" />
+
+                @if (OnlineUntil <= CreatedAt)
+                {
+                    <small class="validation-message">
+                        Das Ablaufdatum muss nach dem heutigen Tag liegen.
+                    </small>
+                }
             </div>
-        </div>
 
-        <div class="form-group">
-            <label for="survey-online-until">Ablaufdatum</label>
-            <input id="survey-online-until"
-                   type="date"
-                   class="form-control"
-                   min="@MinimumOnlineUntil.ToString("yyyy-MM-dd")"
-                   @bind="OnlineUntil" />
+            <div class="form-group">
+                <label for="survey-description">Beschreibung / Beweggrund</label>
+                <textarea id="survey-description"
+                          class="form-control"
+                          rows="4"
+                          placeholder="Warum wird diese Umfrage erstellt?"
+                          @bind="Description"
+                          @bind:event="oninput"></textarea>
+            </div>
 
-            @if (OnlineUntil <= CreatedAt)
+            @if (CurrentUser.Group is Groups.Teacher or Groups.Admin)
             {
-                <small class="validation-message">
-                    Das Ablaufdatum muss nach dem heutigen Tag liegen.
-                </small>
-            }
-        </div>
+                <div class="form-group">
+                    <label>Klassen auswählen</label>
 
-        <div class="form-group">
-            <label for="survey-description">Beschreibung / Beweggrund</label>
-            <textarea id="survey-description"
-                      class="form-control"
-                      rows="4"
-                      placeholder="Warum wird diese Umfrage erstellt?"
-                      @bind="Description"
-                      @bind:event="oninput"></textarea>
-        </div>
-
-        @if (UserRole == "Lehrer")
-        {
-            <div class="form-group">
-                <label>Klassen auswählen</label>
-
-                <div class="class-selection-grid">
-                    @foreach (var klasse in AvailableClasses)
-                    {
-                        <label class="class-checkbox">
-                            <input type="checkbox"
-                                   checked="@IstKlasseAusgewaehlt(klasse)"
-                                   @onchange="() => ToggleClass(klasse)" />
-
-                            <span>@klasse.ClassName</span>
-                        </label>
-                    }
-                </div>
-            </div>
-        }
-        else
-        {
-            <div class="form-group">
-                <label>Zielgruppe</label>
-                <div class="readonly-info-box">
-                    <strong>@ZielgruppenText</strong>
-                </div>
-            </div>
-        }
-
-        <div class="question-section-header">
-            <div>
-                <h3>Fragen</h3>
-                <p>Füge beliebig viele Fragen und Antwortmöglichkeiten hinzu.</p>
-            </div>
-
-            <button type="button" class="sf-button sf-button-dark" @onclick="AddQuestion">
-                + Frage hinzufügen
-            </button>
-        </div>
-
-        <div class="question-list">
-            @for (var questionIndex = 0; questionIndex < Questions.Count; questionIndex++)
-            {
-                var currentQuestionIndex = questionIndex;
-                var question = Questions[currentQuestionIndex];
-
-                <article class="question-editor">
-                    <div class="question-editor-header">
-                        <h4>Frage @(currentQuestionIndex + 1)</h4>
-
-                        @if (Questions.Count > 1)
+                    <div class="class-selection-grid">
+                        @foreach (var klasse in AvailableClasses)
                         {
-                            <button type="button"
-                                    class="remove-button"
-                                    @onclick="() => RemoveQuestion(currentQuestionIndex)">
-                                Entfernen
-                            </button>
+                            <label class="class-checkbox">
+                                <input type="checkbox"
+                                       checked="@IstKlasseAusgewaehlt(klasse)"
+                                       @onchange="() => ToggleClass(klasse)" />
+
+                                <span>@klasse.ClassName</span>
+                            </label>
                         }
                     </div>
-
-                    <div class="form-group">
-                        <label>Fragetext</label>
-                        <input type="text"
-                               class="form-control"
-                               placeholder="Frage eingeben"
-                               @bind="question.Question"
-                               @bind:event="oninput" />
-                    </div>
-
-                    <div class="answer-list">
-                        <label>Antwortmöglichkeiten</label>
-
-                        @for (var answerIndex = 0; answerIndex < question.Options.Count; answerIndex++)
-                        {
-                            var currentAnswerIndex = answerIndex;
-                            var answer = question.Options[currentAnswerIndex];
-
-                            <div class="answer-row">
-                                <input type="text"
-                                       class="form-control"
-                                       placeholder="Antwortmöglichkeit eingeben"
-                                       @bind="answer.options"
-                                       @bind:event="oninput" />
-
-                                @if (question.Options.Count > 2)
-                                {
-                                    <button type="button"
-                                            class="remove-answer-button"
-                                            @onclick="() => RemoveAnswer(currentQuestionIndex, currentAnswerIndex)">
-                                        ✕
-                                    </button>
-                                }
-                            </div>
-                        }
-
-                        <button type="button"
-                                class="add-answer-button"
-                                @onclick="() => AddAnswer(currentQuestionIndex)">
-                            + Antwort hinzufügen
-                        </button>
-                    </div>
-                </article>
-            }
-        </div>
-
-        <div class="form-actions">
-            <button type="button" class="sf-button sf-button-dark">
-                Umfrage veröffentlichen
-            </button>
-        </div>
-    </div>
-
-    <aside class="survey-create-preview sf-panel">
-        <span class="preview-label">Live Vorschau</span>
-
-        <div class="preview-icon">
-            <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" />
-        </div>
-
-        <h3>@(string.IsNullOrWhiteSpace(SurveyTitle) ? "Umfragetitel" : SurveyTitle)</h3>
-
-        <div class="preview-meta">
-            <span>@(string.IsNullOrWhiteSpace(CreatorName) ? "Ersteller" : CreatorName)</span>
-            <span>@CreatedAt.ToString("dd.MM.yyyy")</span>
-            <span>bis @OnlineUntil.ToString("dd.MM.yyyy")</span>
-        </div>
-
-        <p>
-            @(string.IsNullOrWhiteSpace(Description)
-                ? "Hier erscheint später der Beweggrund oder die Beschreibung der Umfrage."
-                : Description)
-        </p>
-
-        <div class="preview-classes">
-            <strong>Klassen:</strong>
-
-            @if (SelectedClasses.Count == 0)
-            {
-                <span>Keine Klasse ausgewählt</span>
+                </div>
             }
             else
             {
-                <span>@string.Join(", ", SelectedClasses.Select(klasse => klasse.ClassName))</span>
-            }
-        </div>
-
-        <div class="preview-questions">
-            @foreach (var question in Questions)
-            {
-                <div class="preview-question">
-                    <h4>@(string.IsNullOrWhiteSpace(question.Question) ? "Neue Frage" : question.Question)</h4>
-
-                    @foreach (var answer in question.Options)
-                    {
-                        <div class="preview-answer">
-                            @(string.IsNullOrWhiteSpace(answer.options) ? "Antwortmöglichkeit" : answer.options)
-                        </div>
-                    }
+                <div class="form-group">
+                    <label>Zielgruppe</label>
+                    <div class="readonly-info-box">
+                        <strong>@ZielgruppenText</strong>
+                    </div>
                 </div>
             }
+
+            <div class="question-section-header">
+                <div>
+                    <h3>Fragen</h3>
+                    <p>Füge beliebig viele Fragen und Antwortmöglichkeiten hinzu.</p>
+                </div>
+
+                <button type="button" class="sf-button sf-button-dark" @onclick="AddQuestion">
+                    + Frage hinzufügen
+                </button>
+            </div>
+
+            <div class="question-list">
+                @for (var questionIndex = 0; questionIndex < Questions.Count; questionIndex++)
+                {
+                    var currentQuestionIndex = questionIndex;
+                    var question = Questions[currentQuestionIndex];
+
+                    <article class="question-editor">
+                        <div class="question-editor-header">
+                            <h4>Frage @(currentQuestionIndex + 1)</h4>
+
+                            @if (Questions.Count > 1)
+                            {
+                                <button type="button"
+                                        class="remove-button"
+                                        @onclick="() => RemoveQuestion(currentQuestionIndex)">
+                                    Entfernen
+                                </button>
+                            }
+                        </div>
+
+                        <div class="form-group">
+                            <label>Fragetext</label>
+                            <input type="text"
+                                   class="form-control"
+                                   placeholder="Frage eingeben"
+                                   @bind="question.Question"
+                                   @bind:event="oninput" />
+                        </div>
+
+                        <div class="answer-list">
+                            <label>Antwortmöglichkeiten</label>
+
+                            @for (var answerIndex = 0; answerIndex < question.Options.Count; answerIndex++)
+                            {
+                                var currentAnswerIndex = answerIndex;
+                                var answer = question.Options[currentAnswerIndex];
+
+                                <div class="answer-row">
+                                    <input type="text"
+                                           class="form-control"
+                                           placeholder="Antwortmöglichkeit eingeben"
+                                           @bind="answer.options"
+                                           @bind:event="oninput" />
+
+                                    @if (question.Options.Count > 2)
+                                    {
+                                        <button type="button"
+                                                class="remove-answer-button"
+                                                @onclick="() => RemoveAnswer(currentQuestionIndex, currentAnswerIndex)">
+                                            ✕
+                                        </button>
+                                    }
+                                </div>
+                            }
+
+                            <button type="button"
+                                    class="add-answer-button"
+                                    @onclick="() => AddAnswer(currentQuestionIndex)">
+                                + Antwort hinzufügen
+                            </button>
+                        </div>
+                    </article>
+                }
+            </div>
+
+            <div class="form-actions">
+                <button type="button"
+                        class="sf-button sf-button-dark"
+                        @onclick="UmfrageVeroeffentlichen">
+                    Umfrage veröffentlichen
+                </button>
+            </div>
         </div>
-    </aside>
-</section>
+
+        <aside class="survey-create-preview sf-panel">
+            <span class="preview-label">Live Vorschau</span>
+
+            <div class="preview-icon">
+                <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" />
+            </div>
+
+            <h3>@(string.IsNullOrWhiteSpace(SurveyTitle) ? "Umfragetitel" : SurveyTitle)</h3>
+
+            <div class="preview-meta">
+                <span>@CreatorName</span>
+                <span>@CreatedAt.ToString("dd.MM.yyyy")</span>
+                <span>bis @OnlineUntil.ToString("dd.MM.yyyy")</span>
+            </div>
+
+            <p>
+                @(string.IsNullOrWhiteSpace(Description)
+                    ? "Hier erscheint später der Beweggrund oder die Beschreibung der Umfrage."
+                    : Description)
+            </p>
+
+            <div class="preview-classes">
+                <strong>Klassen:</strong>
+
+                @if (SelectedClasses.Count == 0)
+                {
+                    <span>Keine Klasse ausgewählt</span>
+                }
+                else
+                {
+                    <span>@string.Join(", ", SelectedClasses.Select(klasse => klasse.ClassName))</span>
+                }
+            </div>
+
+            <div class="preview-questions">
+                @foreach (var question in Questions)
+                {
+                    <div class="preview-question">
+                        <h4>@(string.IsNullOrWhiteSpace(question.Question) ? "Neue Frage" : question.Question)</h4>
+
+                        @foreach (var answer in question.Options)
+                        {
+                            <div class="preview-answer">
+                                @(string.IsNullOrWhiteSpace(answer.options) ? "Antwortmöglichkeit" : answer.options)
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </aside>
+    </section>
+}
 
 @code {
     private string SurveyTitle = "";
     private string Description = "";
-    private string CreatorName = "Max Mustermann";
-    private string UserRole = "Klassensprecher";
-    private string UserClass = "10A";
 
     private DateTime CreatedAt = DateTime.Today;
     private DateTime OnlineUntil = DateTime.Today.AddDays(14);
     private DateTime MinimumOnlineUntil => CreatedAt.AddDays(1);
 
+    private UserModel CurrentUser => TestLoginData.CurrentUser;
+
+    private bool CanCreateSurveys =>
+        PermissionRules.HasPermission(CurrentUser, Permission.CreateSurveys);
+
+    private string CreatorName =>
+        $"{CurrentUser.Name} {CurrentUser.Lastname}".Trim();
+
+    private string UserRole =>
+        PermissionRules.GetGroupLabel(CurrentUser.Group);
+
+    private string UserClass =>
+        CurrentUser.Class.ClassName;
+
     private string ZielgruppenText =>
-        UserRole switch
+        CurrentUser.Group switch
         {
-            "Schülersprecher" => "Alle Klassen",
-            "Klassensprecher" => $"Nur Klasse {UserClass}",
+            Groups.StudentRepresentatives => "Alle Klassen",
+            Groups.ClassRepresentatives => $"Nur Klasse {UserClass}",
             _ => "Klassen manuell auswählen"
         };
 
@@ -271,11 +283,11 @@
 
     protected override void OnInitialized()
     {
-        if (UserRole == "Schülersprecher")
+        if (CurrentUser.Group == Groups.StudentRepresentatives)
         {
             SelectedClasses = AvailableClasses.ToList();
         }
-        else if (UserRole == "Klassensprecher")
+        else if (CurrentUser.Group == Groups.ClassRepresentatives)
         {
             var eigeneKlasse = AvailableClasses.FirstOrDefault(klasse => klasse.ClassName == UserClass);
 
@@ -334,5 +346,46 @@
         {
             Questions[questionIndex].Options.RemoveAt(answerIndex);
         }
+    }
+
+    private void UmfrageVeroeffentlichen()
+    {
+        if (!CanCreateSurveys || OnlineUntil <= CreatedAt)
+        {
+            return;
+        }
+
+        var neueId = SurveyData.SurveyListe.Count == 0
+            ? 1
+            : SurveyData.SurveyListe.Max(survey => survey.GroupId) + 1;
+
+        SurveyData.SurveyListe.Add(new SurveyModel
+        {
+            Title = SurveyTitle,
+            Description = Description,
+            CreatorName = CreatorName,
+            CreatedUserID = TestLoginData.CurrentUserId,
+            GroupId = neueId,
+            CreatedAt = DateOnly.FromDateTime(CreatedAt),
+            OnlineUntil = DateOnly.FromDateTime(OnlineUntil),
+            Classes = SelectedClasses.ToList(),
+            Questions = Questions
+        });
+
+        SurveyTitle = "";
+        Description = "";
+        OnlineUntil = DateTime.Today.AddDays(14);
+        Questions = new()
+        {
+            new QuestionModel
+            {
+                Question = "",
+                Options = new()
+                {
+                    new AnswerModel(),
+                    new AnswerModel()
+                }
+            }
+        };
     }
 }

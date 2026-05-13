@@ -3,17 +3,6 @@
 
 <PageTitle>Admin Panel</PageTitle>
 
-<section class="admin-header sf-panel">
-    <div class="admin-title">
-        <img src="/lib/images/Icon-User.png" alt="Admin Icon" />
-
-        <div>
-            <h2>Admin Panel</h2>
-            <p>Verwalte Umfragen, Nachrichten und Benutzer entsprechend deiner Berechtigungen.</p>
-        </div>
-    </div>
-</section>
-
 @if (!CanAccessAdmin)
 {
     <section class="admin-empty sf-panel">
@@ -31,7 +20,10 @@ else
                 <h3>Umfrage erstellen</h3>
                 <p>Erstelle neue Umfragen für deine Klasse oder Zielgruppe.</p>
             </a>
+        }
 
+        @if (CanManageSurveys)
+        {
             <a href="/admin/surveys" class="admin-dashboard-card sf-panel">
                 <img src="/lib/images/Icon-Survey.png" alt="" />
                 <h3>Umfragen verwalten</h3>
@@ -53,7 +45,7 @@ else
             <a href="/admin/news" class="admin-dashboard-card sf-panel">
                 <img src="/lib/images/Icon-News.png" alt="" />
                 <h3>Nachrichten verwalten</h3>
-                <p>Bearbeite oder lösche Nachrichten, die du erstellt hast.</p>
+                <p>Bearbeite oder lösche Nachrichten entsprechend deiner Berechtigung.</p>
             </a>
         }
 
@@ -62,59 +54,33 @@ else
             <a href="/admin/users" class="admin-dashboard-card sf-panel">
                 <img src="/lib/images/Icon-User.png" alt="" />
                 <h3>Benutzer bearbeiten</h3>
-                <p>Ändere Klassen und Gruppen von Schülerinnen und Schülern.</p>
+                <p>Ändere Klassen und Gruppen von Benutzern entsprechend deiner Rolle.</p>
             </a>
         }
     </section>
 }
 
 @code {
-    private UserModel CurrentUser = new()
-    {
-        Name = "Max",
-        Lastname = "Mustermann",
-        Email = "max.mustermann@schule.de",
-        Class = new ClassModel { ClassName = "10A" },
-        Group = Groups.Teacher
-    };
+    private UserModel CurrentUser => TestLoginData.CurrentUser;
 
     private bool CanAccessAdmin =>
-        CurrentUser.Group is Groups.Teacher
-            or Groups.ClassRepresentatives
-            or Groups.StudentRepresentatives
-            or Groups.Admin;
+        PermissionRules.HasPermission(CurrentUser, Permission.OpenAdminPanel);
 
     private bool CanCreateSurveys =>
-        CurrentUser.Group is Groups.Teacher
-            or Groups.ClassRepresentatives
-            or Groups.StudentRepresentatives
-            or Groups.Admin;
+        PermissionRules.HasPermission(CurrentUser, Permission.CreateSurveys);
+
+    private bool CanManageSurveys =>
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageOwnSurveys) ||
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageAllSurveys);
 
     private bool CanCreateNews =>
-        CurrentUser.Group is Groups.Teacher
-            or Groups.StudentRepresentatives
-            or Groups.Admin;
-
-    private bool CanEditUsers =>
-        CurrentUser.Group is Groups.Teacher
-            or Groups.Admin;
+        PermissionRules.HasPermission(CurrentUser, Permission.CreateNews);
 
     private bool CanManageNews =>
-        CanCreateNews || NewsData.NewsListe.Any(news => IsCreatedByCurrentUser(news.CreatedUserID));
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageOwnNews) ||
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageAllNews);
 
-    private bool IsCreatedByCurrentUser(int createdUserId)
-    {
-        return GetCreatorEmail(createdUserId) == CurrentUser.Email;
-    }
-
-    private static string GetCreatorEmail(int createdUserId)
-    {
-        return createdUserId switch
-        {
-            1 => "max.mustermann@schule.de",
-            2 => "schuelervertretung@schule.de",
-            3 => "klassensprecher@schule.de",
-            _ => ""
-        };
-    }
+    private bool CanEditUsers =>
+        PermissionRules.HasPermission(CurrentUser, Permission.EditStudentUsers) ||
+        PermissionRules.HasPermission(CurrentUser, Permission.EditTeacherUsers);
 }

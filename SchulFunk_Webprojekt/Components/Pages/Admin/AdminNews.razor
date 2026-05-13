@@ -4,24 +4,6 @@
 
 <PageTitle>Nachrichten verwalten</PageTitle>
 
-<section class="admin-header sf-panel">
-    <div class="admin-title">
-        <img src="/lib/images/Icon-News.png" alt="News Icon" />
-
-        <div>
-            <h2>Nachrichten verwalten</h2>
-            <p>Bearbeite oder lösche Nachrichten, die du erstellt hast.</p>
-        </div>
-    </div>
-
-    @if (CanCreateNews)
-    {
-        <a href="/news/create" class="sf-button sf-button-dark">
-            Nachricht erstellen
-        </a>
-    }
-</section>
-
 @if (!CanAccessAdmin)
 {
     <section class="admin-empty sf-panel">
@@ -126,14 +108,7 @@ else
 @code {
     private string Suchtext = "";
 
-    private UserModel CurrentUser = new()
-    {
-        Name = "Max",
-        Lastname = "Mustermann",
-        Email = "max.mustermann@schule.de",
-        Class = new ClassModel { ClassName = "10A" },
-        Group = Groups.Teacher
-    };
+    private UserModel CurrentUser => TestLoginData.CurrentUser;
 
     private List<NewsItem> NewsListe = NewsData.NewsListe.ToList();
 
@@ -145,47 +120,45 @@ else
     private string EditArtikel = "";
 
     private bool CanAccessAdmin =>
-        CurrentUser.Group is Groups.Teacher
-            or Groups.StudentRepresentatives
-            or Groups.Admin
-        || NewsListe.Any(news => IsCreatedByCurrentUser(news.CreatedUserID));
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageOwnNews) ||
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageAllNews);
 
-    private bool CanCreateNews =>
-        CurrentUser.Group is Groups.Teacher
-            or Groups.StudentRepresentatives
-            or Groups.Admin;
+    private bool CanManageOwnNews =>
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageOwnNews);
+
+    private bool CanManageAllNews =>
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageAllNews);
 
     private IEnumerable<NewsItem> GefilterteNews =>
         NewsListe
-            .Where(news => CanCreateNews || IsCreatedByCurrentUser(news.CreatedUserID))
+            .Where(news => CanSeeNews(news))
             .Where(news =>
                 string.IsNullOrWhiteSpace(Suchtext) ||
                 news.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
 
+    private bool CanSeeNews(NewsItem news)
+    {
+        if (CanManageAllNews)
+        {
+            return true;
+        }
+
+        if (CanManageOwnNews)
+        {
+            return news.CreatedUserID == TestLoginData.CurrentUserId;
+        }
+
+        return false;
+    }
+
     private bool CanEditNews(NewsItem news)
     {
-        return CurrentUser.Group == Groups.Admin || IsCreatedByCurrentUser(news.CreatedUserID);
+        return CanSeeNews(news);
     }
 
     private bool CanDeleteNews(NewsItem news)
     {
-        return CurrentUser.Group == Groups.Admin || IsCreatedByCurrentUser(news.CreatedUserID);
-    }
-
-    private bool IsCreatedByCurrentUser(int createdUserId)
-    {
-        return GetCreatorEmail(createdUserId) == CurrentUser.Email;
-    }
-
-    private static string GetCreatorEmail(int createdUserId)
-    {
-        return createdUserId switch
-        {
-            1 => "max.mustermann@schule.de",
-            2 => "schuelervertretung@schule.de",
-            3 => "klassensprecher@schule.de",
-            _ => ""
-        };
+        return CanSeeNews(news);
     }
 
     private static string GetCreatorName(int createdUserId)
@@ -195,12 +168,19 @@ else
             1 => "Max Mustermann",
             2 => "Schülervertretung",
             3 => "Klassensprecher",
+            4 => "Lina Schülerin",
+            99 => "Ada Admin",
             _ => $"User #{createdUserId}"
         };
     }
 
     private void StartNewsEdit(NewsItem news)
     {
+        if (!CanEditNews(news))
+        {
+            return;
+        }
+
         NewsInBearbeitung = news;
         EditTitle = news.Title;
         EditTag = news.Tag;
@@ -210,7 +190,7 @@ else
 
     private void SaveNewsEdit()
     {
-        if (NewsInBearbeitung is null)
+        if (NewsInBearbeitung is null || !CanEditNews(NewsInBearbeitung))
         {
             return;
         }
@@ -234,6 +214,11 @@ else
 
     private void DeleteNews(NewsItem news)
     {
+        if (!CanDeleteNews(news))
+        {
+            return;
+        }
+
         NewsListe.Remove(news);
 
         if (NewsInBearbeitung == news)

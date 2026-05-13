@@ -4,24 +4,6 @@
 
 <PageTitle>Umfragen verwalten</PageTitle>
 
-<section class="admin-header sf-panel">
-    <div class="admin-title">
-        <img src="/lib/images/Icon-Survey.png" alt="Survey Icon" />
-
-        <div>
-            <h2>Umfragen verwalten</h2>
-            <p>Hier kannst du Umfragen einsehen und berechtigte Umfragen löschen.</p>
-        </div>
-    </div>
-
-    @if (CanCreateSurveys)
-    {
-        <a href="/survey/create" class="sf-button sf-button-dark">
-            Umfrage erstellen
-        </a>
-    }
-</section>
-
 @if (!CanAccessAdmin)
 {
     <section class="admin-empty sf-panel">
@@ -42,27 +24,47 @@ else
     <section class="admin-list">
         @foreach (var survey in GefilterteUmfragen)
         {
+            var isExpired = IsSurveyExpired(survey);
+
             <article class="admin-list-card sf-panel">
                 <div class="admin-list-card-main">
                     <img src="/lib/images/Icon-Survey.png" alt="" />
 
                     <div>
-                        <span>Umfrage</span>
+                        <span>@(isExpired ? "Ausgewertete Umfrage" : "Aktive Umfrage")</span>
                         <h3>@survey.Title</h3>
                         <p>@survey.Description</p>
 
                         <div class="admin-meta">
                             <strong>Ersteller:</strong> @survey.CreatorName ·
                             <strong>Fragen:</strong> @survey.Questions.Count ·
-                            <strong>Läuft bis:</strong> @survey.OnlineUntil.ToString("dd.MM.yyyy")
+                            <strong>@(isExpired ? "Beendet am:" : "Läuft bis:")</strong> @survey.OnlineUntil.ToString("dd.MM.yyyy")
                         </div>
                     </div>
                 </div>
 
                 <div class="admin-list-actions">
-                    <a href="/survey/@survey.GroupId" class="sf-button">
-                        Öffnen
-                    </a>
+                    @if (CanVoteInSurvey(survey))
+                    {
+                        <a href="/survey/@survey.GroupId" class="sf-button">
+                            Öffnen
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="/survey/results/@survey.GroupId" class="sf-button sf-button-dark">
+                            Ergebnisse
+                        </a>
+                    }
+
+                    @if (CanEndSurveyEarly(survey))
+                    {
+                        <button type="button"
+                                class="sf-button sf-button-dark"
+                                @onclick="() => EndSurveyEarly(survey)">
+                            Beenden
+                        </button>
+                    }
 
                     @if (CanDeleteSurvey(survey))
                     {
@@ -81,74 +83,80 @@ else
 @code {
     private string Suchtext = "";
 
-    private UserModel CurrentUser = new()
-    {
-        Name = "Max",
-        Lastname = "Mustermann",
-        Email = "max.mustermann@schule.de",
-        Class = new ClassModel { ClassName = "10A" },
-        Group = Groups.Teacher
-    };
+    private UserModel CurrentUser => TestLoginData.CurrentUser;
 
     private List<SurveyModel> Surveys = SurveyData.SurveyListe.ToList();
 
     private bool CanAccessAdmin =>
-        CurrentUser.Group is Groups.Teacher
-            or Groups.ClassRepresentatives
-            or Groups.StudentRepresentatives
-            or Groups.Admin;
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageOwnSurveys) ||
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageAllSurveys);
 
-    private bool CanCreateSurveys =>
-        CurrentUser.Group is Groups.Teacher
-            or Groups.ClassRepresentatives
-            or Groups.StudentRepresentatives
-            or Groups.Admin;
+    private bool CanManageOwnSurveys =>
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageOwnSurveys);
+
+    private bool CanManageAllSurveys =>
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageAllSurveys);
 
     private IEnumerable<SurveyModel> GefilterteUmfragen =>
         Surveys
-            .Where(survey => CanSeeSurveyInAdmin(survey))
+            .Where(survey => CanSeeSurvey(survey))
             .Where(survey =>
                 string.IsNullOrWhiteSpace(Suchtext) ||
                 survey.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
 
-    private bool CanSeeSurveyInAdmin(SurveyModel survey)
+    private bool CanSeeSurvey(SurveyModel survey)
     {
-        if (CurrentUser.Group is Groups.Teacher or Groups.Admin)
+        if (CanManageAllSurveys)
         {
             return true;
         }
 
-        return IsCreatedByCurrentUser(survey.CreatedUserID);
+        if (CanManageOwnSurveys)
+        {
+            return survey.CreatedUserID == TestLoginData.CurrentUserId;
+        }
+
+        return false;
     }
 
     private bool CanDeleteSurvey(SurveyModel survey)
     {
-        if (CurrentUser.Group is Groups.Teacher or Groups.Admin)
+        return CanSeeSurvey(survey);
+    }
+
+    private bool CanEndSurveyEarly(SurveyModel survey)
+    {
+        return CanManageAllSurveys && !IsSurveyExpired(survey);
+    }
+
+    private bool CanVoteInSurvey(SurveyModel survey)
+    {
+        return PermissionRules.HasPermission(CurrentUser, Permission.VoteInSurveys)
+            && !IsSurveyExpired(survey);
+    }
+
+    private static bool IsSurveyExpired(SurveyModel survey)
+    {
+        return survey.OnlineUntil < DateOnly.FromDateTime(DateTime.Today);
+    }
+
+    private void EndSurveyEarly(SurveyModel survey)
+    {
+        if (!CanEndSurveyEarly(survey))
         {
-            return true;
+            return;
         }
 
-        return IsCreatedByCurrentUser(survey.CreatedUserID);
-    }
-
-    private bool IsCreatedByCurrentUser(int createdUserId)
-    {
-        return GetCreatorEmail(createdUserId) == CurrentUser.Email;
-    }
-
-    private static string GetCreatorEmail(int createdUserId)
-    {
-        return createdUserId switch
-        {
-            1 => "max.mustermann@schule.de",
-            2 => "schuelervertretung@schule.de",
-            3 => "klassensprecher@schule.de",
-            _ => ""
-        };
+        survey.OnlineUntil = DateOnly.FromDateTime(DateTime.Today.AddDays(-1));
     }
 
     private void DeleteSurvey(SurveyModel survey)
     {
+        if (!CanDeleteSurvey(survey))
+        {
+            return;
+        }
+
         Surveys.Remove(survey);
     }
 }
