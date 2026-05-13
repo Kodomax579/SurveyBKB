@@ -1,0 +1,26 @@
+.sf-page {
+    min-height: 100vh;
+    padding: 28px;
+    background: radial-gradient(circle at top left, rgba(24, 191, 192, 0.22), transparent 34%), radial-gradient(circle at bottom right, rgba(6, 43, 85, 0.12), transparent 34%), linear-gradient(180deg, #ffffff 0%, var(--sf-bg) 100%);
+}
+
+.sf-container {
+    width: 100%;
+    max-width: 1180px;
+    margin: 0 auto;
+}
+
+.sf-main {
+    width: 100%;
+    margin-top: 34px;
+}
+
+@media (max-width: 680px) {
+    .sf-page {
+        padding: 16px;
+    }
+
+    .sf-main {
+        margin-top: 24px;
+    }
+}
