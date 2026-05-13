@@ -22,13 +22,20 @@ message UserMessage{
 	string Email = 3;
 	string Password = 4;
 	ClassMessage Class = 5;
-	string Username = 6;
-	UserGroup Group = 7;
+	UserGroup Group = 6;
+}
+
+message LoginMessageResponse{
+	string Name =1;
+	string Lastname = 2;
+	string Email = 3;
+	ClassMessage Class = 4;
+	UserGroup Group = 5;
 }
 
 service User{
-	rpc GetUserByPasswordAndEmail(GetUserByPasswordAndEmailRequest) returns (GetUserByPasswordAndEmailResponse);
-	rpc GetUserById(GetUserByIdRequest) returns (GetUserByIdResponse);
+	rpc Login(LoginRequest) returns (LoginResponse);
+	rpc GetUserByEmail(GetUserByEmailRequest) returns (GetUserByEmailResponse);
 	rpc GetAllUsers(GetAllUsersRequest) returns (GetAllUsersResponse);
 	rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
 	rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse);
@@ -38,21 +45,13 @@ service User{
 }
 
 // Get User by password and email message
-message GetUserByPasswordAndEmailRequest{
+message LoginRequest{
 	string Email = 1;
 	string Password = 2;
 }
 
-message GetUserByPasswordAndEmailResponse{
-	UserMessage User = 1;
-}
-
-// Get User by Id message
-message GetUserByIdRequest{
-	int32 Id = 1;
-}
-message GetUserByIdResponse{
-	UserMessage User = 1;
+message LoginResponse{
+	LoginMessageResponse User = 1;
 }
 
 // Create Users message
@@ -60,6 +59,15 @@ message GetAllUsersRequest{}
 
 message GetAllUsersResponse{
 	repeated UserMessage Users = 1;
+}
+
+
+message GetUserByEmailRequest{
+	string email = 1;
+}
+message GetUserByEmailResponse{
+	 UserMessage User = 1;
+	 int32 userId = 2;
 }
 
 // Create User message
@@ -73,8 +81,7 @@ message CreateUserResponse{
 
 // Update User message
 message UpdateUserRequest{
-	int32 Id = 1;
-	UserMessage User = 2;
+	UserMessage User = 1;
 }
 message UpdateUserResponse{
 	bool Success = 1;
@@ -82,7 +89,7 @@ message UpdateUserResponse{
 
 // Delete User message
 message DeleteUserRequest{
-	int32 Id = 1;
+	string Email = 1;
 }
 message DeleteUserResponse{
 	bool Success = 1;

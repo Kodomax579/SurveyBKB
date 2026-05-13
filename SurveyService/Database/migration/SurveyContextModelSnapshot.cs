@@ -73,6 +73,10 @@ namespace SurveyService.Database.migration
                     b.Property<DateOnly>("CreatedAt")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("CreatedEmail")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("GroupId")
                         .HasColumnType("INTEGER");
 

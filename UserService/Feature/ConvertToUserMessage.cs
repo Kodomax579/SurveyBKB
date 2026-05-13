@@ -18,7 +18,21 @@ namespace UserService.Feature
                     Name = userModel.Class.ClassName
                 },
                 Password = userModel.PasswordHash,
-                Username = userModel.Username,
+            };
+        }
+
+        public static LoginMessageResponse ConvertUserModelToLoginMessageResponse(UserModel userModel)
+        {
+            return new LoginMessageResponse
+            {
+                Name = userModel.Name,
+                Lastname = userModel.Lastname,
+                Email = userModel.Email,
+                Group = (UserGroup)userModel.GroupId,
+                Class = new ClassMessage
+                {
+                    Name = userModel.Class.ClassName
+                },
             };
         }
 
@@ -31,7 +45,6 @@ namespace UserService.Feature
                 Email = userMessage.Email,
                 GroupId = (int)userMessage.Group,
                 PasswordHash = userMessage.Password,
-                Username = userMessage.Username,
                 Class = new ClassModel
                 {
                     ClassName = userMessage.Class.Name,

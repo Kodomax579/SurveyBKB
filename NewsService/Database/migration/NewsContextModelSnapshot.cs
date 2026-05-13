@@ -26,8 +26,12 @@ namespace NewsService.Database.migration
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreatedUserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("CreatedEmail")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ExpiredDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<byte[]>("Image")
                         .IsRequired()

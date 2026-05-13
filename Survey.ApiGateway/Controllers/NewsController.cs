@@ -1,6 +1,7 @@
 ﻿using Contracts.Protos;
 using Grpc.Core;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Survey.ApiGateway.Models;
@@ -12,10 +13,13 @@ namespace Survey.ApiGateway.Controllers
     public class NewsController(News.NewsClient grpcClient) : ControllerBase
     {
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllNews()
         {
             var grpcRequest = new GetAllNewsRequest();
             var grpcResponse = await grpcClient.GetAllNewsAsync(grpcRequest);
+
+
 
             var models = grpcResponse.News.Adapt<List<NewsModel>>();
 
@@ -23,6 +27,7 @@ namespace Survey.ApiGateway.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize]
         public async Task<IActionResult> GetNewsById(int id)
         {
             try
@@ -41,6 +46,7 @@ namespace Survey.ApiGateway.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateNews([FromBody] NewsModel news)
         {
             var protoNews = news.Adapt<NewsMessage>();
@@ -57,6 +63,7 @@ namespace Survey.ApiGateway.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize]
         public async Task<IActionResult> UpdateNews(int id, [FromBody] NewsModel news)
         {
             news.Id = id;
@@ -75,6 +82,7 @@ namespace Survey.ApiGateway.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize]
         public async Task<IActionResult> DeleteNews(int id)
         {
             var grpcRequest = new DeleteNewsRequest { Id = id };

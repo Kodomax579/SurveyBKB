@@ -19,6 +19,7 @@ namespace SurveyService.Database.migration
                         .Annotation("Sqlite:Autoincrement", true),
                     Title = table.Column<string>(type: "TEXT", nullable: false),
                     GroupId = table.Column<int>(type: "INTEGER", nullable: false),
+                    CreatedEmail = table.Column<string>(type: "TEXT", nullable: false),
                     CreatedAt = table.Column<DateOnly>(type: "TEXT", nullable: false),
                     OnlineUntil = table.Column<DateOnly>(type: "TEXT", nullable: false),
                     Classes = table.Column<string>(type: "TEXT", nullable: false),

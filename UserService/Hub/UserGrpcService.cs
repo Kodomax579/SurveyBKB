@@ -15,23 +15,14 @@ namespace UserService.Service
         {
             var response = new GetAllUsersResponse();
 
-            response.Users.AddRange(await userService.GetAllUser());
+            response.Users.AddRange(await userService.GetAllUsers());
 
             return response;
         }
 
-        public override async Task<GetUserByIdResponse> GetUserById(GetUserByIdRequest request, ServerCallContext context)
+        public override async Task<LoginResponse> Login(LoginRequest request, ServerCallContext context)
         {
-            var response = new GetUserByIdResponse();
-
-            response.User = await userService.GetUserById(request.Id);  
-
-            return response;
-        }
-
-        public override async Task<GetUserByPasswordAndEmailResponse> GetUserByPasswordAndEmail(GetUserByPasswordAndEmailRequest request, ServerCallContext context)
-        {
-            var response = new GetUserByPasswordAndEmailResponse();
+            var response = new LoginResponse();
 
             response.User = await userService.Login(request.Email, request.Password);
 
@@ -47,11 +38,20 @@ namespace UserService.Service
             return response;
         }
 
+        public override async Task<GetUserByEmailResponse> GetUserByEmail(GetUserByEmailRequest request, ServerCallContext context)
+        {
+            var response = new GetUserByEmailResponse();
+
+            response.User = await userService.GetUserByEmail(request.Email);
+
+            return response;
+        }
+
         public override async Task<DeleteUserResponse> DeleteUser(DeleteUserRequest request, ServerCallContext context)
         {
             var response = new DeleteUserResponse();
 
-            response.Success = await userService.DeleteUser(request.Id);
+            response.Success = await userService.DeleteUser(request.Email);
 
             return response;
         }
@@ -60,7 +60,7 @@ namespace UserService.Service
         {
             var response = new UpdateUserResponse();
 
-            response.Success = await userService.UpdateUser(request.User, request.Id);
+            response.Success = await userService.UpdateUser(request.User);
 
             return response;
         }

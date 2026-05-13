@@ -15,7 +15,7 @@ namespace SurveyService.Feature
             {
                 Title = model.Title,
                 GroupId = model.GroupId,
-                
+                Email = model.CreatedEmail,
                 CreatedAt = Timestamp.FromDateTime(model.CreatedAt.ToDateTime(TimeOnly.MinValue).ToUniversalTime()),
                 OnlineUntil = Timestamp.FromDateTime(model.OnlineUntil.ToDateTime(TimeOnly.MinValue).ToUniversalTime())
             };
@@ -62,7 +62,7 @@ namespace SurveyService.Feature
                 GroupId = proto.GroupId,
                 CreatedAt = DateOnly.FromDateTime(proto.CreatedAt.ToDateTime().ToLocalTime()),
                 OnlineUntil = DateOnly.FromDateTime(proto.OnlineUntil.ToDateTime().ToLocalTime()),
-
+                CreatedEmail = proto.Email,
                 Classes = proto.Classes.ToList(),
 
                 UserIDs = proto.UserIDs.ToList(),

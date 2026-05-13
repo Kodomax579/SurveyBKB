@@ -1,4 +1,6 @@
-﻿namespace Survey.ApiGateway.Models
+﻿using Survey.ApiGateway.Models.DTO;
+
+namespace Survey.ApiGateway.Models
 {
     public class NewsModel
     {
@@ -9,6 +11,7 @@
         public string MainText { get; set; } = string.Empty;
         public byte[] Image { get; set; } = Array.Empty<byte>();
         public DateTime CreatedAt { get; set; }
-        public int CreatedUserId { get; set; }
+        public DateTime ExpiredDate { get; set; }
+        public UserDTO User { get; set; } = new UserDTO();
     }
 }

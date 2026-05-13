@@ -11,7 +11,7 @@ using SurveyService.Database;
 namespace SurveyService.Database.migration
 {
     [DbContext(typeof(SurveyContext))]
-    [Migration("20260507063954_InitialCreate")]
+    [Migration("20260507104514_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -74,6 +74,10 @@ namespace SurveyService.Database.migration
                         .HasColumnType("TEXT");
 
                     b.Property<DateOnly>("CreatedAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CreatedEmail")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("GroupId")

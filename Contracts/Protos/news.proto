@@ -15,6 +15,7 @@ message NewsMessage {
   bytes image = 6;          
   google.protobuf.Timestamp created_at = 7; 
   int32 created_user_id = 8;
+  string createdEmail = 9;
 }
 
 service News{

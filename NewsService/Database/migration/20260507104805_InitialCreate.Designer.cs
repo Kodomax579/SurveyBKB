@@ -11,7 +11,7 @@ using NewsService.Database;
 namespace NewsService.Database.migration
 {
     [DbContext(typeof(NewsContext))]
-    [Migration("20260506093530_InitialCreate")]
+    [Migration("20260507104805_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -29,8 +29,12 @@ namespace NewsService.Database.migration
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("CreatedUserId")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("CreatedEmail")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime>("ExpiredDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<byte[]>("Image")
                         .IsRequired()
