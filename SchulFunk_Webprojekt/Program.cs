@@ -1,4 +1,5 @@
 using SchulFunk_Webprojekt.Components;
+using SchulFunk_Webprojekt.Services;
 
 namespace SchulFunk_Webprojekt
 {
@@ -11,6 +12,28 @@ namespace SchulFunk_Webprojekt
             // Add services to the container.
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
+
+            builder.Services.AddScoped<AuthTokenService>();
+
+            builder.Services.AddScoped<ApiService>();
+
+            builder.Services.AddScoped(sp =>
+            {
+                var configuration = sp.GetRequiredService<IConfiguration>();
+                var baseUrl = configuration["ApiSettings:BaseUrl"];
+
+                if (string.IsNullOrWhiteSpace(baseUrl))
+                {
+                    throw new InvalidOperationException("ApiSettings:BaseUrl fehlt in appsettings.json.");
+                }
+
+                return new HttpClient
+                {
+                    BaseAddress = new Uri(baseUrl)
+                };
+            });
+
+            builder.Services.AddScoped<UserService>();
 
             var app = builder.Build();
 

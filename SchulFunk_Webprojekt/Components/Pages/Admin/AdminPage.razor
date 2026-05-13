@@ -49,6 +49,15 @@ else
             </a>
         }
 
+        @if (CanRegisterUsers)
+        {
+            <a href="/admin/register" class="admin-dashboard-card sf-panel">
+                <img src="/lib/images/Icon-User.png" alt="" />
+                <h3>Benutzer registrieren</h3>
+                <p>Lege neue Benutzer entsprechend deiner Berechtigung an.</p>
+            </a>
+        }
+
         @if (CanEditUsers)
         {
             <a href="/admin/users" class="admin-dashboard-card sf-panel">
@@ -79,6 +88,10 @@ else
     private bool CanManageNews =>
         PermissionRules.HasPermission(CurrentUser, Permission.ManageOwnNews) ||
         PermissionRules.HasPermission(CurrentUser, Permission.ManageAllNews);
+
+    private bool CanRegisterUsers =>
+        PermissionRules.HasPermission(CurrentUser, Permission.RegisterStudentUsers) ||
+        PermissionRules.HasPermission(CurrentUser, Permission.RegisterTeacherUsers);
 
     private bool CanEditUsers =>
         PermissionRules.HasPermission(CurrentUser, Permission.EditStudentUsers) ||

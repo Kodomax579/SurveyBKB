@@ -17,7 +17,10 @@ public enum Permission
 
     EditStudentUsers,
     EditTeacherUsers,
-    DeleteUsers
+    DeleteUsers,
+
+    RegisterStudentUsers,
+    RegisterTeacherUsers
 }
 
 public static class PermissionRules
@@ -64,6 +67,7 @@ public static class PermissionRules
                 Permission.CreateNews => true,
                 Permission.ManageOwnNews => true,
                 Permission.EditStudentUsers => true,
+                Permission.RegisterStudentUsers => true,
                 _ => false
             },
 
@@ -80,6 +84,8 @@ public static class PermissionRules
                 Permission.EditStudentUsers => true,
                 Permission.EditTeacherUsers => true,
                 Permission.DeleteUsers => true,
+                Permission.RegisterStudentUsers => true,
+                Permission.RegisterTeacherUsers => true,
                 _ => false
             },
 
