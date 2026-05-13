@@ -3,6 +3,7 @@ using Mapster;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Survey.ApiGateway.Models;
+using Survey.ApiGateway.Models.DTO;
 
 namespace Survey.ApiGateway.Controllers
 {
@@ -31,7 +32,17 @@ namespace Survey.ApiGateway.Controllers
                 return Unauthorized();
             }
 
-            var model = grpcResponse.User.Adapt<UserModel>();
+            var model = new UserDTO()
+            {
+                Email = grpcResponse.User.Email,
+                Name = grpcResponse.User.Name,
+                Group = grpcResponse.User.Group,
+                Lastname = grpcResponse.User.Lastname,
+                Class = new ClassModel()
+                {
+                    ClassName = grpcResponse.User.Class.Name
+                }
+            };
 
             var token = _authService.CreateToken(model);
             Response.Headers.Append("Authorization", $"Bearer {token}");

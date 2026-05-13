@@ -5,12 +5,13 @@ using System.Security.Claims;
 using System.Text;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using Survey.ApiGateway.Models.DTO;
 
 namespace Survey.ApiGateway.Services
 {
     public class AuthService
     {
-        public string CreateToken(UserModel user)
+        public string CreateToken(UserDTO user)
         {
             var claims = new[]
             {
