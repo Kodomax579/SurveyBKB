@@ -1,4 +1,4 @@
-﻿@page "/survey/{GroupId:int}"
+@page "/survey/{GroupId:int}"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
 
@@ -8,14 +8,8 @@
 {
     <section class="survey-detail-page sf-panel">
         <h2>Umfrage nicht gefunden</h2>
-
-        <p>
-            Die gewünschte Umfrage konnte nicht gefunden werden.
-        </p>
-
-        <a href="/survey" class="sf-button sf-button-dark">
-            Zurück zu den Umfragen
-        </a>
+        <p>Die gewünschte Umfrage konnte nicht gefunden werden.</p>
+        <a href="/survey" class="sf-button sf-button-dark">Zurück zu den Umfragen</a>
     </section>
 }
 else
@@ -25,20 +19,37 @@ else
             <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" />
 
             <div>
-                <span>Umfrage</span>
+                <span>@GetSurveyStatusText()</span>
                 <h2>@Survey.Title</h2>
-
                 <p>
                     Erstellt von @Survey.CreatorName ·
                     Erstellt am @Survey.CreatedAt.ToString("dd.MM.yyyy") ·
-                    Läuft bis @Survey.OnlineUntil.ToString("dd.MM.yyyy")
+                    @(IsExpired ? "Abgelaufen am" : "Läuft bis") @Survey.OnlineUntil.ToString("dd.MM.yyyy")
                 </p>
             </div>
         </div>
 
-        <p class="survey-detail-description">
-            @Survey.Description
-        </p>
+        @if (IsExpired)
+        {
+            <div class="survey-expired-notice">
+                <strong>Diese Umfrage ist abgelaufen.</strong>
+                <p>
+                    Es können keine neuen Antworten mehr abgegeben werden, damit die Ergebnisse nicht nachträglich beeinflusst werden.
+                </p>
+            </div>
+        }
+
+        @if (!PermissionRules.HasPermission(CurrentUser, Permission.VoteInSurveys))
+        {
+            <div class="survey-expired-notice">
+                <strong>Du darfst an dieser Abstimmung nicht teilnehmen.</strong>
+                <p>
+                    Lehrer und Admins können Umfragen einsehen, aber keine Stimmen abgeben.
+                </p>
+            </div>
+        }
+
+        <p class="survey-detail-description">@Survey.Description</p>
 
         <div class="survey-detail-meta">
             <div>
@@ -52,9 +63,8 @@ else
             {
                 var question = Survey.Questions[questionIndex];
 
-                <article class="survey-question-block">
+                <article class="survey-question-block @(!CanVote ? "survey-question-block-disabled" : "")">
                     <h3>Frage @(questionIndex + 1)</h3>
-
                     <p>@question.Question</p>
 
                     <div class="survey-answer-list">
@@ -62,11 +72,11 @@ else
                         {
                             var answer = question.Options[answerIndex];
 
-                            <label class="survey-answer-option">
+                            <label class="survey-answer-option @(!CanVote ? "survey-answer-option-disabled" : "")">
                                 <input type="radio"
                                        name="question-@questionIndex"
-                                       value="@answerIndex" />
-
+                                       value="@answerIndex"
+                                       disabled="@(!CanVote)" />
                                 <span>@answer.options</span>
                             </label>
                         }
@@ -76,13 +86,26 @@ else
         </div>
 
         <div class="survey-detail-actions">
-            <button type="button" class="sf-button sf-button-dark">
-                Antworten absenden
-            </button>
+            @if (CanVote)
+            {
+                <button type="button" class="sf-button sf-button-dark">
+                    Antworten absenden
+                </button>
 
-            <a href="/survey" class="sf-button">
-                Zurück zu den Umfragen
-            </a>
+                <a href="/survey" class="sf-button">
+                    Zurück zu den Umfragen
+                </a>
+            }
+            else
+            {
+                <button type="button" class="sf-button sf-button-dark" disabled>
+                    Abstimmung geschlossen
+                </button>
+
+                <a href="/survey/results/@Survey.GroupId" class="sf-button">
+                    Ergebnisse ansehen
+                </a>
+            }
         </div>
     </section>
 }
@@ -93,8 +116,34 @@ else
 
     private SurveyModel? Survey;
 
+    private UserModel CurrentUser => TestLoginData.CurrentUser;
+
+    private bool IsExpired =>
+        Survey is not null &&
+        Survey.OnlineUntil < DateOnly.FromDateTime(DateTime.Today);
+
+    private bool CanVote =>
+        Survey is not null &&
+        !IsExpired &&
+        PermissionRules.HasPermission(CurrentUser, Permission.VoteInSurveys);
+
     protected override void OnParametersSet()
     {
         Survey = SurveyData.SurveyListe.FirstOrDefault(survey => survey.GroupId == GroupId);
+    }
+
+    private string GetSurveyStatusText()
+    {
+        if (IsExpired)
+        {
+            return "Abgelaufene Umfrage";
+        }
+
+        if (!PermissionRules.HasPermission(CurrentUser, Permission.VoteInSurveys))
+        {
+            return "Nur zur Ansicht";
+        }
+
+        return "Umfrage";
     }
 }

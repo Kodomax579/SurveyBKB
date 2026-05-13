@@ -7,6 +7,7 @@
         public string Description { get; set; } = string.Empty;
 
         public string CreatorName { get; set; } = string.Empty;
+        public int CreatedUserID { get; set; }
 
         public int GroupId { get; set; }
 

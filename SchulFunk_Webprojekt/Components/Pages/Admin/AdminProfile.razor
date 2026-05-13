@@ -1,0 +1,310 @@
+﻿@page "/admin/users"
+@rendermode InteractiveServer
+@using SchulFunk_Webprojekt.Model
+
+<PageTitle>Benutzer bearbeiten</PageTitle>
+
+@if (!CanEditUsers)
+{
+    <section class="admin-empty sf-panel">
+        <h3>Kein Zugriff</h3>
+        <p>Du darfst keine Benutzer bearbeiten.</p>
+    </section>
+}
+else
+{
+    <section class="admin-toolbar sf-panel admin-user-toolbar">
+        <input type="text"
+               class="admin-search-input admin-user-search"
+               placeholder="Nach Benutzer suchen..."
+               @bind="Suchtext"
+               @bind:event="oninput" />
+
+        <div class="admin-filter-dropdown">
+            <button type="button"
+                    class="sf-button sf-button-dark admin-filter-button"
+                    @onclick="ToggleFilterPanel">
+                Filter
+            </button>
+
+            @if (FilterPanelVisible)
+            {
+                <div class="admin-filter-menu">
+                    <div class="admin-filter-menu-head">
+                        <strong>Benutzer filtern</strong>
+                        <span>@GefilterteUsers.Count() Treffer</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Klasse</label>
+
+                        <select class="form-control" @bind="SelectedClass">
+                            <option value="">Alle Klassen</option>
+
+                            @foreach (var klasse in AvailableClasses)
+                            {
+                                <option value="@klasse.ClassName">@klasse.ClassName</option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gruppe</label>
+
+                        <select class="form-control" @bind="SelectedGroup">
+                            <option value="">Alle Gruppen</option>
+
+                            @foreach (var group in AvailableGroupFilters)
+                            {
+                                <option value="@group.ToString()">@PermissionRules.GetGroupLabel(group)</option>
+                            }
+                        </select>
+                    </div>
+
+                    <button type="button"
+                            class="sf-button admin-reset-filter-button"
+                            @onclick="ResetFilters">
+                        Filter zurücksetzen
+                    </button>
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="admin-user-result-info">
+        <span>
+            @GefilterteUsers.Count() Benutzer gefunden
+        </span>
+    </section>
+
+    <section class="admin-user-grid">
+        @foreach (var user in GefilterteUsers)
+        {
+            <article class="admin-user-card sf-panel">
+                <div class="admin-user-head">
+                    <img src="/lib/images/Icon-User.png" alt="" />
+
+                    <div>
+                        <h3>@GetFullName(user)</h3>
+                        <p>@user.Email</p>
+                        <p>@PermissionRules.GetGroupLabel(user.Group)</p>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Klasse</label>
+
+                    <select class="form-control" @bind="user.Class.ClassName">
+                        @foreach (var klasse in AvailableClasses)
+                        {
+                            <option value="@klasse.ClassName">@klasse.ClassName</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Gruppe</label>
+
+                    <select class="form-control" @bind="user.Group">
+                        @foreach (var group in GetEditableGroupsForUser(user))
+                        {
+                            <option value="@group">@PermissionRules.GetGroupLabel(group)</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="sf-button sf-button-dark">
+                        Änderungen speichern
+                    </button>
+
+                    @if (CanDeleteUser(user))
+                    {
+                        <button type="button"
+                                class="sf-button sf-danger-button"
+                                @onclick="() => DeleteUser(user)">
+                            Benutzer löschen
+                        </button>
+                    }
+                </div>
+            </article>
+        }
+    </section>
+}
+
+@code {
+    private string Suchtext = "";
+    private string SelectedClass = "";
+    private string SelectedGroup = "";
+    private bool FilterPanelVisible = false;
+
+    private UserModel CurrentUser => TestLoginData.CurrentUser;
+
+    private bool CanEditUsers =>
+        PermissionRules.HasPermission(CurrentUser, Permission.EditStudentUsers) ||
+        PermissionRules.HasPermission(CurrentUser, Permission.EditTeacherUsers);
+
+    private bool CanDeleteUsers =>
+        PermissionRules.HasPermission(CurrentUser, Permission.DeleteUsers);
+
+    private List<ClassModel> AvailableClasses => SurveyData.AvailableClasses;
+
+    private List<Groups> AvailableGroupFilters =>
+        CurrentUser.Group == Groups.Admin
+            ? new List<Groups>
+            {
+                Groups.Student,
+                Groups.ClassRepresentatives,
+                Groups.StudentRepresentatives,
+                Groups.Teacher
+            }
+            : new List<Groups>
+            {
+                Groups.Student,
+                Groups.ClassRepresentatives,
+                Groups.StudentRepresentatives
+            };
+
+    private List<UserModel> Users = new()
+    {
+        new UserModel
+        {
+            Name = "Lisa",
+            Lastname = "Schneider",
+            Email = "lisa.schneider@schule.de",
+            Class = new ClassModel { ClassName = "10A" },
+            Group = Groups.Student
+        },
+        new UserModel
+        {
+            Name = "Tim",
+            Lastname = "Müller",
+            Email = "tim.mueller@schule.de",
+            Class = new ClassModel { ClassName = "10B" },
+            Group = Groups.ClassRepresentatives
+        },
+        new UserModel
+        {
+            Name = "Sara",
+            Lastname = "Yilmaz",
+            Email = "sara.yilmaz@schule.de",
+            Class = new ClassModel { ClassName = "9A" },
+            Group = Groups.StudentRepresentatives
+        },
+        new UserModel
+        {
+            Name = "Max",
+            Lastname = "Mustermann",
+            Email = "max.mustermann@schule.de",
+            Class = new ClassModel { ClassName = "Lehrer" },
+            Group = Groups.Teacher
+        }
+    };
+
+    private IEnumerable<UserModel> GefilterteUsers =>
+        Users
+            .Where(user => CanEditUser(user))
+            .Where(user => MatchesSearch(user))
+            .Where(user => MatchesClassFilter(user))
+            .Where(user => MatchesGroupFilter(user));
+
+    private bool MatchesSearch(UserModel user)
+    {
+        if (string.IsNullOrWhiteSpace(Suchtext))
+        {
+            return true;
+        }
+
+        return GetFullName(user).Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
+               user.Email.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
+               user.Class.ClassName.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
+               PermissionRules.GetGroupLabel(user.Group).Contains(Suchtext, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool MatchesClassFilter(UserModel user)
+    {
+        if (string.IsNullOrWhiteSpace(SelectedClass))
+        {
+            return true;
+        }
+
+        return user.Class.ClassName == SelectedClass;
+    }
+
+    private bool MatchesGroupFilter(UserModel user)
+    {
+        if (string.IsNullOrWhiteSpace(SelectedGroup))
+        {
+            return true;
+        }
+
+        return user.Group.ToString() == SelectedGroup;
+    }
+
+    private bool CanEditUser(UserModel user)
+    {
+        if (user.Group == Groups.Admin)
+        {
+            return false;
+        }
+
+        if (user.Group == Groups.Teacher)
+        {
+            return PermissionRules.HasPermission(CurrentUser, Permission.EditTeacherUsers);
+        }
+
+        return PermissionRules.HasPermission(CurrentUser, Permission.EditStudentUsers);
+    }
+
+    private List<Groups> GetEditableGroupsForUser(UserModel user)
+    {
+        if (CurrentUser.Group == Groups.Admin)
+        {
+            return new List<Groups>
+            {
+                Groups.Student,
+                Groups.ClassRepresentatives,
+                Groups.StudentRepresentatives,
+                Groups.Teacher
+            };
+        }
+
+        return new List<Groups>
+        {
+            Groups.Student,
+            Groups.ClassRepresentatives,
+            Groups.StudentRepresentatives
+        };
+    }
+
+    private bool CanDeleteUser(UserModel user)
+    {
+        return CanDeleteUsers && user.Group != Groups.Admin;
+    }
+
+    private void DeleteUser(UserModel user)
+    {
+        if (!CanDeleteUser(user))
+        {
+            return;
+        }
+
+        Users.Remove(user);
+    }
+
+    private void ToggleFilterPanel()
+    {
+        FilterPanelVisible = !FilterPanelVisible;
+    }
+
+    private void ResetFilters()
+    {
+        SelectedClass = "";
+        SelectedGroup = "";
+    }
+
+    private static string GetFullName(UserModel user)
+    {
+        return $"{user.Name} {user.Lastname}".Trim();
+    }
+}

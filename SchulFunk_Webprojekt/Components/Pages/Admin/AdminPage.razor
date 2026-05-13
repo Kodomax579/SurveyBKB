@@ -1,0 +1,86 @@
+﻿@page "/admin"
+@using SchulFunk_Webprojekt.Model
+
+<PageTitle>Admin Panel</PageTitle>
+
+@if (!CanAccessAdmin)
+{
+    <section class="admin-empty sf-panel">
+        <h3>Kein Zugriff</h3>
+        <p>Du hast keine Berechtigung für das Admin Panel.</p>
+    </section>
+}
+else
+{
+    <section class="admin-dashboard-grid">
+        @if (CanCreateSurveys)
+        {
+            <a href="/survey/create" class="admin-dashboard-card sf-panel">
+                <img src="/lib/images/Icon-Survey.png" alt="" />
+                <h3>Umfrage erstellen</h3>
+                <p>Erstelle neue Umfragen für deine Klasse oder Zielgruppe.</p>
+            </a>
+        }
+
+        @if (CanManageSurveys)
+        {
+            <a href="/admin/surveys" class="admin-dashboard-card sf-panel">
+                <img src="/lib/images/Icon-Survey.png" alt="" />
+                <h3>Umfragen verwalten</h3>
+                <p>Verwalte und lösche berechtigte Umfragen.</p>
+            </a>
+        }
+
+        @if (CanCreateNews)
+        {
+            <a href="/news/create" class="admin-dashboard-card sf-panel">
+                <img src="/lib/images/Icon-News.png" alt="" />
+                <h3>Nachricht erstellen</h3>
+                <p>Erstelle neue Schulnachrichten für SchulFunk.</p>
+            </a>
+        }
+
+        @if (CanManageNews)
+        {
+            <a href="/admin/news" class="admin-dashboard-card sf-panel">
+                <img src="/lib/images/Icon-News.png" alt="" />
+                <h3>Nachrichten verwalten</h3>
+                <p>Bearbeite oder lösche Nachrichten entsprechend deiner Berechtigung.</p>
+            </a>
+        }
+
+        @if (CanEditUsers)
+        {
+            <a href="/admin/users" class="admin-dashboard-card sf-panel">
+                <img src="/lib/images/Icon-User.png" alt="" />
+                <h3>Benutzer bearbeiten</h3>
+                <p>Ändere Klassen und Gruppen von Benutzern entsprechend deiner Rolle.</p>
+            </a>
+        }
+    </section>
+}
+
+@code {
+    private UserModel CurrentUser => TestLoginData.CurrentUser;
+
+    private bool CanAccessAdmin =>
+        PermissionRules.HasPermission(CurrentUser, Permission.OpenAdminPanel);
+
+    private bool CanCreateSurveys =>
+        PermissionRules.HasPermission(CurrentUser, Permission.CreateSurveys);
+
+    private bool CanManageSurveys =>
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageOwnSurveys) ||
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageAllSurveys);
+
+    private bool CanCreateNews =>
+        PermissionRules.HasPermission(CurrentUser, Permission.CreateNews);
+
+    private bool CanManageNews =>
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageOwnNews) ||
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageAllNews);
+
+    private bool CanEditUsers =>
+        PermissionRules.HasPermission(CurrentUser, Permission.EditStudentUsers) ||
+        PermissionRules.HasPermission(CurrentUser, Permission.EditTeacherUsers);
+}

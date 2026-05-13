@@ -1,4 +1,4 @@
-﻿@page "/news/{Id:int}"
+@page "/news/{Id:int}"
 @using SchulFunk_Webprojekt.Model
 
 <PageTitle>@(News?.Title ?? "Nachricht")</PageTitle>
@@ -18,7 +18,7 @@ else
 {
     <section class="news-detail-page sf-panel">
         <div class="news-detail-header">
-            <img src="lib/images/Icon-News.png" alt="" />
+            <img src="/lib/images/Icon-News.png" alt="News Icon" />
 
             <div>
                 <span>@News.Tag</span>

@@ -1,0 +1,229 @@
+﻿@page "/admin/news"
+@rendermode InteractiveServer
+@using SchulFunk_Webprojekt.Model
+
+<PageTitle>Nachrichten verwalten</PageTitle>
+
+@if (!CanAccessAdmin)
+{
+    <section class="admin-empty sf-panel">
+        <h3>Kein Zugriff</h3>
+        <p>Du darfst keine Nachrichten verwalten.</p>
+    </section>
+}
+else
+{
+    <section class="admin-toolbar sf-panel">
+        <input type="text"
+               class="admin-search-input"
+               placeholder="Nach Nachricht suchen..."
+               @bind="Suchtext"
+               @bind:event="oninput" />
+    </section>
+
+    @if (NewsInBearbeitung is not null)
+    {
+        <section class="admin-edit-panel sf-panel">
+            <h3>Nachricht bearbeiten</h3>
+
+            <div class="form-group">
+                <label>Titel</label>
+                <input class="form-control" @bind="EditTitle" @bind:event="oninput" />
+            </div>
+
+            <div class="form-group">
+                <label>Tag</label>
+                <input class="form-control" @bind="EditTag" @bind:event="oninput" />
+            </div>
+
+            <div class="form-group">
+                <label>Kurzbeschreibung</label>
+                <textarea class="form-control" rows="3" @bind="EditDescription" @bind:event="oninput"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label>Artikel</label>
+                <textarea class="form-control" rows="6" @bind="EditArtikel" @bind:event="oninput"></textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="button" class="sf-button sf-button-dark" @onclick="SaveNewsEdit">
+                    Änderungen speichern
+                </button>
+
+                <button type="button" class="sf-button" @onclick="CancelNewsEdit">
+                    Abbrechen
+                </button>
+            </div>
+        </section>
+    }
+
+    <section class="admin-list">
+        @foreach (var news in GefilterteNews)
+        {
+            <article class="admin-list-card sf-panel">
+                <div class="admin-list-card-main">
+                    <img src="/lib/images/Icon-News.png" alt="" />
+
+                    <div>
+                        <span>@news.Tag</span>
+                        <h3>@news.Title</h3>
+                        <p>@news.Description</p>
+
+                        <div class="admin-meta">
+                            <strong>Ersteller:</strong> @GetCreatorName(news.CreatedUserID) ·
+                            <strong>Datum:</strong> @news.Date
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-list-actions">
+                    <a href="/news/@news.Id" class="sf-button">
+                        Öffnen
+                    </a>
+
+                    @if (CanEditNews(news))
+                    {
+                        <button type="button"
+                                class="sf-button sf-button-dark"
+                                @onclick="() => StartNewsEdit(news)">
+                            Bearbeiten
+                        </button>
+                    }
+
+                    @if (CanDeleteNews(news))
+                    {
+                        <button type="button"
+                                class="sf-button sf-danger-button"
+                                @onclick="() => DeleteNews(news)">
+                            Löschen
+                        </button>
+                    }
+                </div>
+            </article>
+        }
+    </section>
+}
+
+@code {
+    private string Suchtext = "";
+
+    private UserModel CurrentUser => TestLoginData.CurrentUser;
+
+    private List<NewsItem> NewsListe = NewsData.NewsListe.ToList();
+
+    private NewsItem? NewsInBearbeitung;
+
+    private string EditTitle = "";
+    private string EditTag = "";
+    private string EditDescription = "";
+    private string EditArtikel = "";
+
+    private bool CanAccessAdmin =>
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageOwnNews) ||
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageAllNews);
+
+    private bool CanManageOwnNews =>
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageOwnNews);
+
+    private bool CanManageAllNews =>
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageAllNews);
+
+    private IEnumerable<NewsItem> GefilterteNews =>
+        NewsListe
+            .Where(news => CanSeeNews(news))
+            .Where(news =>
+                string.IsNullOrWhiteSpace(Suchtext) ||
+                news.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
+
+    private bool CanSeeNews(NewsItem news)
+    {
+        if (CanManageAllNews)
+        {
+            return true;
+        }
+
+        if (CanManageOwnNews)
+        {
+            return news.CreatedUserID == TestLoginData.CurrentUserId;
+        }
+
+        return false;
+    }
+
+    private bool CanEditNews(NewsItem news)
+    {
+        return CanSeeNews(news);
+    }
+
+    private bool CanDeleteNews(NewsItem news)
+    {
+        return CanSeeNews(news);
+    }
+
+    private static string GetCreatorName(int createdUserId)
+    {
+        return createdUserId switch
+        {
+            1 => "Max Mustermann",
+            2 => "Schülervertretung",
+            3 => "Klassensprecher",
+            4 => "Lina Schülerin",
+            99 => "Ada Admin",
+            _ => $"User #{createdUserId}"
+        };
+    }
+
+    private void StartNewsEdit(NewsItem news)
+    {
+        if (!CanEditNews(news))
+        {
+            return;
+        }
+
+        NewsInBearbeitung = news;
+        EditTitle = news.Title;
+        EditTag = news.Tag;
+        EditDescription = news.Description;
+        EditArtikel = news.Artikel;
+    }
+
+    private void SaveNewsEdit()
+    {
+        if (NewsInBearbeitung is null || !CanEditNews(NewsInBearbeitung))
+        {
+            return;
+        }
+
+        NewsInBearbeitung.Title = EditTitle;
+        NewsInBearbeitung.Tag = EditTag;
+        NewsInBearbeitung.Description = EditDescription;
+        NewsInBearbeitung.Artikel = EditArtikel;
+
+        CancelNewsEdit();
+    }
+
+    private void CancelNewsEdit()
+    {
+        NewsInBearbeitung = null;
+        EditTitle = "";
+        EditTag = "";
+        EditDescription = "";
+        EditArtikel = "";
+    }
+
+    private void DeleteNews(NewsItem news)
+    {
+        if (!CanDeleteNews(news))
+        {
+            return;
+        }
+
+        NewsListe.Remove(news);
+
+        if (NewsInBearbeitung == news)
+        {
+            CancelNewsEdit();
+        }
+    }
+}

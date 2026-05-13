@@ -1,105 +1,333 @@
-.navbar-toggler {
-    appearance: none;
-    cursor: pointer;
-    width: 3.5rem;
-    height: 2.5rem;
-    color: white;
-    position: absolute;
-    top: 0.5rem;
-    right: 1rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    background: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.55%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e") no-repeat center/1.75rem rgba(255, 255, 255, 0.1);
+.sf-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 28px;
+    padding: 20px 26px;
+    background: rgba(255, 255, 255, 0.94);
+    border: 2px solid var(--sf-border);
+    border-radius: var(--sf-radius);
+    box-shadow: var(--sf-shadow);
 }
 
-.navbar-toggler:checked {
-    background-color: rgba(255, 255, 255, 0.5);
+/* 
+   Wichtig:
+   NavLink ist in Blazor eine eigene Komponente.
+   Deshalb brauchen die Styles für NavLink-Klassen ::deep.
+*/
+
+::deep .sf-brand {
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 18px;
+    flex: 0 0 auto;
+    color: var(--sf-navy);
+    text-decoration: none;
 }
 
-.top-row {
-    min-height: 3.5rem;
-    background-color: rgba(0,0,0,0.4);
+    ::deep .sf-brand:hover {
+        color: var(--sf-navy);
+        text-decoration: none;
+    }
+
+    ::deep .sf-brand,
+    ::deep .sf-brand:focus,
+    ::deep .sf-brand:focus-visible {
+        outline: none;
+        box-shadow: none;
+    }
+
+.sf-logo {
+    width: 86px;
+    height: 86px;
+    object-fit: contain;
+    flex: 0 0 auto;
 }
 
-.navbar-brand {
-    font-size: 1.1rem;
+.sf-brand-text {
+    display: flex;
+    align-items: center;
 }
 
-.bi {
-    display: inline-block;
+    .sf-brand-text h1 {
+        margin: 0;
+        color: var(--sf-navy);
+        font-size: 2.65rem;
+        font-weight: 400;
+        line-height: 1;
+        letter-spacing: -0.06em;
+        white-space: nowrap;
+    }
+
+        .sf-brand-text h1 span {
+            color: #75c6c8;
+        }
+
+.sf-navbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 14px;
+    flex-wrap: nowrap;
+}
+
+/* NavLink-Buttons */
+
+::deep .sf-nav-button,
+.sf-settings-button {
+    min-height: 58px;
+    padding: 15px 24px;
+    border: 2px solid transparent;
+    border-radius: 999px;
+    background: var(--sf-turquoise);
+    color: var(--sf-white);
+    font-weight: 900;
+    font-size: 1rem;
+    line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    white-space: nowrap;
+    text-decoration: none;
+    box-shadow: 0 14px 28px rgba(24, 191, 192, 0.28);
+    transition: 0.2s ease;
+}
+
+    ::deep .sf-nav-button:hover,
+    .sf-settings-button:hover {
+        background: var(--sf-turquoise-dark);
+        color: var(--sf-white);
+        text-decoration: none;
+        transform: translateY(-2px);
+    }
+
+    ::deep .sf-nav-button.active {
+        background: var(--sf-navy);
+        color: var(--sf-white);
+        box-shadow: 0 14px 28px rgba(6, 43, 85, 0.22);
+    }
+
+::deep .sf-nav-button-dark {
+    background: var(--sf-navy);
+    color: var(--sf-white);
+    box-shadow: 0 14px 28px rgba(6, 43, 85, 0.22);
+}
+
+    ::deep .sf-nav-button-dark:hover {
+        background: var(--sf-navy-light);
+        color: var(--sf-white);
+    }
+
+::deep .sf-admin-button {
+    background: var(--sf-navy-light);
+    color: var(--sf-white);
+    box-shadow: 0 14px 28px rgba(6, 43, 85, 0.2);
+}
+
+    ::deep .sf-admin-button:hover {
+        background: var(--sf-navy);
+        color: var(--sf-white);
+    }
+
+/* Einstellungen */
+
+.sf-settings-dropdown {
     position: relative;
-    width: 1.25rem;
-    height: 1.25rem;
-    margin-right: 0.75rem;
-    top: -1px;
-    background-size: cover;
+    display: inline-flex;
 }
 
-.bi-house-door-fill-nav-menu {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' class='bi bi-house-door-fill' viewBox='0 0 16 16'%3E%3Cpath d='M6.5 14.5v-3.505c0-.245.25-.495.5-.495h2c.25 0 .5.25.5.5v3.5a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5v-7a.5.5 0 0 0-.146-.354L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293L8.354 1.146a.5.5 0 0 0-.708 0l-6 6A.5.5 0 0 0 1.5 7.5v7a.5.5 0 0 0 .5.5h4a.5.5 0 0 0 .5-.5Z'/%3E%3C/svg%3E");
+.sf-settings-button {
+    background: var(--sf-white);
+    color: var(--sf-navy);
+    border-color: var(--sf-border);
+    cursor: pointer;
+    box-shadow: 0 14px 28px rgba(6, 43, 85, 0.08);
 }
 
-.bi-plus-square-fill-nav-menu {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' class='bi bi-plus-square-fill' viewBox='0 0 16 16'%3E%3Cpath d='M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm6.5 4.5v3h3a.5.5 0 0 1 0 1h-3v3a.5.5 0 0 1-1 0v-3h-3a.5.5 0 0 1 0-1h3v-3a.5.5 0 0 1 1 0z'/%3E%3C/svg%3E");
-}
-
-.bi-list-nested-nav-menu {
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='white' class='bi bi-list-nested' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M4.5 11.5A.5.5 0 0 1 5 11h10a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 3 7h10a.5.5 0 0 1 0 1H3a.5.5 0 0 1-.5-.5zm-2-4A.5.5 0 0 1 1 3h10a.5.5 0 0 1 0 1H1a.5.5 0 0 1-.5-.5z'/%3E%3C/svg%3E");
-}
-
-.nav-item {
-    font-size: 0.9rem;
-    padding-bottom: 0.5rem;
-}
-
-    .nav-item:first-of-type {
-        padding-top: 1rem;
+    .sf-settings-button:hover {
+        background: var(--sf-soft);
+        color: var(--sf-navy);
+        border-color: var(--sf-turquoise);
     }
 
-    .nav-item:last-of-type {
-        padding-bottom: 1rem;
+    .sf-settings-button img {
+        width: 28px;
+        height: 28px;
+        object-fit: contain;
+        flex: 0 0 auto;
     }
 
-    .nav-item ::deep .nav-link {
-        color: #d7d7d7;
-        background: none;
-        border: none;
-        border-radius: 4px;
-        height: 3rem;
-        display: flex;
-        align-items: center;
-        line-height: 3rem;
+.sf-settings-menu {
+    position: absolute;
+    top: calc(100% + 14px);
+    right: 0;
+    z-index: 50;
+    width: 260px;
+    padding: 14px;
+    background: rgba(255, 255, 255, 0.98);
+    border: 2px solid var(--sf-border);
+    border-radius: 24px;
+    box-shadow: var(--sf-shadow);
+    animation: sf-dropdown-open 0.22s ease forwards;
+    transform-origin: top right;
+}
+
+.sf-settings-menu-closing {
+    animation: sf-dropdown-close 0.18s ease forwards;
+}
+
+.sf-settings-menu::before {
+    content: "";
+    position: absolute;
+    top: -8px;
+    right: 34px;
+    width: 14px;
+    height: 14px;
+    background: rgba(255, 255, 255, 0.98);
+    border-left: 2px solid var(--sf-border);
+    border-top: 2px solid var(--sf-border);
+    transform: rotate(45deg);
+}
+
+.sf-settings-user {
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border-radius: 18px;
+    background: #f6fbfc;
+    border: 1px solid rgba(6, 43, 85, 0.08);
+    display: grid;
+    gap: 5px;
+}
+
+    .sf-settings-user strong {
+        color: var(--sf-navy);
+        font-weight: 900;
+    }
+
+    .sf-settings-user span {
+        color: var(--sf-muted);
+        font-weight: 800;
+        font-size: 0.95rem;
+    }
+
+.sf-settings-menu-item {
+    width: 100%;
+    min-height: 46px;
+    padding: 12px 14px;
+    border: none;
+    border-radius: 16px;
+    background: transparent;
+    color: var(--sf-navy);
+    font-weight: 900;
+    text-align: left;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+    .sf-settings-menu-item:hover {
+        background: var(--sf-soft);
+        color: var(--sf-navy);
+        text-decoration: none;
+    }
+
+.sf-settings-logout {
+    color: #b3261e;
+}
+
+    .sf-settings-logout:hover {
+        background: rgba(179, 38, 30, 0.08);
+        color: #b3261e;
+    }
+
+/* Animationen */
+
+@keyframes sf-dropdown-open {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.96);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@keyframes sf-dropdown-close {
+    from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    to {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.96);
+    }
+}
+
+/* Responsive */
+
+@media (max-width: 980px) {
+    .sf-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .sf-navbar {
+        width: 100%;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+    }
+
+    ::deep .sf-nav-button,
+    .sf-settings-button {
+        flex: 0 1 auto;
+    }
+}
+
+@media (max-width: 680px) {
+    .sf-header {
+        padding: 18px;
+        border-radius: 24px;
+    }
+
+    ::deep .sf-brand {
+        gap: 14px;
+    }
+
+    .sf-logo {
+        width: 68px;
+        height: 68px;
+    }
+
+    .sf-brand-text h1 {
+        font-size: 2rem;
+    }
+
+    .sf-navbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    ::deep .sf-nav-button,
+    .sf-settings-dropdown,
+    .sf-settings-button {
         width: 100%;
     }
 
-.nav-item ::deep a.active {
-    background-color: rgba(255,255,255,0.37);
-    color: white;
-}
-
-.nav-item ::deep .nav-link:hover {
-    background-color: rgba(255,255,255,0.1);
-    color: white;
-}
-
-.nav-scrollable {
-    display: none;
-}
-
-.navbar-toggler:checked ~ .nav-scrollable {
-    display: block;
-}
-
-@media (min-width: 641px) {
-    .navbar-toggler {
-        display: none;
+    .sf-settings-menu {
+        left: 0;
+        right: auto;
+        width: 100%;
     }
 
-    .nav-scrollable {
-        /* Never collapse the sidebar for wide screens */
-        display: block;
-
-        /* Allow sidebar to scroll for tall menus */
-        height: calc(100vh - 3.5rem);
-        overflow-y: auto;
-    }
+        .sf-settings-menu::before {
+            right: auto;
+            left: 34px;
+        }
 }

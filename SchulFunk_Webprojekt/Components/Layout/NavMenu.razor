@@ -1,4 +1,6 @@
-﻿<header class="sf-header">
+@using SchulFunk_Webprojekt.Model
+
+<header class="sf-header">
     <NavLink href="/home" class="sf-brand">
         <img src="/lib/images/SchulFunk-Logo.png" alt="SchulFunk Logo" class="sf-logo" />
 
@@ -10,7 +12,7 @@
     </NavLink>
 
     <nav class="sf-navbar">
-        @if (IstLehrer)
+        @if (CanSeeAdminPanel)
         {
             <NavLink href="/admin" class="sf-nav-button sf-admin-button">
                 Admin Panel
@@ -60,16 +62,24 @@
 </header>
 
 @code {
-    private bool IstLehrer = true;
-
     private bool SettingsMenuVisible = false;
     private bool SettingsMenuClosing = false;
 
     // Testdaten fürs Frontend.
-    // Später kommen diese Werte aus dem Login/Auth-System.
-    private string UserName = "Max Mustermann";
-    private string UserClass = "10A";
-    private string UserRole = "Klassensprecher";
+    // Später kommt dieser User aus eurem Login/Auth-System.
+    private UserModel CurrentUser => TestLoginData.CurrentUser;
+
+    private bool CanSeeAdminPanel =>
+    PermissionRules.HasPermission(CurrentUser, Permission.OpenAdminPanel);
+
+    private string UserName =>
+        $"{CurrentUser.Name} {CurrentUser.Lastname}".Trim();
+
+    private string UserClass =>
+        CurrentUser.Class.ClassName;
+
+    private string UserRole =>
+        GetGroupLabel(CurrentUser.Group);
 
     private async Task ToggleSettingsMenu()
     {
@@ -102,6 +112,18 @@
     {
         await CloseSettingsMenu();
 
-        // Später kommt hier die echte Logout-Logik hin.
+        // Später kommt hier eure echte Logout-Logik hin.
+    }
+
+    private static string GetGroupLabel(Groups group)
+    {
+        return group switch
+        {
+            Groups.Teacher => "Lehrer",
+            Groups.ClassRepresentatives => "Klassensprecher",
+            Groups.StudentRepresentatives => "Schülersprecher",
+            Groups.Admin => "Admin",
+            _ => "Schüler"
+        };
     }
 }
