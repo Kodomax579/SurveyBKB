@@ -23,7 +23,8 @@ namespace NewsService.Database.migration
                     MainText = table.Column<string>(type: "TEXT", nullable: false),
                     Image = table.Column<byte[]>(type: "BLOB", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    CreatedUserId = table.Column<int>(type: "INTEGER", nullable: false)
+                    ExpiredDate = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    CreatedEmail = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

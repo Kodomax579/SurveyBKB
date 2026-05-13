@@ -20,13 +20,14 @@ message SurveyMessage {
 	int32 id = 1; 
 	string title = 2;
 	int32 group_id = 3;
-	repeated string classes = 4;
+	string email = 4;
+	repeated string classes = 5;
 
-	google.protobuf.Timestamp created_at = 5;
-	google.protobuf.Timestamp online_until = 6;
+	google.protobuf.Timestamp created_at = 6;
+	google.protobuf.Timestamp online_until = 7;
 	
-	repeated int32 user_i_ds = 7; 
-	repeated QuestionMessage questions = 8;
+	repeated int32 user_i_ds = 8; 
+	repeated QuestionMessage questions = 9;
 }
 
 

@@ -16,7 +16,7 @@ namespace UserService.Database.migration
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "10.0.7");
 
-            modelBuilder.Entity("UserService.Data.CLassModel", b =>
+            modelBuilder.Entity("UserService.Data.ClassModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -59,10 +59,6 @@ namespace UserService.Database.migration
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Username")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
-
                     b.HasKey("Id");
 
                     b.HasIndex("ClassId");
@@ -72,7 +68,7 @@ namespace UserService.Database.migration
 
             modelBuilder.Entity("UserService.Data.UserModel", b =>
                 {
-                    b.HasOne("UserService.Data.CLassModel", "Class")
+                    b.HasOne("UserService.Data.ClassModel", "Class")
                         .WithMany()
                         .HasForeignKey("ClassId")
                         .OnDelete(DeleteBehavior.Cascade)

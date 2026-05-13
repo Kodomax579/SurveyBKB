@@ -1,5 +1,7 @@
 ﻿using Contracts.Protos;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using Survey.ApiGateway.Models;
 
@@ -17,6 +19,7 @@ namespace Survey.ApiGateway.Controllers
         }
 
         [HttpGet("GetAllUsers")]
+        [Authorize]
         public async Task<IActionResult> GetAllUsers()
         {
             var grpcRequest = new GetAllUsersRequest();
@@ -25,16 +28,9 @@ namespace Survey.ApiGateway.Controllers
             return Ok(grpcResponse.Users);
         }
 
-        [HttpGet("GetUserByPasswordAndEmail")]
-        public async Task<IActionResult> GetUserByPasswordAndEmail(string email, string password)
-        {
-            var grpcRequest = new GetUserByPasswordAndEmailRequest() { Email = email, Password = password };
-
-            var grpcResponse = await _grpcClient.GetUserByPasswordAndEmailAsync(grpcRequest);
-            return Ok(grpcResponse.User);
-        }
 
         [HttpPost("CreateUser")]
+        [Authorize]
         public async Task<IActionResult> CreateUser([FromBody] UserModel model)
         {
             var grpcRequest = new CreateUserRequest()
@@ -49,7 +45,6 @@ namespace Survey.ApiGateway.Controllers
                     {
                         Name = model.Class.ClassName,
                     },
-                    Username = model.Username,
                     Group = (UserGroup)model.Group
                 }
             };
@@ -58,8 +53,9 @@ namespace Survey.ApiGateway.Controllers
             return Ok(grpcResponse.Success);
         }
 
-        [HttpPut("UpdateUser/{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserModel user)
+        [HttpPut("UpdateUser")]
+        [Authorize]
+        public async Task<IActionResult> UpdateUser([FromBody] UserModel user)
         {
             var grpcRequest = new UpdateUserRequest()
             {
@@ -73,24 +69,24 @@ namespace Survey.ApiGateway.Controllers
                     {
                         Name = user.Class.ClassName,
                     },
-                    Username = user.Username,
                     Group = (UserGroup)user.Group
                 },
-                Id = id
             };
             var grpcResponse = await _grpcClient.UpdateUserAsync(grpcRequest); 
             return Ok(grpcResponse.Success);
         }
 
-        [HttpDelete("DeleteUser/{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        [HttpDelete("DeleteUser")]
+        [Authorize]
+        public async Task<IActionResult> DeleteUser(string email)
         {
-            var grpcRequest = new DeleteUserRequest() { Id = id };
+            var grpcRequest = new DeleteUserRequest() { Email = email };
             var grpcResponse = await _grpcClient.DeleteUserAsync(grpcRequest);
             return Ok(grpcResponse.Success);
         }
 
         [HttpGet("GetAllClasses")]
+        [Authorize]
         public async Task<IActionResult> GetAllClasses()
         {
             var grpcRequest = new GetAllClassesRequest();
@@ -99,6 +95,7 @@ namespace Survey.ApiGateway.Controllers
         }
 
         [HttpPost("CreateClass")]
+        [Authorize]
         public async Task<IActionResult> GetClassById([FromBody] ClassModel model)
         {
             var grpcRequest = new CreateClassRequest()

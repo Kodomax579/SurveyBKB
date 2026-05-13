@@ -5,91 +5,68 @@ using UserService.Database;
 
 namespace UserService.Feature
 {
-    public class UserService (UserContext userDbContext)
+    public class UserService (UserContext userDbContext, PasswortHandler passwordHandler)
     {
-        public async Task<List<UserMessage>> GetAllUser()
+        public async Task<LoginMessageResponse> Login(string email, string password)
+        {
+            //Get user by email
+            var user = await userDbContext.Users
+                .Include(u => u.Class)
+                .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+
+            //Check if user exists
+            if (user == null)
+            {
+                return new LoginMessageResponse();
+            }
+
+            //verify password
+            if (passwordHandler.VerifyPassword(user, user.PasswordHash, password))
+            {
+                return ConvertService.ConvertUserModelToLoginMessageResponse(user);
+            }
+            else
+            {
+                return new LoginMessageResponse();
+            }
+        }
+        public async Task<List<UserMessage>> GetAllUsers()
         {
             try
             {
-                var userList = new List<UserMessage>();
-
                 var users = await userDbContext.Users
                     .Include(u => u.Class)
-                    .OrderBy(p => p.Username)
+                    .OrderByDescending(p => p.GroupId)
                     .ToListAsync();
 
-                foreach (var user in users)
-                {
-                    userList.Add(ConvertService.ConvertUserModelToUserMessage(user));
-                }
-
-                return userList;
+                return users.Select(ConvertService.ConvertUserModelToUserMessage).ToList();
             }
             catch (Exception ex)
             {
-                return new();
+                Console.WriteLine($"Error fetching users: {ex.Message}");
+                return [];
             }
         }
-
-        public async Task<UserMessage> GetUserById(int id)
-        {
-            try
-            {
-                var user = await userDbContext.Users.Include(u => u.Class).FirstOrDefaultAsync(u => u.Id == id);
-
-                if (user != null)
-                {
-                    return ConvertService.ConvertUserModelToUserMessage(user);
-                }
-                return new(); ;
-            }
-            catch (Exception ex)
-            {
-                return new();
-            }
-        }
-
-        public async Task<UserMessage> Login(string email, string password)
-        {
-            try
-            {
-                var user = await userDbContext.Users.Include(u => u.Class).FirstOrDefaultAsync(u => u.Email == email && u.PasswordHash == password);
-                if (user != null)
-                {
-                    return ConvertService.ConvertUserModelToUserMessage(user);
-                }
-                return new();
-            }
-            catch(Exception ex)
-            {
-                return new();
-            }
-        }
-
         public async Task<bool> CreateNewUser(UserMessage userMessage)
         {
             try
             {
-                var existingUser = await userDbContext.Users.FirstOrDefaultAsync(u => u.Email == userMessage.Email || u.Username == userMessage.Username);
-                if (existingUser != null)
-                {
+                if (await UserExists(userMessage.Email))
                     return false;
-                }
 
-                var newUser = ConvertService.ConvertUserModelToUserMessage(userMessage);
-                var selectedClass = await userDbContext.Classes.FirstOrDefaultAsync(c => c.ClassName == newUser.Class.ClassName);
-
+                var selectedClass = await GetClassByName(userMessage.Class.Name);
                 if (selectedClass == null)
-                {
                     return false;
-                }
 
-                newUser.Class = selectedClass;
+                var newUser = MapToUserModel(userMessage, selectedClass);
 
-                await userDbContext.Users.AddAsync(newUser);
+                var response = await userDbContext.Users.AddAsync(newUser);
                 await userDbContext.SaveChangesAsync();
-
-                return true;
+                if (response != null)
+                {
+                    return true;
+                }
+                return false;
             }
             catch (Exception ex)
             {
@@ -97,20 +74,59 @@ namespace UserService.Feature
             }
         }
 
-        public async Task<bool> DeleteUser(int userId)
+        private async Task<bool> UserExists(string email)
+            => await userDbContext.Users.AnyAsync(u => u.Email == email);
+
+        private async Task<ClassModel?> GetClassByName(string className)
+        {
+            return await userDbContext.Classes.FirstOrDefaultAsync(c => c.ClassName == className);
+        }
+
+        private UserModel MapToUserModel(UserMessage message, ClassModel selectedClass)
+        {
+            var user = new UserModel
+            {
+                Name = message.Name,
+                Lastname = message.Lastname,
+                Email = message.Email,
+                GroupId = (int)message.Group,
+                Class = selectedClass
+            };
+
+            user.PasswordHash = passwordHandler.HashPassword(user, message.Password);
+
+            return user;
+        }
+
+        public async Task<UserMessage?> GetUserByEmail(string email)
         {
             try
             {
-                var userToDelete = await userDbContext
-                    .Users
-                    .FirstOrDefaultAsync(u => u.Id == userId);
+                var user = await userDbContext.Users
+                    .Include(u => u.Class)
+                    .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+                if (user == null) return null;
+                return ConvertService.ConvertUserModelToUserMessage(user);
+            }
+            catch (Exception ex)
+            {
+                return new UserMessage();
+            }
+        }   
 
+        public async Task<bool> DeleteUser(string email)
+        {
+            try
+            {
+                var userToDelete = await userDbContext.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
                 if (userToDelete == null)
                 {
                     return false;
                 }
+
                 userDbContext.Users.Remove(userToDelete);
                 await userDbContext.SaveChangesAsync();
+
                 return true;
             }
             catch (Exception ex)
@@ -119,26 +135,31 @@ namespace UserService.Feature
             }
         }
 
-        public async Task<bool> UpdateUser(UserMessage userMessage, int userId)
+        public async Task<bool> UpdateUser(UserMessage userMessage)
         {
             try
             {
-                var userToUpdate = await userDbContext.Users.FirstOrDefaultAsync(u => u.Id == userId);
-                var selectedClass = await userDbContext.Classes.FirstOrDefaultAsync(p => p.ClassName == userToUpdate.Class.ClassName);
+                var userToUpdate = await userDbContext.Users
+                    .Include(u => u.Class)
+                    .FirstOrDefaultAsync(u => u.Email.ToLower() == userMessage.Email.ToLower());
 
-                if (userToUpdate == null || selectedClass == null)
-                {
-                    return false;
-                }
+                if (userToUpdate == null) return false;
 
-                userToUpdate.Username = userMessage.Username;
+                var selectedClass = await userDbContext.Classes
+                    .FirstOrDefaultAsync(c => c.ClassName == userMessage.Class.Name);
+
+                if (selectedClass == null) return false;
+
                 userToUpdate.Name = userMessage.Name;
-                userToUpdate.Email = userMessage.Email;
                 userToUpdate.Lastname = userMessage.Lastname;
-                userToUpdate.Class.ClassName = userMessage.Class.Name;
-                userToUpdate.Class.Id = selectedClass.Id;
+                userToUpdate.Email = userMessage.Email;
                 userToUpdate.GroupId = (int)userMessage.Group;
-                userToUpdate.Username = userMessage.Username;
+                userToUpdate.Class = selectedClass;
+
+                if (!string.IsNullOrWhiteSpace(userMessage.Password))
+                {
+                    userToUpdate.PasswordHash = passwordHandler.HashPassword(userToUpdate, userMessage.Password);
+                }
 
                 userDbContext.Users.Update(userToUpdate);
                 await userDbContext.SaveChangesAsync();

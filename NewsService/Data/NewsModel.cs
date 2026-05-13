@@ -9,6 +9,7 @@
         public string MainText { get; set; } = string.Empty;
         public byte[] Image { get; set; } = Array.Empty<byte>();
         public DateTime CreatedAt { get; set; }
-        public int CreatedUserId { get; set; }
+        public DateTime ExpiredDate { get; set; }
+        public string CreatedEmail { get; set; } = string.Empty;
     }
 }

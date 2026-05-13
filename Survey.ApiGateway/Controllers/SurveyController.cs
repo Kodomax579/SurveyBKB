@@ -1,33 +1,49 @@
 ﻿using Contracts.Protos;
 using Google.Protobuf;
 using Mapster;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Survey.ApiGateway.Models;
+using Survey.ApiGateway.Models.DTO;
 
 namespace Survey.ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SurveyController(Contracts.Protos.Survey.SurveyClient grpcClient) : ControllerBase
+    public class SurveyController(Contracts.Protos.Survey.SurveyClient grpcClient, Contracts.Protos.User.UserClient grpcUserClient) : ControllerBase
     {
         [HttpGet("/GetAllSurveys")]
+        [Authorize]
         public async Task<IActionResult> GetAllSurveys()
         {
-            var request = new GetAllSurveysRequest();
-            var response = await grpcClient.GetAllSurveysAsync(request);
+            var surveyRequest = new GetAllSurveysRequest();
+            
+            var response = await grpcClient.GetAllSurveysAsync(surveyRequest);
 
-            // Wir bereiten eine leere Liste für das Ergebnis vor
             var models = new List<SurveyModel>();
 
-            // Wir gehen jede gRPC-Nachricht einzeln durch
             foreach (var proto in response.Surveys)
             {
+                var user = await grpcUserClient.GetUserByEmailAsync(new GetUserByEmailRequest { Email = proto.Email });
+
+                var User = new UserDTO
+                {
+                    Class = new ClassModel
+                    {
+                        ClassName = user.User.Class.Name,
+                    },
+                    Name = user.User.Name,
+                    Lastname = user.User.Lastname,
+                    Group = user.User.Group,
+                    Email = user.User.Email
+                };
+
                 var model = new SurveyModel
                 {
                     Title = proto.Title,
                     GroupId = proto.GroupId,
-
+                    User = User,
                     CreatedAt = DateOnly.FromDateTime(proto.CreatedAt.ToDateTime().ToLocalTime()),
                     OnlineUntil = DateOnly.FromDateTime(proto.OnlineUntil.ToDateTime().ToLocalTime()),
 
@@ -64,6 +80,7 @@ namespace Survey.ApiGateway.Controllers
         }
 
         [HttpPost("/CreateSurvey")]
+        [Authorize]
         public async Task<IActionResult> CreateSurvey([FromBody] SurveyModel survey)
         {
             var protoSurvey = new SurveyMessage
@@ -71,7 +88,8 @@ namespace Survey.ApiGateway.Controllers
                 Title = survey.Title,
                 GroupId = survey.GroupId,
                 CreatedAt = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(survey.CreatedAt.ToDateTime(TimeOnly.MinValue).ToUniversalTime()),
-                OnlineUntil = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(survey.OnlineUntil.ToDateTime(TimeOnly.MinValue).ToUniversalTime())
+                OnlineUntil = Google.Protobuf.WellKnownTypes.Timestamp.FromDateTime(survey.OnlineUntil.ToDateTime(TimeOnly.MinValue).ToUniversalTime()),
+                Email = survey.User.Email
             };
 
             if (survey.Classes != null)
@@ -118,6 +136,7 @@ namespace Survey.ApiGateway.Controllers
         }
 
         [HttpPut("/UpdateSurveyAnswer")]
+        [Authorize]
         public async Task<IActionResult> UpdateAnswerSelction(int answerId, int userId)
         {
             var grpcRequest = new UpdateSurveyAnswerRequest { AnswerId = answerId, UserId = userId };

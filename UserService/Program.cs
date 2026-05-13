@@ -15,6 +15,7 @@ namespace UserService
             builder.Services.AddSqlite<UserContext>("Data Source=UserDatabase.db");
             builder.Services.AddScoped<Feature.UserService>();
             builder.Services.AddScoped<Feature.ClassService>();
+            builder.Services.AddScoped<PasswortHandler>();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

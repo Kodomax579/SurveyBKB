@@ -18,7 +18,7 @@ namespace NewsService.Feature
                 Tag = model.Tag,
                 PreviewText = model.PreviewText,
                 MainText = model.MainText,
-                CreatedUserId = model.CreatedUserId,
+                CreatedEmail = model.CreatedEmail,
 
                 Image = ByteString.CopyFrom(model.Image ?? Array.Empty<byte>()),
 
@@ -37,7 +37,7 @@ namespace NewsService.Feature
                 Tag = proto.Tag,
                 PreviewText = proto.PreviewText,
                 MainText = proto.MainText,
-                CreatedUserId = proto.CreatedUserId,
+                CreatedEmail = proto.CreatedEmail,
 
                 Image = proto.Image.ToByteArray(),
 
