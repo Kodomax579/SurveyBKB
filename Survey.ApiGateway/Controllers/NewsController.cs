@@ -4,13 +4,14 @@ using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Survey.ApiGateway.Models;
 
 namespace Survey.ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class NewsController(News.NewsClient grpcClient) : ControllerBase
+    public class NewsController(News.NewsClient grpcClient, RealtimeHub.RealtimeHub realtimeHub) : ControllerBase
     {
         [HttpGet]
         [Authorize]
@@ -18,8 +19,6 @@ namespace Survey.ApiGateway.Controllers
         {
             var grpcRequest = new GetAllNewsRequest();
             var grpcResponse = await grpcClient.GetAllNewsAsync(grpcRequest);
-
-
 
             var models = grpcResponse.News.Adapt<List<NewsModel>>();
 
@@ -56,6 +55,12 @@ namespace Survey.ApiGateway.Controllers
 
             if (grpcResponse.Success)
             {
+                var getAllRequest = new GetAllNewsRequest();
+                var allNewsResponse = await grpcClient.GetAllNewsAsync(getAllRequest);
+                var models = allNewsResponse.News.Adapt<List<NewsModel>>();
+
+                await realtimeHub.SendNewNews(models);
+
                 return Ok(true);
             }
 

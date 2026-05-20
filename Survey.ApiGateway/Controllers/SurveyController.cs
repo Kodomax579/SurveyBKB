@@ -4,6 +4,7 @@ using Mapster;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Survey.ApiGateway.Models;
 using Survey.ApiGateway.Models.DTO;
 
@@ -11,14 +12,11 @@ namespace Survey.ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class SurveyController(Contracts.Protos.Survey.SurveyClient grpcClient, Contracts.Protos.User.UserClient grpcUserClient) : ControllerBase
+    public class SurveyController(Contracts.Protos.Survey.SurveyClient grpcClient, Contracts.Protos.User.UserClient grpcUserClient, IHubContext<RealtimeHub.RealtimeHub> hubContext) : ControllerBase
     {
-        [HttpGet("/GetAllSurveys")]
-        [Authorize]
-        public async Task<IActionResult> GetAllSurveys()
+        private async Task<List<SurveyModel>> FetchAllSurveysAsync()
         {
             var surveyRequest = new GetAllSurveysRequest();
-            
             var response = await grpcClient.GetAllSurveysAsync(surveyRequest);
 
             var models = new List<SurveyModel>();
@@ -76,6 +74,14 @@ namespace Survey.ApiGateway.Controllers
                 models.Add(model);
             }
 
+            return models;
+        }
+
+        [HttpGet("/GetAllSurveys")]
+        [Authorize]
+        public async Task<IActionResult> GetAllSurveys()
+        {
+            var models = await FetchAllSurveysAsync();
             return Ok(models);
         }
 
@@ -124,13 +130,15 @@ namespace Survey.ApiGateway.Controllers
             }
 
             var grpcRequest = new CreateSurveyRequest { Survey = protoSurvey };
-
             var response = await grpcClient.CreateSurveyAsync(grpcRequest);
 
             if (!response.Success)
             {
                 return BadRequest(false);
             }
+
+            var allSurveys = await FetchAllSurveysAsync();
+            await hubContext.Clients.All.SendAsync("ReceiveSurveyUpdate", allSurveys);
 
             return Ok(response.Success);
         }
@@ -142,10 +150,14 @@ namespace Survey.ApiGateway.Controllers
             var grpcRequest = new UpdateSurveyAnswerRequest { AnswerId = answerId, UserId = userId };
             var response = await grpcClient.UpdateSurveyAnswerAsync(grpcRequest);
 
-            if(!response.Success)
+            if (!response.Success)
             {
                 return BadRequest(false);
             }
+
+            var allSurveys = await FetchAllSurveysAsync();
+            await hubContext.Clients.All.SendAsync("ReceiveSurveyUpdate", allSurveys);
+
             return Ok(response.Success);
         }
 
@@ -155,10 +167,14 @@ namespace Survey.ApiGateway.Controllers
             var grpcRequest = new DeleteSurveyRequest { Id = id };
             var response = await grpcClient.DeleteSurveyAsync(grpcRequest);
 
-            if(!response.Success)
+            if (!response.Success)
             {
                 return BadRequest(false);
             }
+
+            var allSurveys = await FetchAllSurveysAsync();
+            await hubContext.Clients.All.SendAsync("ReceiveSurveyUpdate", allSurveys);
+
             return Ok(response.Success);
         }
     }

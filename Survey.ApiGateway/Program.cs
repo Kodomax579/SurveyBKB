@@ -4,6 +4,7 @@ using Google.Protobuf.WellKnownTypes;
 using Mapster;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Survey.ApiGateway.RealtimeHub;
 using System.Text;
 
 namespace Survey.ApiGateway
@@ -55,6 +56,7 @@ namespace Survey.ApiGateway
             builder.Services.AddScoped<Services.AuthService>();
             builder.Services.AddSwaggerGen();
             builder.Services.AddControllers();
+            builder.Services.AddSignalR();
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
@@ -62,10 +64,10 @@ namespace Survey.ApiGateway
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.AllowAnyOrigin()
-                          .AllowAnyMethod()
+                    policy.AllowAnyMethod()
                           .AllowAnyHeader()
-                          .WithExposedHeaders("Authorization");
+                          .WithExposedHeaders("Authorization")
+                          .AllowCredentials();
                 });
             });
 
@@ -75,21 +77,34 @@ namespace Survey.ApiGateway
             // 2. Authentifizierung hinzufügen
             builder.Services.AddAuthentication(options =>
             {
-                // Sag ASP.NET, dass wir standardmäßig JWTs im "Authorization" Header nutzen
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
             .AddJwtBearer(options =>
             {
-                // Hier legen wir die Regeln fest, wann ein Token gültig ist
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-                    ValidateIssuerSigningKey = true, // Prüfe die Unterschrift
-                    IssuerSigningKey = new SymmetricSecurityKey(keyBytes), // Mit diesem Schlüssel
-                    ValidateIssuer = false, // (Auf true setzen, wenn du Issuer streng prüfen willst)
-                    ValidateAudience = false, // (Auf true setzen, wenn du Audience streng prüfen willst)
-                    ValidateLifetime = true, // Prüfe, ob der Token schon abgelaufen ist
-                    ClockSkew = TimeSpan.Zero // Keine Extra-Kulanzzeit beim Ablaufdatum
+                    ValidateIssuerSigningKey = true, 
+                    IssuerSigningKey = new SymmetricSecurityKey(keyBytes), 
+                    ValidateIssuer = false,
+                    ValidateAudience = false, 
+                    ValidateLifetime = true, 
+                    ClockSkew = TimeSpan.Zero 
+                };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+
+                        var path = context.HttpContext.Request.Path;
+                        if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/realtimehub"))
+                        {
+                            context.Token = accessToken;
+                        }
+                        return Task.CompletedTask;
+                    }
                 };
             });
 
@@ -107,9 +122,9 @@ namespace Survey.ApiGateway
 
             app.UseCors("AllowAll");
 
-            app.UseAuthentication(); // 1. "Wer bist du?" -> Liest den Token aus dem Header und entschlüsselt ihn.
-            app.UseAuthorization();  // 2. "Darfst du das?" -> Prüft, ob das [Authorize] Attribut erlaubt wird.
-
+            app.UseAuthentication(); 
+            app.UseAuthorization();  
+            app.MapHub<RealtimeHub.RealtimeHub>("/realtimehub");
             app.MapControllers();
             app.Run();
         }
