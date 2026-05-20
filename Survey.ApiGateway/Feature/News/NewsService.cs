@@ -11,6 +11,9 @@ namespace Survey.ApiGateway.Feature.News
         {
             try
             {
+                var userExists = await surveyDbContext.Users.FirstOrDefaultAsync(u => u.Id == news.User.Id);
+                news.User = userExists;
+
                 await surveyDbContext.News.AddAsync(news);
                 await surveyDbContext.SaveChangesAsync();
                 return news;

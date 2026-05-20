@@ -3,6 +3,9 @@
 @using System.Text.Json
 @using SchulFunk_Webprojekt.Model
 @using SchulFunk_Webprojekt.Services
+@inject SignalRHub.SignalRHub hub
+@implements IDisposable
+
 @inject ApiService ApiService
 
 <PageTitle>Aktuelle Nachrichten</PageTitle>
@@ -51,12 +54,21 @@ else
         NewsListe.Where(news =>
             string.IsNullOrWhiteSpace(Suchtext) ||
             news.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
-            news.Description.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
+            news.PreviewText.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
             news.Tag.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
 
     protected override async Task OnInitializedAsync()
     {
         await LadeNachrichten();
+        await hub.Connect();
+
+        hub.OnNewsItemsUpdated += HandleNewsUpdated;
+
+    }
+    private void HandleNewsUpdated(NewsItem updatedNews)
+    {
+        NewsListe.Add(updatedNews);
+        InvokeAsync( StateHasChanged);
     }
 
     private async Task LadeNachrichten()
@@ -109,12 +121,11 @@ else
                 Id = GetInt(element, "id"),
                 Tag = GetString(element, "tag"),
                 Title = GetString(element, "titel"),
-                Description = GetString(element, "previewText"),
-                Artikel = GetString(element, "mainText"),
+                PreviewText = GetString(element, "previewText"),
+                MainText = GetString(element, "mainText"),
                 Image = GetBytes(element, "image"),
                 CreatedAt = createdAt,
                 ExpiredDate = expiredDate,
-                Date = createdAt == default ? "" : createdAt.ToString("dd.MM.yyyy")
             });
         }
 
@@ -195,5 +206,10 @@ else
         {
             return Array.Empty<byte>();
         }
+    }
+
+    public void Dispose()
+    {
+        hub.OnNewsItemsUpdated -= HandleNewsUpdated;
     }
 }

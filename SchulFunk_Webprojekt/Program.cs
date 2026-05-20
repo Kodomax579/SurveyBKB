@@ -1,5 +1,6 @@
 using SchulFunk_Webprojekt.Components;
 using SchulFunk_Webprojekt.Services;
+using SchulFunk_Webprojekt.SignalRHub;
 
 namespace SchulFunk_Webprojekt
 {
@@ -13,8 +14,8 @@ namespace SchulFunk_Webprojekt
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
-            builder.Services.AddScoped<AuthTokenService>();
-
+            builder.Services.AddSingleton<AuthTokenService>();
+            builder.Services.AddSingleton<SignalRHub.SignalRHub>();
             builder.Services.AddScoped<ApiService>();
 
             builder.Services.AddScoped(sp =>
@@ -49,6 +50,8 @@ namespace SchulFunk_Webprojekt
             app.UseHttpsRedirection();
 
             app.UseAntiforgery();
+
+            app.MapHub<SignalRHub.SignalRHub>("/realtimehub");
 
             app.MapStaticAssets();
             app.MapRazorComponents<App>()

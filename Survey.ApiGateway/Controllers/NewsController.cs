@@ -28,7 +28,6 @@ namespace Survey.ApiGateway.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> CreateNews([FromBody] NewsModel news)
         {
             if (news == null)

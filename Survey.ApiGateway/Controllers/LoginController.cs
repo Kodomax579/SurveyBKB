@@ -14,7 +14,7 @@ namespace Survey.ApiGateway.Controllers
     [ApiController]
     public class LoginController (LoginService loginService, AuthService authService): ControllerBase
     {
-        [HttpPost("login")]
+        [HttpPost]
         [AllowAnonymous] 
         public async Task<IActionResult> Login([FromBody] LoginDTO request)
         {

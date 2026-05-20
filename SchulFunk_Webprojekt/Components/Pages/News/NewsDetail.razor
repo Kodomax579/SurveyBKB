@@ -23,16 +23,16 @@ else
             <div>
                 <span>@News.Tag</span>
                 <h2>@News.Title</h2>
-                <p>@News.Date</p>
+                <p>@News.CreatedAt</p>
             </div>
         </div>
 
         <p class="news-detail-description">
-            @News.Description
+            @News.PreviewText
         </p>
 
         <article class="news-detail-article">
-            @News.Artikel
+            @News.MainText
         </article>
 
         <a href="/news" class="sf-button sf-button-dark news-detail-back">

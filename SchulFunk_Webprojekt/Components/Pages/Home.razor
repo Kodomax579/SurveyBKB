@@ -18,9 +18,9 @@
             @foreach (var news in AktuellsteNews)
             {
                 <a href="/news/@news.Id" class="home-news-item home-news-link">
-                    <span>@news.Date</span>
+                    <span>@news.CreatedAt</span>
                     <h3>@news.Title</h3>
-                    <p>@news.Description</p>
+                    <p>@news.PreviewText</p>
                 </a>
             }
         </div>

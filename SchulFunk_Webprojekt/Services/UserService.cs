@@ -1,10 +1,12 @@
-﻿namespace SchulFunk_Webprojekt.Services
+﻿using SchulFunk_Webprojekt.Model;
+
+namespace SchulFunk_Webprojekt.Services
 {
     public class UserService
     {
         private readonly HttpClient _httpClient;
         private readonly AuthTokenService _authTokenService;
-
+        private const string BaseUrl = "https://localhost:7224";
         public UserService(HttpClient httpClient, AuthTokenService authTokenService)
         {
             _httpClient = httpClient;
@@ -13,29 +15,23 @@
 
         public async Task<bool> Login(string email, string password)
         {
-            var url =
-                $"/api/Login?email={Uri.EscapeDataString(email)}&password={Uri.EscapeDataString(password)}";
+            var loginRequest = new { Email = email, Password = password };
 
-            var response = await _httpClient.GetAsync(url);
+            var response = await _httpClient.PostAsJsonAsync($"{BaseUrl}/api/login", loginRequest);
 
             if (!response.IsSuccessStatusCode)
             {
                 return false;
             }
 
-            if (!response.Headers.TryGetValues("Authorization", out var tokenValues))
+            var loginResult = await response.Content.ReadFromJsonAsync<LoginModel>();
+
+            if (loginResult == null || string.IsNullOrWhiteSpace(loginResult.Token))
             {
                 return false;
             }
 
-            var token = tokenValues.FirstOrDefault();
-
-            if (string.IsNullOrWhiteSpace(token))
-            {
-                return false;
-            }
-
-            _authTokenService.SetToken(token);
+            _authTokenService.SetToken(loginResult.Token);
 
             return true;
         }
