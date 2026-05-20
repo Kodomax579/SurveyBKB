@@ -1,4 +1,6 @@
 @page "/"
+@using SchulFunk_Webprojekt.Services;
+@inject UserService userService
 @layout EmptyLayout
 @inject NavigationManager NavManager
 
@@ -15,28 +17,50 @@
         <div class="auth-form">
             <div class="form-group">
                 <label>E-Mail Adresse</label>
-                <input type="email" class="sf-input" placeholder="schueler@schule.de" />
+                <input type="email" class="sf-input" placeholder="schueler@schule.de" @bind-value="email" />
             </div>
 
             <div class="form-group">
                 <label>Passwort</label>
-                <input type="password" class="sf-input" placeholder="••••••••" />
+                <input type="password" class="sf-input" placeholder="••••••••" @bind-value="password" />
             </div>
+            @if (!string.IsNullOrWhiteSpace(Fehlermeldung))
+            {
+                <div class="validation-message">
+                    @Fehlermeldung
+                </div>
+            }
 
             <button class="sf-button w-100" @onclick="Einloggen">
                 Anmelden
             </button>
         </div>
-
-        <div class="auth-footer">
-            <p>Noch kein Konto? <NavLink href="register">Jetzt registrieren</NavLink></p>
-        </div>
     </div>
 </div>
 
 @code {
-    private void Einloggen()
+    private string? email = null;
+    private string? password = null;
+    private string Fehlermeldung = "";
+
+    private async Task Einloggen()
     {
+        Fehlermeldung = "";
+
+        if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+        {
+            Fehlermeldung = "Bitte E-Mail und Passwort eingeben.";
+            return;
+        }
+
+        var loginOk = await userService.Login(email, password);
+
+        if (!loginOk)
+        {
+            Fehlermeldung = "Login fehlgeschlagen. Bitte prüfe deine Zugangsdaten.";
+            return;
+        }
+
         NavManager.NavigateTo("/home");
     }
 }

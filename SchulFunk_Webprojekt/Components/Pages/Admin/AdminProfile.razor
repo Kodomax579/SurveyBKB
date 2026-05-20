@@ -45,6 +45,11 @@ else
                             {
                                 <option value="@klasse.ClassName">@klasse.ClassName</option>
                             }
+
+                            @if (CurrentUser.Group == Groups.Admin)
+                            {
+                                <option value="Lehrer">Lehrer</option>
+                            }
                         </select>
                     </div>
 
@@ -94,12 +99,21 @@ else
                 <div class="form-group">
                     <label>Klasse</label>
 
-                    <select class="form-control" @bind="user.Class.ClassName">
-                        @foreach (var klasse in AvailableClasses)
-                        {
-                            <option value="@klasse.ClassName">@klasse.ClassName</option>
-                        }
-                    </select>
+                    @if (user.Group == Groups.Teacher)
+                    {
+                        <div class="readonly-info-box">
+                            <strong>Lehrer</strong>
+                        </div>
+                    }
+                    else
+                    {
+                        <select class="form-control" @bind="user.Class.ClassName">
+                            @foreach (var klasse in AvailableClasses)
+                            {
+                                <option value="@klasse.ClassName">@klasse.ClassName</option>
+                            }
+                        </select>
+                    }
                 </div>
 
                 <div class="form-group">
@@ -165,41 +179,7 @@ else
                 Groups.StudentRepresentatives
             };
 
-    private List<UserModel> Users = new()
-    {
-        new UserModel
-        {
-            Name = "Lisa",
-            Lastname = "Schneider",
-            Email = "lisa.schneider@schule.de",
-            Class = new ClassModel { ClassName = "10A" },
-            Group = Groups.Student
-        },
-        new UserModel
-        {
-            Name = "Tim",
-            Lastname = "Müller",
-            Email = "tim.mueller@schule.de",
-            Class = new ClassModel { ClassName = "10B" },
-            Group = Groups.ClassRepresentatives
-        },
-        new UserModel
-        {
-            Name = "Sara",
-            Lastname = "Yilmaz",
-            Email = "sara.yilmaz@schule.de",
-            Class = new ClassModel { ClassName = "9A" },
-            Group = Groups.StudentRepresentatives
-        },
-        new UserModel
-        {
-            Name = "Max",
-            Lastname = "Mustermann",
-            Email = "max.mustermann@schule.de",
-            Class = new ClassModel { ClassName = "Lehrer" },
-            Group = Groups.Teacher
-        }
-    };
+    private List<UserModel> Users => UserData.Users;
 
     private IEnumerable<UserModel> GefilterteUsers =>
         Users
