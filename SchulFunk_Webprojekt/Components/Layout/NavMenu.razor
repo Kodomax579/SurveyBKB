@@ -1,4 +1,5 @@
 @using SchulFunk_Webprojekt.Model
+@inject IJSRuntime JS
 
 <header class="sf-header">
     <NavLink href="/home" class="sf-brand">
@@ -49,7 +50,17 @@
                            @onclick="CloseSettingsMenu">
                         Profil ansehen
                     </a>
+                    <button type="button"
+                            class="sf-settings-menu-item sf-theme-toggle"
+                            @onclick="ToggleTheme">
+                        <span class="sf-theme-toggle-icon">
+                            @(IsDarkMode ? "☀️" : "🌙")
+                        </span>
 
+                        <span>
+                            @(IsDarkMode ? "White Mode aktivieren" : "Dark Mode aktivieren")
+                        </span>
+                    </button>
                     <button type="button"
                             class="sf-settings-menu-item sf-settings-logout"
                             @onclick="Logout">
@@ -125,5 +136,30 @@
             Groups.Admin => "Admin",
             _ => "Schüler"
         };
+    }
+
+    private bool IsDarkMode = true;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            var theme = await JS.InvokeAsync<string>("schulFunkTheme.get");
+
+            IsDarkMode = theme != "light";
+
+            await JS.InvokeVoidAsync("schulFunkTheme.apply", IsDarkMode ? "dark" : "light");
+
+            StateHasChanged();
+        }
+    }
+
+    private async Task ToggleTheme()
+    {
+        IsDarkMode = !IsDarkMode;
+
+        var theme = IsDarkMode ? "dark" : "light";
+
+        await JS.InvokeVoidAsync("schulFunkTheme.set", theme);
     }
 }

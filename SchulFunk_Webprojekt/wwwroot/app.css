@@ -1,17 +1,4 @@
-:root {
-    --sf-navy: #062b55;
-    --sf-navy-light: #0d3f78;
-    --sf-turquoise: #18bfc0;
-    --sf-turquoise-dark: #0ca8aa;
-    --sf-white: #ffffff;
-    --sf-bg: #f3fbfc;
-    --sf-soft: #e8f7f8;
-    --sf-text: #08294f;
-    --sf-muted: #6d8195;
-    --sf-border: rgba(24, 191, 192, 0.35);
-    --sf-shadow: 0 22px 50px rgba(6, 43, 85, 0.14);
-    --sf-radius: 30px;
-}
+@import url("./design-tokens.css");
 
 * {
     box-sizing: border-box;
@@ -25,10 +12,15 @@ html,
 body {
     margin: 0;
     min-height: 100%;
-    background: var(--sf-bg);
+    background: radial-gradient(circle at top left, rgba(var(--sf-color-accent-rgb), 0.14), transparent 30%), radial-gradient(circle at bottom right, rgba(var(--sf-color-secondary-rgb), 0.42), transparent 34%), linear-gradient(135deg, var(--sf-page-bg) 0%, var(--sf-page-bg-secondary) 100%);
     color: var(--sf-text);
-    font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    font-family: var(--sf-font-family);
 }
+
+    body::selection {
+        background: var(--sf-selection-bg);
+        color: var(--sf-selection-text);
+    }
 
 a {
     color: inherit;
@@ -42,111 +34,223 @@ select {
     font: inherit;
 }
 
-/* Allgemeine Panels und Buttons */
-
-.sf-panel {
-    background: rgba(255, 255, 255, 0.96);
-    border: 2px solid var(--sf-border);
-    border-radius: var(--sf-radius);
-    box-shadow: var(--sf-shadow);
+button,
+a,
+input,
+textarea,
+select {
+    -webkit-tap-highlight-color: transparent;
 }
 
+    button:focus-visible,
+    a:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+        outline: 4px solid var(--sf-focus);
+        outline-offset: 4px;
+    }
+
+/* =========================================================
+   Globale Grundelemente
+   ========================================================= */
+
+.sf-panel {
+    position: relative;
+    overflow: hidden;
+    background: var(--sf-panel-bg);
+    border: var(--sf-border-width, 2px) solid var(--sf-border);
+    border-radius: var(--sf-radius);
+    box-shadow: var(--sf-shadow);
+    color: var(--sf-text);
+}
+
+    .sf-panel::before,
+    .sf-panel::after {
+        content: none !important;
+        display: none !important;
+    }
+
+.sf-card {
+    position: relative;
+    background: var(--sf-card-bg);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius-md);
+    color: var(--sf-text);
+    transition: var(--sf-transition);
+}
+
+    .sf-card:hover {
+        background: var(--sf-card-bg-hover);
+        border-color: var(--sf-border-strong);
+        box-shadow: var(--sf-shadow-hover);
+        transform: var(--sf-hover-lift-md);
+    }
+
+.sf-toolbar {
+    background: var(--sf-toolbar-bg);
+    border: var(--sf-border-width, 2px) solid var(--sf-border);
+    border-radius: var(--sf-radius);
+    box-shadow: var(--sf-shadow);
+    color: var(--sf-text);
+}
+
+/* =========================================================
+   Buttons
+   ========================================================= */
+
 .sf-button {
+    position: relative;
+    z-index: 1;
     min-height: 52px;
-    padding: 14px 22px;
-    border: 2px solid transparent;
-    border-radius: 999px;
-    background: var(--sf-turquoise);
-    color: var(--sf-white);
-    font-weight: 900;
+    padding: 14px 24px;
+    border: 2px solid var(--sf-button-border);
+    border-radius: var(--sf-radius-pill);
+    background: var(--sf-button-bg);
+    color: var(--sf-button-text);
+    font-weight: var(--sf-font-weight-black);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
     cursor: pointer;
-    transition: 0.2s ease;
-    box-shadow: 0 14px 28px rgba(24, 191, 192, 0.28);
+    text-align: center;
+    transition: var(--sf-transition);
+    box-shadow: var(--sf-shadow-sm);
 }
 
     .sf-button:hover {
-        background: var(--sf-turquoise-dark);
-        color: var(--sf-white);
-        transform: translateY(-2px);
+        background: var(--sf-button-hover-bg);
+        color: var(--sf-button-hover-text);
+        border-color: var(--sf-button-hover-border);
+        transform: var(--sf-hover-lift-sm);
+        box-shadow: var(--sf-shadow-md);
+    }
+
+    .sf-button:active {
+        transform: translateY(-1px) scale(0.98);
     }
 
 .sf-button-dark {
-    background: var(--sf-navy);
-    box-shadow: 0 14px 28px rgba(6, 43, 85, 0.22);
+    background: var(--sf-button-dark-bg);
+    color: var(--sf-button-dark-text);
+    border-color: var(--sf-button-dark-border);
 }
 
     .sf-button-dark:hover {
-        background: var(--sf-navy-light);
+        background: var(--sf-button-dark-hover-bg);
+        color: var(--sf-button-dark-hover-text);
+        border-color: var(--sf-button-dark-hover-border);
     }
 
 .sf-danger-button {
-    background: #b3261e;
-    color: white;
-    box-shadow: 0 14px 28px rgba(179, 38, 30, 0.18);
+    background: var(--sf-danger-bg);
+    color: var(--sf-danger-text);
+    border-color: var(--sf-danger-bg);
 }
 
     .sf-danger-button:hover {
-        background: #8f1f19;
-        color: white;
+        background: var(--sf-danger-hover-bg);
+        color: var(--sf-danger-text);
+        border-color: var(--sf-danger-hover-bg);
     }
+
+.sf-button:disabled,
+.sf-button[disabled] {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* =========================================================
+   Labels / Badges
+   ========================================================= */
 
 .sf-label,
 .preview-label {
-    padding: 9px 17px;
+    position: relative;
+    z-index: 1;
+    padding: 8px 14px;
     border: 1px solid var(--sf-border);
-    border-radius: 999px;
-    background: var(--sf-soft);
-    color: var(--sf-turquoise-dark);
-    font-weight: 900;
+    border-radius: var(--sf-radius-pill);
+    background: var(--sf-accent-soft);
+    color: var(--sf-accent);
+    font-weight: var(--sf-font-weight-black);
     display: inline-flex;
+    align-items: center;
+    gap: 8px;
 }
 
 .preview-label {
-    margin-bottom: 22px;
+    margin-bottom: var(--sf-space-md);
 }
 
-/* Formulare */
+/* =========================================================
+   Formulare
+   ========================================================= */
 
 .form-row {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 18px;
+    gap: var(--sf-space-md);
 }
 
 .form-group {
-    margin-bottom: 22px;
+    position: relative;
+    z-index: 1;
+    margin-bottom: var(--sf-space-md);
 }
 
     .form-group label,
     .answer-list > label {
         display: block;
         margin-bottom: 8px;
-        color: var(--sf-navy);
-        font-weight: 900;
+        color: var(--sf-accent);
+        font-weight: var(--sf-font-weight-black);
     }
+
+.form-control,
+.sf-input,
+input,
+textarea,
+select {
+    border-color: var(--sf-input-border, var(--sf-border));
+}
 
 .form-control,
 .sf-input {
     width: 100%;
     border: 2px solid var(--sf-border);
-    border-radius: 20px;
+    border-radius: var(--sf-radius-md);
     padding: 15px 18px;
-    background: #f6fbfc;
-    color: var(--sf-text);
-    font-size: 1rem;
+    background: var(--sf-input-bg);
+    color: var(--sf-input-text);
+    caret-color: var(--sf-accent);
+    font-size: var(--sf-font-size-base);
+    font-weight: var(--sf-font-weight-medium);
     outline: none;
-    transition: 0.2s ease;
+    transition: var(--sf-transition);
 }
+
+    .form-control::placeholder,
+    .sf-input::placeholder {
+        color: var(--sf-input-placeholder);
+        font-weight: var(--sf-font-weight-medium);
+    }
+
+    .form-control:hover,
+    .sf-input:hover {
+        border-color: var(--sf-accent);
+        background: var(--sf-input-bg-hover);
+    }
 
     .form-control:focus,
     .sf-input:focus {
-        border-color: var(--sf-turquoise);
-        background: var(--sf-white);
-        box-shadow: 0 0 0 4px rgba(24, 191, 192, 0.12);
+        border-color: var(--sf-accent);
+        background: var(--sf-input-bg-focus);
+        color: var(--sf-input-text);
+        box-shadow: 0 0 0 4px var(--sf-focus);
     }
 
 textarea.form-control {
@@ -154,63 +258,76 @@ textarea.form-control {
     min-height: 120px;
 }
 
-.readonly-info-box {
-    min-height: 54px;
-    padding: 14px 18px;
-    border: 2px solid var(--sf-border);
-    border-radius: 20px;
-    background: #f6fbfc;
-    color: var(--sf-text);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-}
-
-    .readonly-info-box strong {
-        color: var(--sf-navy);
-        font-weight: 900;
-    }
-
-    .readonly-info-box span {
-        color: var(--sf-turquoise-dark);
-        font-weight: 900;
-    }
-
-.form-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-    margin-top: 30px;
+select.form-control,
+select.sf-input {
+    cursor: pointer;
 }
 
 .validation-message {
     display: block;
     margin-top: 8px;
-    color: #b3261e;
-    font-weight: 800;
+    color: var(--sf-accent);
+    font-weight: var(--sf-font-weight-bold);
+}
+
+.readonly-info-box {
+    position: relative;
+    z-index: 1;
+    min-height: 54px;
+    padding: 14px 18px;
+    border: 2px solid var(--sf-border);
+    border-radius: var(--sf-radius-md);
+    background: var(--sf-card-bg);
+    color: var(--sf-text);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sf-space-sm);
+}
+
+    .readonly-info-box strong {
+        color: var(--sf-text-strong);
+        font-weight: var(--sf-font-weight-black);
+    }
+
+    .readonly-info-box span {
+        color: var(--sf-accent);
+        font-weight: var(--sf-font-weight-black);
+    }
+
+.form-actions {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--sf-space-sm);
+    margin-top: var(--sf-space-lg);
 }
 
 .w-100 {
     width: 100%;
-    margin-top: 10px;
+    margin-top: var(--sf-space-xs);
 }
 
-/* Admin-Bereich */
+/* =========================================================
+   Wiederverwendbare Admin-/Listen-Klassen
+   ========================================================= */
 
 .admin-header {
-    padding: 34px;
-    margin-bottom: 28px;
+    padding: var(--sf-space-xl);
+    margin-bottom: var(--sf-space-lg);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 28px;
+    gap: var(--sf-space-lg);
 }
 
 .admin-title {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: var(--sf-space-md);
 }
 
     .admin-title img {
@@ -221,7 +338,7 @@ textarea.form-control {
 
     .admin-title h2 {
         margin: 0;
-        color: var(--sf-navy);
+        color: var(--sf-text-strong);
         font-size: clamp(2rem, 4vw, 3.2rem);
         line-height: 1.05;
         letter-spacing: -0.04em;
@@ -229,88 +346,128 @@ textarea.form-control {
 
     .admin-title p {
         margin: 10px 0 0;
-        color: var(--sf-muted);
-        font-size: 1.1rem;
+        color: var(--sf-text-muted);
+        font-size: var(--sf-font-size-md);
         line-height: 1.6;
     }
 
 .admin-dashboard-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 24px;
+    gap: var(--sf-space-lg);
 }
 
 .admin-dashboard-card {
-    padding: 30px;
-    transition: 0.2s ease;
+    position: relative;
+    min-height: 245px;
+    padding: var(--sf-space-lg);
+    transition: var(--sf-transition);
 }
 
+    .admin-dashboard-card::before,
+    .admin-dashboard-card::after {
+        content: none !important;
+        display: none !important;
+    }
+
     .admin-dashboard-card:hover {
-        transform: translateY(-6px);
-        border-color: var(--sf-turquoise);
+        transform: var(--sf-hover-lift-lg);
+        border-color: var(--sf-accent);
+        box-shadow: var(--sf-shadow-hover);
     }
 
     .admin-dashboard-card img {
+        position: relative;
+        z-index: 1;
         width: 76px;
         height: 76px;
         object-fit: contain;
-        margin-bottom: 20px;
+        margin-bottom: var(--sf-space-md);
     }
 
     .admin-dashboard-card h3 {
+        position: relative;
+        z-index: 1;
         margin: 0;
-        color: var(--sf-navy);
-        font-size: 1.5rem;
+        color: var(--sf-text-strong);
+        font-size: var(--sf-font-size-xl);
     }
 
     .admin-dashboard-card p {
+        position: relative;
+        z-index: 1;
         margin: 12px 0 0;
-        color: var(--sf-muted);
+        color: var(--sf-text-muted);
         line-height: 1.6;
     }
 
 .admin-toolbar {
-    padding: 24px;
-    margin-bottom: 24px;
+    padding: var(--sf-space-md);
+    margin-bottom: var(--sf-space-lg);
 }
 
 .admin-search-input {
+    position: relative;
+    z-index: 1;
     width: 100%;
     min-height: 52px;
     border: 2px solid var(--sf-border);
-    border-radius: 999px;
+    border-radius: var(--sf-radius-pill);
     padding: 14px 22px;
-    background: #f6fbfc;
-    color: var(--sf-text);
-    font-size: 1rem;
-    font-weight: 700;
+    background: var(--sf-input-bg);
+    color: var(--sf-input-text);
+    caret-color: var(--sf-accent);
+    font-size: var(--sf-font-size-base);
+    font-weight: var(--sf-font-weight-bold);
     outline: none;
-    transition: 0.2s ease;
+    transition: var(--sf-transition);
 }
 
+    .admin-search-input::placeholder {
+        color: var(--sf-input-placeholder);
+    }
+
+    .admin-search-input:hover,
     .admin-search-input:focus {
-        border-color: var(--sf-turquoise);
-        background: var(--sf-white);
-        box-shadow: 0 0 0 4px rgba(24, 191, 192, 0.12);
+        border-color: var(--sf-accent);
+        background: var(--sf-input-bg-focus);
+        color: var(--sf-input-text);
+        box-shadow: 0 0 0 4px var(--sf-focus);
     }
 
 .admin-list {
     display: grid;
-    gap: 22px;
+    gap: var(--sf-space-md);
 }
 
 .admin-list-card {
-    padding: 28px;
+    position: relative;
+    padding: var(--sf-space-lg);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 24px;
+    gap: var(--sf-space-lg);
+    transition: var(--sf-transition);
 }
 
+    .admin-list-card::before,
+    .admin-list-card::after {
+        content: none !important;
+        display: none !important;
+    }
+
+    .admin-list-card:hover {
+        transform: var(--sf-hover-lift-sm);
+        border-color: var(--sf-accent);
+        box-shadow: var(--sf-shadow-hover);
+    }
+
 .admin-list-card-main {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: var(--sf-space-md);
 }
 
     .admin-list-card-main img {
@@ -321,81 +478,91 @@ textarea.form-control {
     }
 
     .admin-list-card-main span {
-        color: var(--sf-turquoise-dark);
-        font-weight: 900;
+        color: var(--sf-accent);
+        font-weight: var(--sf-font-weight-black);
     }
 
     .admin-list-card-main h3 {
         margin: 6px 0 8px;
-        color: var(--sf-navy);
-        font-size: 1.45rem;
+        color: var(--sf-text-strong);
+        font-size: var(--sf-font-size-xl);
     }
 
     .admin-list-card-main p {
         margin: 0;
-        color: var(--sf-muted);
+        color: var(--sf-text-muted);
         line-height: 1.6;
     }
 
 .admin-meta {
-    margin-top: 12px;
-    color: var(--sf-muted);
-    font-weight: 700;
+    margin-top: var(--sf-space-xs);
+    color: var(--sf-text-muted);
+    font-weight: var(--sf-font-weight-bold);
 }
 
     .admin-meta strong {
-        color: var(--sf-navy);
+        color: var(--sf-text-strong);
     }
 
 .admin-list-actions {
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
-    gap: 12px;
+    gap: var(--sf-space-sm);
 }
 
 .admin-empty {
-    padding: 34px;
+    padding: var(--sf-space-xl);
 }
 
     .admin-empty h3 {
+        position: relative;
+        z-index: 1;
         margin: 0 0 10px;
-        color: var(--sf-navy);
-        font-size: 1.6rem;
+        color: var(--sf-text-strong);
+        font-size: var(--sf-font-size-xl);
     }
 
     .admin-empty p {
+        position: relative;
+        z-index: 1;
         margin: 0;
-        color: var(--sf-muted);
+        color: var(--sf-text-muted);
         line-height: 1.6;
     }
 
 .admin-edit-panel {
-    padding: 28px;
-    margin-bottom: 24px;
+    padding: var(--sf-space-lg);
+    margin-bottom: var(--sf-space-lg);
 }
 
     .admin-edit-panel h3 {
-        margin: 0 0 22px;
-        color: var(--sf-navy);
+        position: relative;
+        z-index: 1;
+        margin: 0 0 var(--sf-space-md);
+        color: var(--sf-text-strong);
         font-size: 1.8rem;
     }
 
 .admin-user-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
+    gap: var(--sf-space-lg);
 }
 
 .admin-user-card {
-    padding: 28px;
+    padding: var(--sf-space-lg);
 }
 
 .admin-user-head {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
-    gap: 18px;
-    margin-bottom: 22px;
+    gap: var(--sf-space-md);
+    margin-bottom: var(--sf-space-md);
 }
 
     .admin-user-head img {
@@ -406,23 +573,27 @@ textarea.form-control {
 
     .admin-user-head h3 {
         margin: 0;
-        color: var(--sf-navy);
+        color: var(--sf-text-strong);
         font-size: 1.4rem;
     }
 
     .admin-user-head p {
         margin: 6px 0 0;
-        color: var(--sf-muted);
-        font-weight: 700;
+        color: var(--sf-text-muted);
+        font-weight: var(--sf-font-weight-bold);
     }
 
-/* Blazor Fehleranzeige */
+/* =========================================================
+   Blazor Fehleranzeige
+   ========================================================= */
 
 #blazor-error-ui {
     color-scheme: light only;
-    background: lightyellow;
+    background: var(--sf-accent);
+    color: var(--sf-text-inverted);
+    border-top: 2px solid var(--sf-primary);
     bottom: 0;
-    box-shadow: 0 -1px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 -1px 12px rgba(var(--sf-color-black-rgb), 0.22);
     display: none;
     left: 0;
     padding: 0.6rem 1.25rem 0.7rem;
@@ -438,7 +609,9 @@ textarea.form-control {
         top: 0.5rem;
     }
 
-/* Responsive globale Bereiche */
+/* =========================================================
+   Responsive
+   ========================================================= */
 
 @media (max-width: 980px) {
     .admin-header {
@@ -478,8 +651,8 @@ textarea.form-control {
     .admin-empty,
     .admin-edit-panel,
     .admin-user-card {
-        padding: 24px;
-        border-radius: 24px;
+        padding: var(--sf-space-md);
+        border-radius: var(--sf-radius-md);
     }
 
     .admin-title,

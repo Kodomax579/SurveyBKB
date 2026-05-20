@@ -1,5 +1,5 @@
 .profile-action-bar {
-    margin-bottom: 28px;
+    margin-bottom: var(--sf-space-lg);
     display: flex;
     justify-content: flex-end;
 }
@@ -10,39 +10,48 @@
 
 .profile-info {
     width: 100%;
-    padding: 34px;
+    padding: var(--sf-space-xl);
+    background: var(--sf-panel-bg);
+    border-color: var(--sf-border);
 }
 
+    .profile-info::before,
+    .profile-info::after {
+        content: none !important;
+        display: none !important;
+    }
+
     .profile-info h3 {
-        margin: 0 0 22px;
-        color: var(--sf-navy);
+        margin: 0 0 var(--sf-space-md);
+        color: var(--sf-text-strong);
         font-size: 1.8rem;
     }
 
 .profile-info-list {
     display: grid;
-    gap: 16px;
+    gap: var(--sf-space-md);
 }
 
 .profile-info-row {
-    padding: 20px;
-    border-radius: 22px;
-    background: #f6fbfc;
-    border: 1px solid rgba(6, 43, 85, 0.08);
+    padding: var(--sf-space-md);
+    border-radius: var(--sf-radius-md);
+    background: var(--sf-card-bg);
+    border: 1px solid var(--sf-border);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 18px;
+    gap: var(--sf-space-md);
+    color: var(--sf-text);
 }
 
     .profile-info-row span {
-        color: var(--sf-muted);
-        font-weight: 800;
+        color: var(--sf-text-muted);
+        font-weight: var(--sf-font-weight-bold);
     }
 
     .profile-info-row strong {
-        color: var(--sf-navy);
-        font-weight: 900;
+        color: var(--sf-text-strong);
+        font-weight: var(--sf-font-weight-black);
         text-align: right;
     }
 
@@ -54,8 +63,8 @@
 
 @media (max-width: 680px) {
     .profile-info {
-        padding: 24px;
-        border-radius: 24px;
+        padding: var(--sf-space-md);
+        border-radius: var(--sf-radius-md);
     }
 
     .profile-info-row {

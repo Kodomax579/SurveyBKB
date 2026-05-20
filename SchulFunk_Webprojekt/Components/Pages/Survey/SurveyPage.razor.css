@@ -1,10 +1,18 @@
 .survey-page-header {
-    padding: 24px;
-    margin-bottom: 28px;
+    padding: var(--sf-space-md);
+    margin-bottom: var(--sf-space-lg);
     display: flex;
     align-items: center;
-    gap: 18px;
+    gap: var(--sf-space-md);
+    background: var(--sf-toolbar-bg);
+    border-color: var(--sf-border);
 }
+
+    .survey-page-header::before,
+    .survey-page-header::after {
+        content: none !important;
+        display: none !important;
+    }
 
 .survey-search-box {
     flex: 0 1 80%;
@@ -20,33 +28,41 @@
 
 .survey-search-input {
     width: 100%;
-    min-height: 52px;
+    min-height: 50px;
     border: 2px solid var(--sf-border);
-    border-radius: 999px;
-    padding: 14px 22px;
-    background: #f6fbfc;
-    color: var(--sf-text);
-    font-size: 1rem;
-    font-weight: 700;
+    border-radius: var(--sf-radius-pill);
+    padding: 13px 20px;
+    background: var(--sf-input-bg);
+    color: var(--sf-input-text);
+    caret-color: var(--sf-accent);
+    font-size: var(--sf-font-size-base);
+    font-weight: var(--sf-font-weight-bold);
     outline: none;
-    transition: 0.2s ease;
+    transition: var(--sf-transition);
 }
 
     .survey-search-input::placeholder {
-        color: var(--sf-muted);
-        font-weight: 700;
+        color: var(--sf-input-placeholder);
+        font-weight: var(--sf-font-weight-bold);
+    }
+
+    .survey-search-input:hover {
+        border-color: var(--sf-accent);
+        background: var(--sf-input-bg-hover);
+        color: var(--sf-input-text);
     }
 
     .survey-search-input:focus {
-        border-color: var(--sf-turquoise);
-        background: var(--sf-white);
-        box-shadow: 0 0 0 4px rgba(24, 191, 192, 0.12);
+        border-color: var(--sf-accent);
+        background: var(--sf-input-bg-focus);
+        color: var(--sf-input-text);
+        box-shadow: 0 0 0 4px var(--sf-focus);
     }
 
 .survey-card-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
+    gap: var(--sf-space-lg);
 }
 
 @media (max-width: 900px) {
@@ -68,7 +84,11 @@
 
 @media (max-width: 680px) {
     .survey-page-header {
-        padding: 20px;
-        border-radius: 24px;
+        padding: var(--sf-space-md);
+        border-radius: var(--sf-radius-md);
+    }
+
+    .survey-card-grid {
+        gap: var(--sf-space-md);
     }
 }

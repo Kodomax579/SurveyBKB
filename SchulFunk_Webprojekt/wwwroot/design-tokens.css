@@ -1,0 +1,233 @@
+﻿:root {
+    /* =========================================================
+       SCHULFUNK DESIGN TOKENS
+       Zentrale Design-Datei für Farben, Themes, Abstände,
+       Rundungen, Schatten, Buttons, Panels und Inputs.
+       ========================================================= */
+    /* =========================================================
+       1. Grundpalette
+       Wenn du später eine neue Palette testen willst,
+       änderst du hauptsächlich diesen Bereich.
+       ========================================================= */
+
+    --sf-color-black: #000000;
+    --sf-color-ink: #0C1821;
+    --sf-color-primary: #1B2A41;
+    --sf-color-secondary: #324A5F;
+    --sf-color-accent: #CCC9DC;
+    --sf-color-white: #FFFFFF;
+    --sf-color-black-rgb: 0, 0, 0;
+    --sf-color-ink-rgb: 12, 24, 33;
+    --sf-color-primary-rgb: 27, 42, 65;
+    --sf-color-secondary-rgb: 50, 74, 95;
+    --sf-color-accent-rgb: 204, 201, 220;
+    --sf-color-white-rgb: 255, 255, 255;
+    /* =========================================================
+       2. Abstände
+       ========================================================= */
+
+    --sf-space-2xs: 6px;
+    --sf-space-xs: 10px;
+    --sf-space-sm: 14px;
+    --sf-space-md: 20px;
+    --sf-space-lg: 28px;
+    --sf-space-xl: 36px;
+    --sf-space-2xl: 48px;
+    --sf-page-padding: 28px;
+    --sf-page-padding-mobile: 16px;
+    --sf-container-width: 1180px;
+    /* =========================================================
+       3. Rundungen
+       ========================================================= */
+
+    --sf-radius-sm: 14px;
+    --sf-radius-md: 20px;
+    --sf-radius-lg: 28px;
+    --sf-radius-xl: 34px;
+    --sf-radius-pill: 999px;
+    --sf-radius: var(--sf-radius-lg);
+    /* =========================================================
+       4. Typografie
+       ========================================================= */
+
+    --sf-font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --sf-font-size-xs: 0.82rem;
+    --sf-font-size-sm: 0.92rem;
+    --sf-font-size-base: 1rem;
+    --sf-font-size-md: 1.08rem;
+    --sf-font-size-lg: 1.25rem;
+    --sf-font-size-xl: 1.55rem;
+    --sf-font-size-2xl: 2rem;
+    --sf-font-size-3xl: 2.7rem;
+    --sf-font-weight-medium: 650;
+    --sf-font-weight-bold: 800;
+    --sf-font-weight-black: 900;
+    /* =========================================================
+       5. Animationen
+       ========================================================= */
+
+    --sf-transition-fast: 0.14s ease;
+    --sf-transition: 0.2s ease;
+    --sf-transition-slow: 0.28s ease;
+    --sf-hover-lift-sm: translateY(-2px);
+    --sf-hover-lift-md: translateY(-4px);
+    --sf-hover-lift-lg: translateY(-6px);
+    /* =========================================================
+       6. DARK MODE
+       Standard-Theme
+       ========================================================= */
+
+    --sf-page-bg: var(--sf-color-ink);
+    --sf-page-bg-secondary: var(--sf-color-primary);
+    --sf-panel-bg: rgba(var(--sf-color-primary-rgb), 0.86);
+    --sf-panel-bg-strong: rgba(var(--sf-color-ink-rgb), 0.90);
+    --sf-panel-bg-soft: rgba(var(--sf-color-secondary-rgb), 0.60);
+    --sf-card-bg: rgba(var(--sf-color-white-rgb), 0.075);
+    --sf-card-bg-hover: rgba(var(--sf-color-white-rgb), 0.12);
+    --sf-toolbar-bg: rgba(var(--sf-color-primary-rgb), 0.82);
+    --sf-text: #F6F7FB;
+    --sf-text-strong: #FFFFFF;
+    --sf-text-muted: rgba(var(--sf-color-accent-rgb), 0.78);
+    --sf-text-subtle: rgba(var(--sf-color-accent-rgb), 0.62);
+    --sf-text-inverted: #111827;
+    --sf-accent: var(--sf-color-accent);
+    --sf-accent-hover: #FFFFFF;
+    --sf-accent-soft: rgba(var(--sf-color-accent-rgb), 0.16);
+    --sf-accent-softer: rgba(var(--sf-color-accent-rgb), 0.10);
+    --sf-border: rgba(var(--sf-color-accent-rgb), 0.18);
+    --sf-border-strong: rgba(var(--sf-color-accent-rgb), 0.34);
+    --sf-focus: rgba(var(--sf-color-accent-rgb), 0.32);
+    --sf-shadow-sm: 0 10px 22px rgba(var(--sf-color-black-rgb), 0.16);
+    --sf-shadow-md: 0 18px 40px rgba(var(--sf-color-black-rgb), 0.22);
+    --sf-shadow-lg: 0 22px 50px rgba(var(--sf-color-black-rgb), 0.26);
+    --sf-shadow-hover: 0 28px 60px rgba(var(--sf-color-black-rgb), 0.36);
+    --sf-shadow: var(--sf-shadow-lg);
+    --sf-input-bg: rgba(var(--sf-color-white-rgb), 0.08);
+    --sf-input-bg-hover: rgba(var(--sf-color-white-rgb), 0.12);
+    --sf-input-bg-focus: rgba(var(--sf-color-white-rgb), 0.14);
+    --sf-input-text: var(--sf-text-strong);
+    --sf-input-placeholder: rgba(var(--sf-color-accent-rgb), 0.62);
+    --sf-button-bg: var(--sf-color-accent);
+    --sf-button-text: var(--sf-color-ink);
+    --sf-button-border: var(--sf-color-accent);
+    --sf-button-hover-bg: var(--sf-color-white);
+    --sf-button-hover-text: var(--sf-color-ink);
+    --sf-button-hover-border: var(--sf-color-white);
+    --sf-button-dark-bg: var(--sf-color-primary);
+    --sf-button-dark-text: var(--sf-color-white);
+    --sf-button-dark-border: rgba(var(--sf-color-accent-rgb), 0.18);
+    --sf-button-dark-hover-bg: rgba(var(--sf-color-accent-rgb), 0.18);
+    --sf-button-dark-hover-text: var(--sf-color-white);
+    --sf-button-dark-hover-border: var(--sf-color-accent);
+    --sf-danger-bg: var(--sf-color-black);
+    --sf-danger-text: var(--sf-color-white);
+    --sf-danger-hover-bg: var(--sf-color-ink);
+    --sf-selection-bg: rgba(var(--sf-color-accent-rgb), 0.34);
+    --sf-selection-text: var(--sf-color-white);
+    /* =========================================================
+       7. Bereichsfarben
+       Können später für News / Umfragen unterschiedlich genutzt werden.
+       Wichtig: auch diese sind semantisch.
+       ========================================================= */
+
+    --sf-news-accent: var(--sf-accent);
+    --sf-news-bg: var(--sf-card-bg);
+    --sf-news-bg-hover: var(--sf-card-bg-hover);
+    --sf-survey-accent: var(--sf-accent);
+    --sf-survey-bg: var(--sf-card-bg);
+    --sf-survey-bg-hover: var(--sf-card-bg-hover);
+    /* =========================================================
+       8. Kompatibilität mit alten Variablennamen
+       Dadurch gehen vorhandene Dateien nicht direkt kaputt.
+       ========================================================= */
+
+    --sf-black: var(--sf-color-black);
+    --sf-ink-black: var(--sf-color-ink);
+    --sf-prussian-blue: var(--sf-color-primary);
+    --sf-charcoal-blue: var(--sf-color-secondary);
+    --sf-lavender: var(--sf-color-accent);
+    --sf-white: var(--sf-color-white);
+    --sf-black-rgb: var(--sf-color-black-rgb);
+    --sf-ink-black-rgb: var(--sf-color-ink-rgb);
+    --sf-prussian-blue-rgb: var(--sf-color-primary-rgb);
+    --sf-charcoal-blue-rgb: var(--sf-color-secondary-rgb);
+    --sf-lavender-rgb: var(--sf-color-accent-rgb);
+    --sf-white-rgb: var(--sf-color-white-rgb);
+    --sf-bg: var(--sf-page-bg);
+    --sf-bg-secondary: var(--sf-page-bg-secondary);
+    --sf-panel-bg-light: var(--sf-panel-bg-soft);
+    --sf-card-bg-light: var(--sf-card-bg-hover);
+    --sf-primary: var(--sf-color-primary);
+    --sf-primary-light: var(--sf-color-secondary);
+    --sf-primary-dark: var(--sf-color-ink);
+    --sf-muted: var(--sf-text-muted);
+    --sf-muted-dark: var(--sf-text-subtle);
+    --sf-soft: var(--sf-accent-soft);
+    --sf-navy: var(--sf-primary);
+    --sf-navy-light: var(--sf-primary-light);
+    --sf-turquoise: var(--sf-accent);
+    --sf-turquoise-dark: var(--sf-accent);
+}
+
+
+    /* =========================================================
+   LIGHT MODE
+   Später wird dieser Block durch den Theme-Schalter aktiviert:
+   <html data-theme="light">
+   ========================================================= */
+
+    :root[data-theme="light"] {
+        --sf-page-bg: #F2F4F8;
+        --sf-page-bg-secondary: #E5E9F0;
+        --sf-panel-bg: rgba(var(--sf-color-white-rgb), 0.94);
+        --sf-panel-bg-strong: rgba(var(--sf-color-white-rgb), 0.98);
+        --sf-panel-bg-soft: rgba(var(--sf-color-white-rgb), 0.88);
+        --sf-card-bg: rgba(var(--sf-color-white-rgb), 0.92);
+        --sf-card-bg-hover: var(--sf-color-white);
+        --sf-toolbar-bg: rgba(var(--sf-color-white-rgb), 0.92);
+        --sf-text: #111827;
+        --sf-text-strong: #0C1821;
+        --sf-text-muted: #5F6678;
+        --sf-text-subtle: #7A8191;
+        --sf-text-inverted: #FFFFFF;
+        --sf-accent: var(--sf-color-primary);
+        --sf-accent-hover: var(--sf-color-secondary);
+        --sf-accent-soft: rgba(var(--sf-color-primary-rgb), 0.10);
+        --sf-accent-softer: rgba(var(--sf-color-primary-rgb), 0.06);
+        --sf-border: rgba(var(--sf-color-primary-rgb), 0.16);
+        --sf-border-strong: rgba(var(--sf-color-primary-rgb), 0.30);
+        --sf-focus: rgba(var(--sf-color-secondary-rgb), 0.26);
+        --sf-shadow-sm: 0 10px 22px rgba(var(--sf-color-black-rgb), 0.08);
+        --sf-shadow-md: 0 18px 40px rgba(var(--sf-color-black-rgb), 0.10);
+        --sf-shadow-lg: 0 22px 50px rgba(var(--sf-color-black-rgb), 0.12);
+        --sf-shadow-hover: 0 28px 60px rgba(var(--sf-color-black-rgb), 0.16);
+        --sf-shadow: var(--sf-shadow-lg);
+        --sf-input-bg: rgba(var(--sf-color-white-rgb), 0.96);
+        --sf-input-bg-hover: var(--sf-color-white);
+        --sf-input-bg-focus: var(--sf-color-white);
+        --sf-input-text: #111827;
+        --sf-input-placeholder: #7A8191;
+        --sf-button-bg: var(--sf-color-primary);
+        --sf-button-text: var(--sf-color-white);
+        --sf-button-border: var(--sf-color-primary);
+        --sf-button-hover-bg: var(--sf-color-secondary);
+        --sf-button-hover-text: var(--sf-color-white);
+        --sf-button-hover-border: var(--sf-color-secondary);
+        --sf-button-dark-bg: var(--sf-color-primary);
+        --sf-button-dark-text: var(--sf-color-white);
+        --sf-button-dark-border: var(--sf-color-primary);
+        --sf-button-dark-hover-bg: var(--sf-color-secondary);
+        --sf-button-dark-hover-text: var(--sf-color-white);
+        --sf-button-dark-hover-border: var(--sf-color-secondary);
+        --sf-danger-bg: var(--sf-color-ink);
+        --sf-danger-text: var(--sf-color-white);
+        --sf-danger-hover-bg: var(--sf-color-black);
+        --sf-selection-bg: rgba(var(--sf-color-primary-rgb), 0.18);
+        --sf-selection-text: var(--sf-color-ink);
+        --sf-news-accent: var(--sf-color-primary);
+        --sf-news-bg: var(--sf-card-bg);
+        --sf-news-bg-hover: var(--sf-card-bg-hover);
+        --sf-survey-accent: var(--sf-color-primary);
+        --sf-survey-bg: var(--sf-card-bg);
+        --sf-survey-bg-hover: var(--sf-card-bg-hover);
+    }

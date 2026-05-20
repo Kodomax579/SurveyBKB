@@ -2,7 +2,7 @@
 
 public static class TestLoginData
 {
-    public static TestUserRole CurrentRole { get; set; } = TestUserRole.StudentRepresentative;
+    public static TestUserRole CurrentRole { get; set; } = TestUserRole.Admin;
 
     public static int CurrentUserId => CurrentRole switch
     {

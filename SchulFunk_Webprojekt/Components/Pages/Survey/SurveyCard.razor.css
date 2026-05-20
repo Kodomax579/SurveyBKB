@@ -1,117 +1,141 @@
 .survey-card {
-    padding: 28px;
-    background: rgba(255, 255, 255, 0.96);
+    position: relative;
+    overflow: hidden;
+    padding: var(--sf-space-lg);
+    background: var(--sf-panel-bg);
     border: 2px solid var(--sf-border);
     border-radius: var(--sf-radius);
     box-shadow: var(--sf-shadow);
-    transition: 0.2s ease;
+    color: var(--sf-text);
+    transition: var(--sf-transition);
 }
 
-.survey-card:hover {
-    transform: translateY(-6px);
-    border-color: var(--sf-turquoise);
-}
+    .survey-card::before,
+    .survey-card::after {
+        content: none !important;
+        display: none !important;
+    }
+
+    .survey-card:hover {
+        transform: var(--sf-hover-lift-lg);
+        background: var(--sf-panel-bg-strong);
+        border-color: var(--sf-accent);
+        box-shadow: var(--sf-shadow-hover);
+    }
 
 .survey-card-top {
+    position: relative;
+    z-index: 1;
     display: flex;
     align-items: center;
-    gap: 18px;
-    margin-bottom: 22px;
+    gap: var(--sf-space-md);
+    margin-bottom: var(--sf-space-md);
 }
 
 .survey-card-icon {
-    width: 72px;
-    height: 72px;
+    width: 68px;
+    height: 68px;
     object-fit: contain;
     flex: 0 0 auto;
 }
 
 .survey-card-category {
-    color: var(--sf-turquoise-dark);
-    font-weight: 900;
-    font-size: 0.95rem;
+    color: var(--sf-accent);
+    font-weight: var(--sf-font-weight-black);
+    font-size: var(--sf-font-size-sm);
 }
 
 .survey-card h3 {
     margin: 6px 0 0;
-    color: var(--sf-navy);
-    font-size: 1.45rem;
-    line-height: 1.2;
+    color: var(--sf-text-strong);
+    font-size: 1.35rem;
+    line-height: 1.22;
 }
 
 .survey-card-description {
-    margin: 0 0 18px;
-    color: var(--sf-muted);
-    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+    margin: 0 0 var(--sf-space-md);
+    color: var(--sf-text-muted);
+    line-height: 1.55;
 }
 
 .survey-card-creator {
-    margin-bottom: 18px;
-    padding: 14px 16px;
-    border-radius: 18px;
-    background: #f6fbfc;
-    border: 1px solid rgba(6, 43, 85, 0.08);
+    position: relative;
+    z-index: 1;
+    margin-bottom: var(--sf-space-md);
+    padding: 13px 15px;
+    border-radius: var(--sf-radius-md);
+    background: var(--sf-card-bg);
+    border: 1px solid var(--sf-border);
     display: flex;
     justify-content: space-between;
-    gap: 12px;
+    gap: var(--sf-space-sm);
 }
 
-.survey-card-creator strong {
-    color: var(--sf-navy);
-}
+    .survey-card-creator strong {
+        color: var(--sf-text-strong);
+    }
 
-.survey-card-creator span {
-    color: var(--sf-turquoise-dark);
-    font-weight: 900;
-}
+    .survey-card-creator span {
+        color: var(--sf-accent);
+        font-weight: var(--sf-font-weight-black);
+    }
 
 .survey-card-info {
+    position: relative;
+    z-index: 1;
     display: grid;
     grid-template-columns: 1fr;
-    gap: 14px;
-    margin-bottom: 18px;
+    gap: var(--sf-space-sm);
+    margin-bottom: var(--sf-space-md);
 }
 
-.survey-card-info div {
-    padding: 16px;
-    border-radius: 20px;
-    background: #f6fbfc;
-    border: 1px solid rgba(6, 43, 85, 0.08);
-}
+    .survey-card-info div {
+        padding: 15px;
+        border-radius: var(--sf-radius-md);
+        background: var(--sf-card-bg);
+        border: 1px solid var(--sf-border);
+    }
 
-.survey-card-info strong {
-    display: block;
-    color: var(--sf-navy);
-    font-size: 1.4rem;
-    line-height: 1;
-}
+    .survey-card-info strong {
+        display: block;
+        color: var(--sf-text-strong);
+        font-size: 1.3rem;
+        line-height: 1;
+    }
 
-.survey-card-info span {
-    display: block;
-    margin-top: 6px;
-    color: var(--sf-muted);
-    font-weight: 700;
-}
+    .survey-card-info span {
+        display: block;
+        margin-top: 6px;
+        color: var(--sf-text-muted);
+        font-weight: var(--sf-font-weight-bold);
+    }
 
 .survey-card-dates {
+    position: relative;
+    z-index: 1;
     display: grid;
     gap: 8px;
-    margin-bottom: 24px;
+    margin-bottom: var(--sf-space-md);
 }
 
-.survey-card-dates span {
-    color: var(--sf-muted);
-    font-weight: 700;
-}
+    .survey-card-dates span {
+        color: var(--sf-text-muted);
+        font-weight: var(--sf-font-weight-bold);
+    }
 
 .survey-card-footer {
+    position: relative;
+    z-index: 1;
     display: flex;
     justify-content: flex-end;
 }
 
 @media (max-width: 680px) {
     .survey-card {
-        padding: 22px;
+        padding: var(--sf-space-md);
+        border-radius: var(--sf-radius-md);
     }
 
     .survey-card-top {
