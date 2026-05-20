@@ -1,6 +1,7 @@
-﻿using Survey.ApiGateway.Models.DTO;
+﻿using Survey.ApiGateway.Feature.User.Models;
+using Survey.ApiGateway.Models.DTO;
 
-namespace Survey.ApiGateway.Models
+namespace Survey.ApiGateway.Feature.News.Models
 {
     public class NewsModel
     {
@@ -9,9 +10,10 @@ namespace Survey.ApiGateway.Models
         public string Tag { get; set; } = string.Empty;
         public string PreviewText { get; set; } = string.Empty;
         public string MainText { get; set; } = string.Empty;
-        public byte[] Image { get; set; } = Array.Empty<byte>();
+        public string ImageLink { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
         public DateTime ExpiredDate { get; set; }
-        public UserDTO User { get; set; } = new UserDTO();
+        public int NumberOfMembers { get; set; }
+        public UserModel User { get; set; } = new UserModel();
     }
 }

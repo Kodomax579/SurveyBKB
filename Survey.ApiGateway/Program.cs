@@ -1,11 +1,14 @@
-using Contracts.Protos;
-using Google.Protobuf;
-using Google.Protobuf.WellKnownTypes;
-using Mapster;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore;
 using Microsoft.IdentityModel.Tokens;
+using Survey.ApiGateway.Database;
 using Survey.ApiGateway.RealtimeHub;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
+using Survey.ApiGateway.Services;
+using Survey.ApiGateway.Feature.User;
+using Survey.ApiGateway.Feature.News;
+using Survey.ApiGateway.Feature.Survey;
 
 namespace Survey.ApiGateway
 {
@@ -16,44 +19,15 @@ namespace Survey.ApiGateway
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            #region --- Mapster configuration ---
-            TypeAdapterConfig<Timestamp, DateTime>.NewConfig()
-                .MapWith(ts => ts.ToDateTime());
 
-            TypeAdapterConfig<DateTime, Timestamp>.NewConfig()
-                .MapWith(dt => Timestamp.FromDateTime(dt.ToUniversalTime()));
+            builder.Services.AddDbContext<SurveyDbContext>(options =>
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-            TypeAdapterConfig<ByteString, byte[]>.NewConfig()
-                .MapWith(bs => bs.ToByteArray());
-
-            TypeAdapterConfig<byte[], ByteString>.NewConfig()
-                .MapWith(b => ByteString.CopyFrom(b ?? Array.Empty<byte>()));
-
-            TypeAdapterConfig<DateOnly, Timestamp>.NewConfig()
-                .MapWith(d => Timestamp.FromDateTime(d.ToDateTime(TimeOnly.MinValue).ToUniversalTime()));
-
-            TypeAdapterConfig<Timestamp, DateOnly>.NewConfig()
-                .MapWith(ts => DateOnly.FromDateTime(ts.ToDateTime().ToLocalTime()));
-            #endregion
-
-            // Add user grpc connection.
-            builder.Services.AddGrpcClient<User.UserClient>(options =>
-            {
-                options.Address = new Uri(builder.Configuration["GrpcSettings:UserServiceUrl"]);
-            });
-
-            //Add news grpc connection
-            builder.Services.AddGrpcClient<News.NewsClient>(options =>
-            {
-                options.Address = new Uri(builder.Configuration["GrpcSettings:NewsServiceUrl"]);
-            });
-
-            builder.Services.AddGrpcClient<Contracts.Protos.Survey.SurveyClient>(options =>
-            {
-                options.Address = new Uri(builder.Configuration["GrpcSettings:SurveyServiceUrl"]);
-            });
-
-            builder.Services.AddScoped<Services.AuthService>();
+            builder.Services.AddScoped<AuthService>();
+            builder.Services.AddScoped<UserService>();
+            builder.Services.AddScoped<LoginService>();
+            builder.Services.AddScoped<NewsService>();
+            builder.Services.AddScoped<SurveyService>();
             builder.Services.AddSwaggerGen();
             builder.Services.AddControllers();
             builder.Services.AddSignalR();

@@ -1,5 +1,4 @@
-﻿using Contracts.Protos;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Survey.ApiGateway.Models;
 using System.Security.Claims;
 using System.Text;

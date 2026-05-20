@@ -1,4 +1,4 @@
-﻿namespace Survey.ApiGateway.Models.Enum
+﻿namespace Survey.ApiGateway.Feature.User.Models
 {
     public enum Groups
     {

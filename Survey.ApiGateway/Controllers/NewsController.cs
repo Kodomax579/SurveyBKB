@@ -1,104 +1,84 @@
-﻿using Contracts.Protos;
-using Grpc.Core;
-using Mapster;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
-using Survey.ApiGateway.Models;
+using Microsoft.EntityFrameworkCore;
+using Survey.ApiGateway.Feature.News;
+using Survey.ApiGateway.Feature.News.Models;
+using Survey.ApiGateway.RealtimeHub;
 
 namespace Survey.ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class NewsController(News.NewsClient grpcClient, RealtimeHub.RealtimeHub realtimeHub) : ControllerBase
+    public class NewsController(IHubContext<RealtimeHub.RealtimeHub> realtimeHub, NewsService newsService) : ControllerBase
     {
         [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetAllNews()
         {
-            var grpcRequest = new GetAllNewsRequest();
-            var grpcResponse = await grpcClient.GetAllNewsAsync(grpcRequest);
-
-            var models = grpcResponse.News.Adapt<List<NewsModel>>();
-
-            return Ok(models);
+            return Ok(await newsService.GetAllNews());
         }
 
         [HttpGet("{id}")]
         [Authorize]
         public async Task<IActionResult> GetNewsById(int id)
         {
-            try
-            {
-                var grpcRequest = new GetNewsByIdRequest { Id = id };
-                var grpcResponse = await grpcClient.GetNewsByIdAsync(grpcRequest);
-
-                var model = grpcResponse.News.Adapt<NewsModel>();
-
-                return Ok(model);
-            }
-            catch (RpcException ex)
-            {
-                return NotFound(new { Message = ex.Status.Detail });
-            }
+            return Ok(await newsService.GetNewsById(id));
         }
 
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateNews([FromBody] NewsModel news)
         {
-            var protoNews = news.Adapt<NewsMessage>();
-
-            var grpcRequest = new CreateNewsRequest { News = protoNews };
-            var grpcResponse = await grpcClient.CreateNewsAsync(grpcRequest);
-
-            if (grpcResponse.Success)
+            if (news == null)
             {
-                var getAllRequest = new GetAllNewsRequest();
-                var allNewsResponse = await grpcClient.GetAllNewsAsync(getAllRequest);
-                var models = allNewsResponse.News.Adapt<List<NewsModel>>();
-
-                await realtimeHub.SendNewNews(models);
-
-                return Ok(true);
+                return BadRequest();
             }
 
-            return BadRequest(false);
+            var result = await newsService.CreateNews(news);
+
+            if(result == null)
+            {
+                return BadRequest(false);
+            }
+            await realtimeHub.Clients.All.SendAsync("ReceiveNewNews", result);
+
+            return Ok(true);
         }
 
         [HttpPut("{id}")]
         [Authorize]
         public async Task<IActionResult> UpdateNews(int id, [FromBody] NewsModel news)
         {
-            news.Id = id;
-
-            var protoNews = news.Adapt<NewsMessage>();
-            var grpcRequest = new UpdateNewsRequest { News = protoNews };
-
-            var grpcResponse = await grpcClient.UpdateNewsAsync(grpcRequest);
-
-            if (grpcResponse.Success)
+            if(news == null)
             {
-                return Ok(true);
+                return BadRequest();
             }
 
-            return BadRequest(false);
+            var result = await newsService.UpdateNews(id, news);
+
+            if (result == null)
+            {
+                return BadRequest(false);
+            }
+
+            await realtimeHub.Clients.All.SendAsync("NewsUpdated", result);
+
+            return Ok(true);
         }
 
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteNews(int id)
         {
-            var grpcRequest = new DeleteNewsRequest { Id = id };
-            var grpcResponse = await grpcClient.DeleteNewsAsync(grpcRequest);
-
-            if (grpcResponse.Success)
+            if(!(await newsService.DeleteNews(id)))
             {
-                return Ok(true);
+                return NotFound();
             }
 
-            return BadRequest(false);
+            await realtimeHub.Clients.All.SendAsync("NewsDeleted", id);
+            return Ok(true);
         }
     }
 }
