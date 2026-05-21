@@ -3,13 +3,12 @@ services:
     build: .
     ports:
       - "7224:7224"
+    environment:
+      - ASPNETCORE_URLS=http://+:7224
+      - ConnectionStrings__DefaultConnectionPublish=Host=db;Port=5432;Database=schulfunkdb;Username=schulfunk_admin;Password=DeinSicheresPasswort;
     depends_on:
       - db
-    environment:
-      # Hier greift die API auf den 'db'-Dienst zu
-      - ConnectionStrings__DefaultConnectionPublish=Host=db;Port=5432;Database=schulfunkdb;Username=schulfunk_admin;Password=DeinSicheresPasswort;
     volumes:
-      # Verknüpft den Upload-Ordner mit dem Server-Speicher, damit Bilder nicht verloren gehen
       - ./uploads:/app/wwwroot/uploads
 
   db:
