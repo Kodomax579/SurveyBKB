@@ -95,6 +95,12 @@ namespace Survey.ApiGateway
 
             app.UseRouting();
 
+            using (var scope = app.Services.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<SurveyDbContext>();
+                dbContext.Database.EnsureCreated();
+            }
+
             app.UseCors("AllowAll");
             app.UseStaticFiles();
             app.UseAuthentication(); 
