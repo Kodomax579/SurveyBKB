@@ -1,25 +1,26 @@
 .sf-header {
     position: sticky;
-    top: var(--sf-space-md);
+    top: 0;
     z-index: 9000;
     overflow: visible;
+    width: 100%;
+    min-height: 78px;
+    padding: 0 174px 0 34px;
+    background: var(--sf-panel-bg-strong);
+    border-bottom: 1px solid var(--sf-border);
+    border-top: 4px solid var(--sf-accent);
+    border-radius: 0;
+    box-shadow: var(--sf-shadow-sm);
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--sf-space-lg);
-    padding: 14px 18px;
-    background: var(--sf-panel-bg-strong);
-    border: 1px solid var(--sf-border);
-    border-top: 4px solid var(--sf-accent);
-    border-radius: var(--sf-radius);
-    box-shadow: var(--sf-shadow-sm);
 }
 
 ::deep .sf-brand {
     display: inline-flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: var(--sf-space-sm);
+    gap: 14px;
     flex: 0 0 auto;
     color: var(--sf-text-strong);
     text-decoration: none;
@@ -44,48 +45,43 @@
     flex: 0 0 auto;
 }
 
-.sf-brand-text {
-    display: flex;
-    align-items: center;
+.sf-brand-text h1 {
+    margin: 0;
+    color: var(--sf-text-strong);
+    font-size: 1.65rem;
+    font-weight: var(--sf-font-weight-black);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
 }
 
-    .sf-brand-text h1 {
-        margin: 0;
-        color: var(--sf-text-strong);
-        font-size: 1.65rem;
-        font-weight: 850;
-        line-height: 1;
-        letter-spacing: -0.04em;
-        white-space: nowrap;
+    .sf-brand-text h1 span {
+        color: var(--sf-accent);
     }
-
-        .sf-brand-text h1 span {
-            color: var(--sf-accent);
-        }
 
 .sf-navbar {
     position: relative;
     z-index: 9100;
-    overflow: visible;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 6px;
+    gap: 28px;
     flex-wrap: nowrap;
 }
 
-/* Navigation wie klassische Links, aber weiterhin als Buttons erkennbar */
+/* normale Navigationslinks */
 
 ::deep .sf-nav-button,
 .sf-settings-button {
-    min-height: 40px;
-    padding: 9px 13px;
-    border: 1px solid transparent;
-    border-radius: var(--sf-radius-sm);
+    position: relative;
+    min-height: auto;
+    padding: 0;
+    border: none;
+    border-radius: 0;
     background: transparent;
     color: var(--sf-text);
+    font-size: var(--sf-font-size-base);
     font-weight: var(--sf-font-weight-bold);
-    font-size: var(--sf-font-size-sm);
     line-height: 1;
     display: inline-flex;
     align-items: center;
@@ -98,52 +94,50 @@
     transition: var(--sf-transition);
 }
 
+    ::deep .sf-nav-button::after,
+    .sf-settings-button::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -8px;
+        width: 0;
+        height: 2px;
+        border-radius: 999px;
+        background: var(--sf-accent);
+        transition: width var(--sf-transition);
+    }
+
     ::deep .sf-nav-button:hover,
     .sf-settings-button:hover {
-        background: var(--sf-accent-soft);
-        color: var(--sf-text-strong);
+        background: transparent;
+        color: var(--sf-accent);
         text-decoration: none;
-        transform: none;
-        border-color: var(--sf-border);
+    }
+
+        ::deep .sf-nav-button:hover::after,
+        .sf-settings-button:hover::after,
+        ::deep .sf-nav-button.active::after {
+            width: 100%;
+        }
+
+    ::deep .sf-nav-button.active {
+        color: var(--sf-accent);
+        background: transparent;
+        border: none;
         box-shadow: none;
     }
 
-    /* Aktive Seite */
-
-    ::deep .sf-nav-button.active,
-    ::deep .sf-nav-button-dark.active,
-    ::deep .sf-admin-button.active,
-    ::deep .sf-nav-button[href*="survey"].active,
-    ::deep .sf-nav-button[href*="umfragen"].active,
-    ::deep .sf-nav-button[href*="news"].active,
-    ::deep .sf-nav-button[href*="nachrichten"].active {
-        background: var(--sf-button-bg);
-        color: var(--sf-button-text);
-        border-color: var(--sf-button-border);
-        box-shadow: none;
-    }
-
-/* Einstellungen */
+/* Einstellungen Dropdown */
 
 .sf-settings-dropdown {
     position: relative;
     z-index: 9500;
-    overflow: visible;
     display: inline-flex;
-}
-
-.sf-settings-button img {
-    width: 23px;
-    height: 23px;
-    object-fit: contain;
-    flex: 0 0 auto;
-    opacity: 1;
-    filter: none;
 }
 
 .sf-settings-menu {
     position: absolute;
-    top: calc(100% + 10px);
+    top: calc(100% + 22px);
     right: 0;
     z-index: 99999;
     width: 270px;
@@ -156,22 +150,18 @@
     transform-origin: top right;
 }
 
-.sf-settings-menu-closing {
-    animation: sf-dropdown-close 0.16s ease forwards;
-}
-
-.sf-settings-menu::before {
-    content: "";
-    position: absolute;
-    top: -7px;
-    right: 28px;
-    width: 12px;
-    height: 12px;
-    background: var(--sf-panel-bg-strong);
-    border-left: 1px solid var(--sf-border);
-    border-top: 1px solid var(--sf-border);
-    transform: rotate(45deg);
-}
+    .sf-settings-menu::before {
+        content: "";
+        position: absolute;
+        top: -7px;
+        right: 28px;
+        width: 12px;
+        height: 12px;
+        background: var(--sf-panel-bg-strong);
+        border-left: 1px solid var(--sf-border);
+        border-top: 1px solid var(--sf-border);
+        transform: rotate(45deg);
+    }
 
 .sf-settings-user {
     padding: 12px 14px;
@@ -190,10 +180,10 @@
 
     .sf-settings-user span {
         color: var(--sf-text-muted);
-        font-weight: var(--sf-font-weight-medium);
         font-size: var(--sf-font-size-sm);
     }
 
+::deep .sf-settings-menu-item,
 .sf-settings-menu-item {
     width: 100%;
     min-height: 40px;
@@ -207,28 +197,34 @@
     text-align: left;
     display: flex;
     align-items: center;
+    gap: var(--sf-space-sm);
     cursor: pointer;
     text-decoration: none;
     transition: var(--sf-transition);
 }
 
+    ::deep .sf-settings-menu-item:hover,
     .sf-settings-menu-item:hover {
         background: var(--sf-accent-soft);
         color: var(--sf-text-strong);
         text-decoration: none;
-        transform: none;
     }
 
-.sf-settings-logout {
-    color: var(--sf-accent);
-}
-
-    .sf-settings-logout:hover {
+    ::deep .sf-settings-menu-item.active {
         background: var(--sf-accent-soft);
         color: var(--sf-text-strong);
     }
 
-/* Theme Toggle */
+::deep .sf-settings-logout,
+.sf-settings-logout {
+    color: var(--sf-accent);
+}
+
+    ::deep .sf-settings-logout:hover,
+    .sf-settings-logout:hover {
+        background: var(--sf-accent-soft);
+        color: var(--sf-text-strong);
+    }
 
 .sf-theme-toggle {
     justify-content: flex-start;
@@ -246,8 +242,6 @@
     flex: 0 0 auto;
 }
 
-/* Animationen */
-
 @keyframes sf-dropdown-open {
     from {
         opacity: 0;
@@ -260,56 +254,33 @@
     }
 }
 
-@keyframes sf-dropdown-close {
-    from {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-
-    to {
-        opacity: 0;
-        transform: translateY(-6px) scale(0.98);
-    }
-}
-
-/* Responsive */
-
 @media (max-width: 980px) {
     .sf-header {
         align-items: flex-start;
         flex-direction: column;
+        padding: 18px 24px;
     }
 
     .sf-navbar {
         width: 100%;
         justify-content: flex-start;
         flex-wrap: wrap;
-    }
-
-    ::deep .sf-nav-button,
-    .sf-settings-button {
-        flex: 0 1 auto;
+        gap: 18px 24px;
     }
 }
 
 @media (max-width: 680px) {
     .sf-header {
-        top: var(--sf-space-sm);
-        padding: var(--sf-space-md);
-        border-radius: var(--sf-radius);
-    }
-
-    ::deep .sf-brand {
-        gap: var(--sf-space-sm);
+        padding: 16px;
     }
 
     .sf-logo {
-        width: 48px;
-        height: 48px;
+        width: 46px;
+        height: 46px;
     }
 
     .sf-brand-text h1 {
-        font-size: 1.45rem;
+        font-size: 1.4rem;
     }
 
     .sf-navbar {

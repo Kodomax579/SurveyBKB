@@ -13,9 +13,14 @@
 }
 else
 {
-    <section class="admin-toolbar sf-panel">
+    <section class="sf-page-header">
+        <h1>Nachrichten verwalten</h1>
+        <p>Bearbeite oder lösche Nachrichten entsprechend deiner Berechtigung.</p>
+    </section>
+
+    <section class="sf-filter-bar">
         <input type="text"
-               class="admin-search-input"
+               class="sf-input sf-filter-search"
                placeholder="Nach Nachricht suchen..."
                @bind="Suchtext"
                @bind:event="oninput" />
@@ -23,7 +28,7 @@ else
 
     @if (NewsInBearbeitung is not null)
     {
-        <section class="admin-edit-panel sf-panel">
+        <section class="sf-detail-box">
             <h3>Nachricht bearbeiten</h3>
 
             <div class="form-group">
@@ -63,15 +68,13 @@ else
         {
             <article class="admin-list-card sf-panel">
                 <div class="admin-list-card-main">
-                    <img src="/lib/images/Icon-News.png" alt="" />
-
                     <div>
-                        <span>@news.Tag</span>
+                        <span class="sf-badge">@news.Tag</span>
                         <h3>@news.Title</h3>
                         <p>@news.PreviewText</p>
 
                         <div class="admin-meta">
-                            <strong>Ersteller:</strong> @news.UserModel.Lastname @news.UserModel.Name
+                            <strong>Ersteller:</strong> @news.UserModel.Lastname @news.UserModel.Name ·
                             <strong>Datum:</strong> @news.ExpiredDate
                         </div>
                     </div>
@@ -143,6 +146,11 @@ else
             return true;
         }
 
+        if (CanManageOwnNews)
+        {
+            return news.UserModel.Email == CurrentUser.Email;
+        }
+
         return false;
     }
 
@@ -154,19 +162,6 @@ else
     private bool CanDeleteNews(NewsItem news)
     {
         return CanSeeNews(news);
-    }
-
-    private static string GetCreatorName(int createdUserId)
-    {
-        return createdUserId switch
-        {
-            1 => "Max Mustermann",
-            2 => "Schülervertretung",
-            3 => "Klassensprecher",
-            4 => "Lina Schülerin",
-            99 => "Ada Admin",
-            _ => $"User #{createdUserId}"
-        };
     }
 
     private void StartNewsEdit(NewsItem news)

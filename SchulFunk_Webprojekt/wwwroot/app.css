@@ -676,3 +676,411 @@ select.sf-input {
         width: 100%;
     }
 }
+/* =========================================================
+   Globale Page-Bausteine für flaches Design
+   Diese Klassen sollen langfristig Page-spezifische CSS ersetzen.
+   ========================================================= */
+
+/* Seitenkopf */
+
+.sf-page-header {
+    margin-bottom: var(--sf-space-lg);
+}
+
+    .sf-page-header h1,
+    .sf-page-header h2 {
+        margin: 0 0 6px;
+        color: var(--sf-text-strong);
+        font-size: clamp(1.7rem, 3vw, 2.25rem);
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+    }
+
+    .sf-page-header p {
+        margin: 0;
+        color: var(--sf-text-muted);
+        font-size: var(--sf-font-size-base);
+        line-height: 1.55;
+    }
+
+/* Schlichte Toolbar / Filterbar */
+
+.sf-filter-bar {
+    display: flex;
+    align-items: center;
+    gap: var(--sf-space-md);
+    flex-wrap: wrap;
+    margin-bottom: var(--sf-space-lg);
+    padding: var(--sf-space-md);
+    background: var(--sf-toolbar-bg);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius);
+    box-shadow: var(--sf-shadow-sm);
+}
+
+    .sf-filter-bar .sf-input,
+    .sf-filter-bar .form-control,
+    .sf-filter-bar input,
+    .sf-filter-bar select {
+        min-height: 44px;
+    }
+
+.sf-filter-search {
+    flex: 1 1 260px;
+}
+
+.sf-filter-action {
+    flex: 0 0 auto;
+}
+
+/* Grids */
+
+.sf-grid {
+    display: grid;
+    gap: var(--sf-space-lg);
+}
+
+.sf-grid-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.sf-grid-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.sf-auto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+    gap: var(--sf-space-lg);
+}
+
+/* Flache Card */
+
+.sf-flat-card {
+    position: relative;
+    overflow: hidden;
+    background: var(--sf-card-bg);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius);
+    box-shadow: var(--sf-shadow-sm);
+    color: var(--sf-text);
+    transition: var(--sf-transition);
+}
+
+    .sf-flat-card:hover {
+        background: var(--sf-card-bg-hover);
+        border-color: var(--sf-border-strong);
+        box-shadow: var(--sf-shadow-hover);
+        transform: var(--sf-hover-lift-md);
+    }
+
+.sf-flat-card-body {
+    padding: var(--sf-space-lg);
+}
+
+.sf-flat-card h3 {
+    margin: 0 0 var(--sf-space-xs);
+    color: var(--sf-text-strong);
+    font-size: var(--sf-font-size-lg);
+    line-height: 1.3;
+}
+
+.sf-flat-card p {
+    margin: 0;
+    color: var(--sf-text-muted);
+    font-size: var(--sf-font-size-sm);
+    line-height: 1.55;
+}
+
+/* Card-Meta */
+
+.sf-card-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sf-space-sm);
+    margin-bottom: var(--sf-space-md);
+    color: var(--sf-text-muted);
+    font-size: var(--sf-font-size-xs);
+    font-weight: var(--sf-font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.sf-card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--sf-space-sm);
+    margin-top: var(--sf-space-lg);
+}
+
+/* Badges */
+
+.sf-badge {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    padding: 4px 9px;
+    border-radius: var(--sf-radius-pill);
+    background: var(--sf-accent-soft);
+    color: var(--sf-accent);
+    border: 1px solid var(--sf-border);
+    font-size: var(--sf-font-size-xs);
+    font-weight: var(--sf-font-weight-bold);
+    line-height: 1;
+}
+
+.sf-badge-success {
+    background: var(--sf-success-bg);
+    color: var(--sf-success-text);
+    border-color: var(--sf-success-border);
+}
+
+.sf-badge-muted {
+    background: var(--sf-card-bg);
+    color: var(--sf-text-muted);
+    border-color: var(--sf-border);
+}
+
+/* Link in Cards */
+
+.sf-card-link {
+    color: var(--sf-accent);
+    font-weight: var(--sf-font-weight-bold);
+    font-size: var(--sf-font-size-sm);
+    text-decoration: none;
+    transition: var(--sf-transition);
+}
+
+    .sf-card-link:hover {
+        color: var(--sf-text-strong);
+        text-decoration: underline;
+    }
+
+/* Detail-Seiten */
+
+.sf-detail-page {
+    padding: var(--sf-space-xl);
+    background: var(--sf-panel-bg);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius);
+    box-shadow: var(--sf-shadow-sm);
+}
+
+.sf-detail-header {
+    display: flex;
+    align-items: center;
+    gap: var(--sf-space-md);
+    margin-bottom: var(--sf-space-lg);
+}
+
+    .sf-detail-header img {
+        width: 64px;
+        height: 64px;
+        object-fit: contain;
+    }
+
+    .sf-detail-header span {
+        color: var(--sf-accent);
+        font-size: var(--sf-font-size-sm);
+        font-weight: var(--sf-font-weight-bold);
+    }
+
+    .sf-detail-header h1,
+    .sf-detail-header h2 {
+        margin: 4px 0;
+        color: var(--sf-text-strong);
+        font-size: clamp(1.7rem, 3vw, 2.35rem);
+        line-height: 1.1;
+        letter-spacing: -0.03em;
+    }
+
+    .sf-detail-header p {
+        margin: 0;
+        color: var(--sf-text-muted);
+    }
+
+.sf-detail-box {
+    padding: var(--sf-space-lg);
+    background: var(--sf-card-bg);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius);
+    color: var(--sf-text);
+}
+
+/* Auth / Login / Register */
+
+.sf-auth-wrapper {
+    min-height: calc(100vh - 170px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--sf-space-xl) var(--sf-space-md);
+}
+
+.sf-auth-card {
+    width: 100%;
+    max-width: 430px;
+    padding: var(--sf-space-xl);
+    text-align: center;
+    background: var(--sf-panel-bg);
+    border: 1px solid var(--sf-border);
+    border-top: 4px solid var(--sf-accent);
+    border-radius: var(--sf-radius-lg);
+    box-shadow: var(--sf-shadow-md);
+    color: var(--sf-text);
+}
+
+.sf-auth-logo {
+    width: 72px;
+    height: 72px;
+    object-fit: contain;
+    margin-bottom: var(--sf-space-md);
+}
+
+.sf-auth-header {
+    margin-bottom: var(--sf-space-lg);
+}
+
+    .sf-auth-header h1,
+    .sf-auth-header h2 {
+        margin: 0 0 8px;
+        color: var(--sf-text-strong);
+        font-size: 1.55rem;
+        line-height: 1.2;
+        letter-spacing: -0.03em;
+    }
+
+    .sf-auth-header p {
+        margin: 0;
+        color: var(--sf-text-muted);
+        font-size: var(--sf-font-size-sm);
+        line-height: 1.55;
+    }
+
+.sf-auth-form {
+    text-align: left;
+}
+
+    .sf-auth-form .sf-button,
+    .sf-auth-form button[type="submit"] {
+        width: 100%;
+        min-height: 46px;
+        margin-top: var(--sf-space-sm);
+    }
+
+.sf-auth-footer {
+    margin-top: var(--sf-space-lg);
+    color: var(--sf-text-muted);
+    font-size: var(--sf-font-size-sm);
+    text-align: center;
+}
+
+    .sf-auth-footer a {
+        color: var(--sf-accent);
+        font-weight: var(--sf-font-weight-bold);
+    }
+
+        .sf-auth-footer a:hover {
+            color: var(--sf-text-strong);
+            text-decoration: underline;
+        }
+
+/* Kleine Info-/Statusboxen */
+
+.sf-info-box {
+    padding: var(--sf-space-md);
+    border-radius: var(--sf-radius);
+    background: var(--sf-card-bg);
+    border: 1px solid var(--sf-border);
+    color: var(--sf-text);
+}
+
+    .sf-info-box strong {
+        color: var(--sf-text-strong);
+    }
+
+.sf-success-box {
+    padding: var(--sf-space-md);
+    border-radius: var(--sf-radius);
+    background: var(--sf-success-bg);
+    border: 1px solid var(--sf-success-border);
+    color: var(--sf-success-text);
+    font-weight: var(--sf-font-weight-bold);
+}
+
+.sf-error-box {
+    padding: var(--sf-space-md);
+    border-radius: var(--sf-radius);
+    background: var(--sf-danger-bg);
+    border: 1px solid var(--sf-danger-bg);
+    color: var(--sf-danger-text);
+    font-weight: var(--sf-font-weight-bold);
+}
+
+/* Responsive globale Klassen */
+
+@media (max-width: 900px) {
+    .sf-grid-2,
+    .sf-grid-3 {
+        grid-template-columns: 1fr;
+    }
+
+    .sf-filter-bar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .sf-filter-action,
+    .sf-filter-action .sf-button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 680px) {
+    .sf-detail-page,
+    .sf-auth-card,
+    .sf-flat-card-body {
+        padding: var(--sf-space-lg);
+    }
+
+    .sf-detail-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+        .sf-detail-header img {
+            width: 56px;
+            height: 56px;
+        }
+}
+/* =========================================================
+   Globale Card-Icons
+   ========================================================= */
+
+.sf-card-icon {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: auto;
+    height: auto;
+    padding: 0;
+    margin-bottom: 5px;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
+}
+
+    .sf-card-icon img {
+        display: block;
+        width: 74px;
+        height: 74px;
+        object-fit: contain;
+    }
+
+.sf-flat-card:hover .sf-card-icon {
+    border-color: var(--sf-border-strong);
+    background: var(--sf-card-bg-hover);
+}

@@ -1,27 +1,47 @@
 @using SchulFunk_Webprojekt.Model
 
-<article class="news-card">
-    <div class="news-card-top">
-        <img src="/lib/images/Icon-News.png" alt="News Icon" class="news-card-icon" />
+<a href="/news/@Item.Id" class="news-card">
+    <img src="@ImageSource"
+         alt="@Item.Title"
+         class="news-card-image @(HasImage ? "" : "news-card-image-default")" />
 
-        <div>
-            <span class="news-card-category">@Item.Tag</span>
-            <h3>@Item.Title</h3>
+    <div class="news-card-body">
+        <div class="news-card-meta">
+            <span class="news-card-badge @BadgeClass">@Item.Tag</span>
+            <span>@Item.CreatedAt</span>
         </div>
+
+        <h3>@Item.Title</h3>
+
+        <p>@Item.PreviewText</p>
+
+        <span class="news-card-read-more">
+            Mehr erfahren →
+        </span>
     </div>
-
-    <p>@Item.PreviewText</p>
-
-    <div class="news-card-footer">
-        <span>@Item.ExpiredDate.ToString()</span>
-
-        <a href="/news/@Item.Id" class="sf-button sf-button-dark">
-            Mehr lesen
-        </a>
-    </div>
-</article>
+</a>
 
 @code {
     [Parameter]
     public NewsItem Item { get; set; } = new();
+
+    private bool HasImage =>
+        Item.Image is not null && Item.Image.Length > 0;
+
+    private string ImageSource =>
+        HasImage
+            ? $"data:image/png;base64,{Convert.ToBase64String(Item.Image)}"
+            : "/lib/images/Icon-News.png";
+
+    private string BadgeClass =>
+        Item.Tag.ToLower() switch
+        {
+            "sport" => "is-sport",
+            "schülervertretung" => "is-sv",
+            "sv" => "is-sv",
+            "kultur" => "is-kultur",
+            "digitalisierung" => "is-tech",
+            "technik" => "is-tech",
+            _ => "is-default"
+        };
 }

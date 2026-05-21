@@ -8,31 +8,119 @@
     <div class="survey-search-box">
         <input type="text"
                class="survey-search-input"
-               placeholder="Nach Umfrage suchen..."
+               placeholder="Umfragen durchsuchen..."
                @bind="Suchtext"
                @bind:event="oninput" />
     </div>
 
-    <a href="/survey/results" class="sf-button sf-button-dark survey-results-button">
-        Ausgewertete Umfragen
-    </a>
+    <div class="survey-filter-box">
+        <button type="button"
+                class="survey-filter-button @(FilterDropdownOpen ? "open" : "")"
+                @onclick="ToggleFilterDropdown">
+            <span>@StatusFilterLabel</span>
+            <span class="survey-filter-arrow"></span>
+        </button>
+
+        @if (FilterDropdownOpen)
+        {
+            <div class="survey-filter-menu">
+                <button type="button" @onclick="@(() => SetStatusFilter("all"))">
+                    Alle Status
+                </button>
+
+                <button type="button" @onclick="@(() => SetStatusFilter("active"))">
+                    Nur Aktive
+                </button>
+
+                <button type="button" @onclick="@(() => SetStatusFilter("ended"))">
+                    Beendete
+                </button>
+            </div>
+        }
+    </div>
 </section>
 
-<section class="survey-card-grid">
-    @foreach (var survey in GefilterteSurveyListe)
-    {
-        <SurveyCard Item="@survey" />
-    }
-</section>
+@{
+    var sichtbareUmfragen = GefilterteSurveyListe.ToList();
+}
+
+@if (sichtbareUmfragen.Any())
+{
+    <section class="survey-card-grid">
+        @foreach (var survey in sichtbareUmfragen)
+        {
+            <SurveyCard Item="@survey" />
+        }
+    </section>
+}
+else
+{
+    <section class="survey-empty-state sf-panel">
+        <h3>Keine Umfragen gefunden</h3>
+        <p>Für deine Suche oder den gewählten Filter gibt es aktuell keine passenden Umfragen.</p>
+    </section>
+}
 
 @code {
     private string Suchtext = "";
+    private string StatusFilter = "all";
+
     private List<SurveyModel> SurveyListe = SurveyData.SurveyListe;
 
     private IEnumerable<SurveyModel> GefilterteSurveyListe =>
         SurveyListe
-            .Where(survey => survey.OnlineUntil >= DateOnly.FromDateTime(DateTime.Today))
-            .Where(survey =>
-                string.IsNullOrWhiteSpace(Suchtext) ||
-                survey.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
+            .Where(MatchesStatusFilter)
+            .Where(MatchesSearch)
+            .OrderBy(survey => IsExpired(survey) ? 1 : 0)
+            .ThenByDescending(survey => survey.CreatedAt);
+
+    private bool MatchesSearch(SurveyModel survey)
+    {
+        if (string.IsNullOrWhiteSpace(Suchtext))
+        {
+            return true;
+        }
+
+        return survey.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
+               survey.Description.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
+               survey.CreatorName.Contains(Suchtext, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private bool MatchesStatusFilter(SurveyModel survey)
+    {
+        var isExpired = IsExpired(survey);
+
+        return StatusFilter switch
+        {
+            "active" => !isExpired,
+            "ended" => isExpired,
+            _ => true
+        };
+    }
+
+    private static bool IsExpired(SurveyModel survey)
+    {
+        return survey.OnlineUntil < DateOnly.FromDateTime(DateTime.Today);
+    }
+
+    private bool FilterDropdownOpen = false;
+
+    private string StatusFilterLabel =>
+        StatusFilter switch
+        {
+            "active" => "Nur Aktive",
+            "ended" => "Beendete",
+            _ => "Alle Status"
+        };
+
+    private void ToggleFilterDropdown()
+    {
+        FilterDropdownOpen = !FilterDropdownOpen;
+    }
+
+    private void SetStatusFilter(string filter)
+    {
+        StatusFilter = filter;
+        FilterDropdownOpen = false;
+    }
 }

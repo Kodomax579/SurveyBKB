@@ -1,121 +1,82 @@
 ﻿.admin-user-toolbar {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: var(--sf-space-md);
-    margin-bottom: var(--sf-space-lg);
     overflow: visible;
-}
-
-.admin-user-search {
-    flex: 1 1 auto;
 }
 
 .admin-filter-dropdown {
     position: relative;
     z-index: 80;
-    flex: 0 0 auto;
     display: inline-flex;
 }
 
 .admin-filter-button {
-    min-width: 150px;
+    min-width: 130px;
 }
 
 .admin-filter-menu {
     position: absolute;
-    top: calc(100% + 14px);
+    top: calc(100% + 10px);
     right: 0;
     z-index: 999;
-    width: 340px;
+    width: 320px;
     padding: var(--sf-space-md);
     background: var(--sf-panel-bg-strong);
-    border: 2px solid var(--sf-border);
-    border-radius: var(--sf-radius-md);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius);
     box-shadow: var(--sf-shadow-hover);
     color: var(--sf-text);
-    animation: admin-filter-open 0.22s ease forwards;
+    animation: admin-filter-open 0.18s ease forwards;
     transform-origin: top right;
 }
 
     .admin-filter-menu::before {
         content: "";
         position: absolute;
-        top: -8px;
-        right: 42px;
-        width: 14px;
-        height: 14px;
+        top: -7px;
+        right: 34px;
+        width: 12px;
+        height: 12px;
         background: var(--sf-panel-bg-strong);
-        border-left: 2px solid var(--sf-border);
-        border-top: 2px solid var(--sf-border);
+        border-left: 1px solid var(--sf-border);
+        border-top: 1px solid var(--sf-border);
         transform: rotate(45deg);
     }
 
 .admin-filter-menu-head {
-    padding: 14px 16px;
+    padding: var(--sf-space-sm);
     margin-bottom: var(--sf-space-sm);
-    border-radius: var(--sf-radius-md);
+    border-radius: var(--sf-radius-sm);
     background: var(--sf-card-bg);
     border: 1px solid var(--sf-border);
     display: grid;
-    gap: 5px;
+    gap: 4px;
 }
 
     .admin-filter-menu-head strong {
         color: var(--sf-text-strong);
-        font-weight: var(--sf-font-weight-black);
+        font-weight: var(--sf-font-weight-bold);
     }
 
     .admin-filter-menu-head span {
-        color: var(--sf-accent);
+        color: var(--sf-text-muted);
         font-size: var(--sf-font-size-sm);
-        font-weight: var(--sf-font-weight-black);
     }
 
 .admin-filter-menu .form-group {
     margin-bottom: var(--sf-space-sm);
 }
 
-    .admin-filter-menu .form-group label {
-        margin-bottom: 7px;
-        font-size: var(--sf-font-size-sm);
-        color: var(--sf-accent);
-    }
-
 .admin-reset-filter-button {
     width: 100%;
-    margin-top: 4px;
-    background: var(--sf-button-bg);
-    color: var(--sf-button-text);
-    border-color: var(--sf-button-border);
-    box-shadow: var(--sf-shadow-sm);
 }
-
-    .admin-reset-filter-button:hover {
-        background: var(--sf-button-hover-bg);
-        color: var(--sf-button-hover-text);
-        border-color: var(--sf-button-hover-border);
-    }
 
 .admin-user-result-info {
     margin: 0 0 var(--sf-space-md);
-    color: var(--sf-text-muted);
-    font-weight: var(--sf-font-weight-black);
 }
-
-    .admin-user-result-info span {
-        display: inline-flex;
-        padding: 9px 17px;
-        border: 1px solid var(--sf-border);
-        border-radius: var(--sf-radius-pill);
-        background: var(--sf-accent-soft);
-        color: var(--sf-accent);
-    }
 
 @keyframes admin-filter-open {
     from {
         opacity: 0;
-        transform: translateY(-10px) scale(0.96);
+        transform: translateY(-6px) scale(0.98);
     }
 
     to {
@@ -125,11 +86,6 @@
 }
 
 @media (max-width: 900px) {
-    .admin-user-toolbar {
-        align-items: stretch;
-        flex-direction: column;
-    }
-
     .admin-filter-dropdown,
     .admin-filter-button {
         width: 100%;
@@ -143,13 +99,6 @@
 
         .admin-filter-menu::before {
             right: auto;
-            left: 42px;
+            left: 34px;
         }
-}
-
-@media (max-width: 680px) {
-    .admin-filter-menu {
-        padding: var(--sf-space-md);
-        border-radius: var(--sf-radius-md);
-    }
 }

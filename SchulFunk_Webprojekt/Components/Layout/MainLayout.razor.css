@@ -1,26 +1,28 @@
 .sf-page {
     min-height: 100vh;
-    padding: var(--sf-page-padding);
-    background: radial-gradient(circle at top left, rgba(var(--sf-color-accent-rgb), 0.14), transparent 30%), radial-gradient(circle at bottom right, rgba(var(--sf-color-secondary-rgb), 0.42), transparent 34%), linear-gradient(135deg, var(--sf-page-bg) 0%, var(--sf-page-bg-secondary) 100%);
+    background: linear-gradient(135deg, var(--sf-page-bg) 0%, var(--sf-page-bg-secondary) 100%);
 }
 
 .sf-container {
     width: 100%;
-    max-width: var(--sf-container-width);
+    max-width: 1180px;
     margin: 0 auto;
+    padding: 0 28px;
 }
 
 .sf-main {
     width: 100%;
-    margin-top: var(--sf-space-xl);
+    padding-top: 34px;
+    padding-bottom: 34px;
 }
 
 @media (max-width: 680px) {
-    .sf-page {
-        padding: var(--sf-page-padding-mobile);
+    .sf-container {
+        padding: 0 16px;
     }
 
     .sf-main {
-        margin-top: var(--sf-space-lg);
+        padding-top: 24px;
+        padding-bottom: 24px;
     }
 }

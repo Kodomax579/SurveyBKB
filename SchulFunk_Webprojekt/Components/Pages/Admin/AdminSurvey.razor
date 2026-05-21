@@ -13,9 +13,14 @@
 }
 else
 {
-    <section class="admin-toolbar sf-panel">
+    <section class="sf-page-header">
+        <h1>Umfragen verwalten</h1>
+        <p>Verwalte, beende oder lösche Umfragen entsprechend deiner Berechtigung.</p>
+    </section>
+
+    <section class="sf-filter-bar">
         <input type="text"
-               class="admin-search-input"
+               class="sf-input sf-filter-search"
                placeholder="Nach Umfrage suchen..."
                @bind="Suchtext"
                @bind:event="oninput" />
@@ -28,10 +33,11 @@ else
 
             <article class="admin-list-card sf-panel">
                 <div class="admin-list-card-main">
-                    <img src="/lib/images/Icon-Survey.png" alt="" />
-
                     <div>
-                        <span>@(isExpired ? "Ausgewertete Umfrage" : "Aktive Umfrage")</span>
+                        <span class="sf-badge @(isExpired ? "sf-badge-muted" : "sf-badge-success")">
+                            @(isExpired ? "Ausgewertet" : "Aktiv")
+                        </span>
+
                         <h3>@survey.Title</h3>
                         <p>@survey.Description</p>
 
