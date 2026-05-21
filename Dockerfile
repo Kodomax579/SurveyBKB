@@ -10,4 +10,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0
 WORKDIR /app
 COPY --from=build /app/publish .
 RUN mkdir -p wwwroot/uploads
+
+EXPOSE 7224
 ENTRYPOINT ["dotnet", "Survey.ApiGateway.dll"]
