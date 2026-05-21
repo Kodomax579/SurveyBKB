@@ -10,10 +10,10 @@ using Survey.ApiGateway.Database;
 
 #nullable disable
 
-namespace Survey.ApiGateway.Migrations
+namespace Survey.ApiGateway.Database.migration
 {
     [DbContext(typeof(SurveyDbContext))]
-    [Migration("20260520192555_InitialCreate")]
+    [Migration("20260521083401_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

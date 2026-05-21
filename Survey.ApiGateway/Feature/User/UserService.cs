@@ -35,12 +35,14 @@ namespace Survey.ApiGateway.Feature.User
                 return null;
             }
 
-            var classExists = await dbContext.Classes.AnyAsync(c => c.Id == user.ClassId);
-            if (!classExists)
+            var classExists = await dbContext.Classes.FirstOrDefaultAsync(c => c.ClassName.ToLower() == user.Class.ClassName.ToLower());
+            if (classExists == null)
             {
                 return null;
             }
             user.Password = _passwordHasher.HashPassword(user, user.Password);
+
+            user.Class = classExists;
 
             await dbContext.Users.AddAsync(user);
             await dbContext.SaveChangesAsync();
