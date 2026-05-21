@@ -1,0 +1,25 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      # Hier greift die API auf den 'db'-Dienst zu
+      - ConnectionStrings__DefaultConnectionPublish=Host=db;Port=5432;Database=schulfunkdb;Username=schulfunk_admin;Password=DeinSicheresPasswort;
+    volumes:
+      # Verknüpft den Upload-Ordner mit dem Server-Speicher, damit Bilder nicht verloren gehen
+      - ./uploads:/app/wwwroot/uploads
+
+  db:
+    image: postgres:16
+    environment:
+      - POSTGRES_DB=schulfunkdb
+      - POSTGRES_USER=schulfunk_admin
+      - POSTGRES_PASSWORD=DeinSicheresPasswort
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:

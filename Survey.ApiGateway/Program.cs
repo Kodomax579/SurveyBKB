@@ -19,9 +19,13 @@ namespace Survey.ApiGateway
         {
             var builder = WebApplication.CreateBuilder(args);
 
-
+#if DEBUG
             builder.Services.AddDbContext<SurveyDbContext>(options =>
-                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionLocal")));
+#else
+            builder.Services.AddDbContext<SurveyDbContext>(options =>
+                options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnectionPublish")));
+#endif
 
             builder.Services.AddScoped<AuthService>();
             builder.Services.AddScoped<UserService>();
@@ -95,7 +99,7 @@ namespace Survey.ApiGateway
             app.UseRouting();
 
             app.UseCors("AllowAll");
-
+            app.UseStaticFiles();
             app.UseAuthentication(); 
             app.UseAuthorization();  
             app.MapHub<RealtimeHub.RealtimeHub>("/realtimehub");

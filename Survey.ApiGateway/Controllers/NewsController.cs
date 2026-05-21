@@ -28,22 +28,25 @@ namespace Survey.ApiGateway.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateNews([FromBody] NewsModel news)
+        public async Task<IActionResult> CreateNews([FromForm] NewsModel news, IFormFile? image)
         {
-            if (news == null)
+            if (image != null)
             {
-                return BadRequest();
-            }
+                var folder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+                if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
 
+                var fileName = $"{Guid.NewGuid()}{Path.GetExtension(image.FileName)}";
+                var path = Path.Combine(folder, fileName);
+
+                using (var stream = new FileStream(path, FileMode.Create))
+                {
+                    await image.CopyToAsync(stream);
+                }
+
+                news.ImageLink = $"/uploads/{fileName}";
+            }
             var result = await newsService.CreateNews(news);
-
-            if(result == null)
-            {
-                return BadRequest(false);
-            }
-            await realtimeHub.Clients.All.SendAsync("ReceiveNewNews", result);
-
-            return Ok(true);
+            return Ok(result);
         }
 
         [HttpPut("{id}")]
