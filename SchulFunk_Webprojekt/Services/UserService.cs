@@ -6,7 +6,7 @@ namespace SchulFunk_Webprojekt.Services
     {
         private readonly HttpClient _httpClient;
         private readonly AuthTokenService _authTokenService;
-        private const string BaseUrl = "https://localhost:7224";
+        private const string BaseUrl = "http://212.227.82.199:7224";
         public UserService(HttpClient httpClient, AuthTokenService authTokenService)
         {
             _httpClient = httpClient;
