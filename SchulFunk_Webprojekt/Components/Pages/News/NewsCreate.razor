@@ -146,34 +146,5 @@ else
 
     private void ArtikelVeroeffentlichen()
     {
-        if (!CanCreateNews)
-        {
-            return;
-        }
-
-        var neueId = NewsData.NewsListe.Count == 0
-            ? 1
-            : NewsData.NewsListe.Max(news => news.Id) + 1;
-
-        NewsData.NewsListe.Add(new NewsItem
-        {
-            Id = neueId,
-            CreatedUserID = TestLoginData.CurrentUserId,
-            Tag = Tag,
-            Title = Titel,
-            Description = Description,
-            Date = "Heute",
-            Artikel = Artikel,
-            Image = BildBytes,
-            CreatedAt = DateTime.Today,
-            ExpiredDate = DateTime.Today.AddDays(30)
-        });
-
-        Titel = "";
-        Tag = "";
-        Description = "";
-        Artikel = "";
-        BildVorschauUrl = "";
-        BildBytes = Array.Empty<byte>();
     }
 }

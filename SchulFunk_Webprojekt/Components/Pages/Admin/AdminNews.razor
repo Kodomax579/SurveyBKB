@@ -68,11 +68,11 @@ else
                     <div>
                         <span>@news.Tag</span>
                         <h3>@news.Title</h3>
-                        <p>@news.Description</p>
+                        <p>@news.PreviewText</p>
 
                         <div class="admin-meta">
-                            <strong>Ersteller:</strong> @GetCreatorName(news.CreatedUserID) ·
-                            <strong>Datum:</strong> @news.Date
+                            <strong>Ersteller:</strong> @news.UserModel.Lastname @news.UserModel.Name
+                            <strong>Datum:</strong> @news.ExpiredDate
                         </div>
                     </div>
                 </div>
@@ -143,11 +143,6 @@ else
             return true;
         }
 
-        if (CanManageOwnNews)
-        {
-            return news.CreatedUserID == TestLoginData.CurrentUserId;
-        }
-
         return false;
     }
 
@@ -184,8 +179,8 @@ else
         NewsInBearbeitung = news;
         EditTitle = news.Title;
         EditTag = news.Tag;
-        EditDescription = news.Description;
-        EditArtikel = news.Artikel;
+        EditDescription = news.PreviewText;
+        EditArtikel = news.MainText;
     }
 
     private void SaveNewsEdit()
@@ -197,8 +192,8 @@ else
 
         NewsInBearbeitung.Title = EditTitle;
         NewsInBearbeitung.Tag = EditTag;
-        NewsInBearbeitung.Description = EditDescription;
-        NewsInBearbeitung.Artikel = EditArtikel;
+        NewsInBearbeitung.PreviewText = EditDescription;
+        NewsInBearbeitung.MainText = EditArtikel;
 
         CancelNewsEdit();
     }

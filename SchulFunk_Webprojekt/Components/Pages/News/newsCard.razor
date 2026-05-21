@@ -10,10 +10,10 @@
         </div>
     </div>
 
-    <p>@Item.Description</p>
+    <p>@Item.PreviewText</p>
 
     <div class="news-card-footer">
-        <span>@Item.Date</span>
+        <span>@Item.ExpiredDate.ToString()</span>
 
         <a href="/news/@Item.Id" class="sf-button sf-button-dark">
             Mehr lesen

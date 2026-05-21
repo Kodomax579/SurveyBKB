@@ -18,15 +18,10 @@
         <div class="home-news-list">
             @foreach (var news in AktuellsteNews)
             {
-                <a href="/news/@news.Id" class="home-news-card">
-                    <div class="home-news-date">@news.Date</div>
-
-                    <div class="home-news-content">
-                        <h3>@news.Title</h3>
-                        <p>@news.Description</p>
-                    </div>
-
-                    <strong>→</strong>
+                <a href="/news/@news.Id" class="home-news-item home-news-link">
+                    <span>@news.CreatedAt</span>
+                    <h3>@news.Title</h3>
+                    <p>@news.PreviewText</p>
                 </a>
             }
         </div>

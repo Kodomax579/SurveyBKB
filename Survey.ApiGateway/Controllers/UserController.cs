@@ -1,112 +1,85 @@
-﻿using Contracts.Protos;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity.Data;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Survey.ApiGateway.Models;
+using Survey.ApiGateway.Feature.User; 
+using Survey.ApiGateway.Feature.User.Models; 
 
 namespace Survey.ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UserController(UserService userService) : ControllerBase
     {
-        private readonly User.UserClient _grpcClient;
-        
-        public UserController(User.UserClient grpcClient)
-        {
-            _grpcClient = grpcClient;
-        }
-
-        [HttpGet("GetAllUsers")]
+        [HttpGet]
         [Authorize]
         public async Task<IActionResult> GetAllUsers()
         {
-            var grpcRequest = new GetAllUsersRequest();
-
-            var grpcResponse = await _grpcClient.GetAllUsersAsync(grpcRequest);
-            return Ok(grpcResponse.Users);
+            return Ok(await userService.GetAllUsers());
         }
 
-
-        [HttpPost("CreateUser")]
-        [Authorize]
+        [HttpPost]
         public async Task<IActionResult> CreateUser([FromBody] UserModel model)
         {
-            var grpcRequest = new CreateUserRequest()
+            if (model == null)
+            { 
+                return BadRequest();
+            }
+
+            var createdUser = await userService.CreateUser(model);
+            if (createdUser == null)
             {
-                User = new UserMessage()
-                {
-                    Name = model.Name,
-                    Lastname = model.Lastname,
-                    Email = model.Email,
-                    Password = model.Password,
-                    Class = new ClassMessage()
-                    {
-                        Name = model.Class.ClassName,
-                    },
-                    Group = (UserGroup)model.Group
-                }
-            };
-            var grpcResponse = await _grpcClient.CreateUserAsync(grpcRequest);
+                return BadRequest(false);
+            }
 
-            return Ok(grpcResponse.Success);
+            return Ok(createdUser);
         }
 
-        [HttpPut("UpdateUser")]
+        [HttpPut("{id}")]
         [Authorize]
-        public async Task<IActionResult> UpdateUser([FromBody] UserModel user)
+        public async Task<IActionResult> UpdateUser(int id, [FromBody] UserModel user)
         {
-            var grpcRequest = new UpdateUserRequest()
+            if (user == null)
             {
-                User = new UserMessage()
-                {
-                    Name = user.Name,
-                    Lastname = user.Lastname,
-                    Email = user.Email,
-                    Password = user.Password,
-                    Class = new ClassMessage()
-                    {
-                        Name = user.Class.ClassName,
-                    },
-                    Group = (UserGroup)user.Group
-                },
-            };
-            var grpcResponse = await _grpcClient.UpdateUserAsync(grpcRequest); 
-            return Ok(grpcResponse.Success);
+                return BadRequest();
+            }
+
+            var updatedUser = await userService.UpdateUser(id, user);
+            if (updatedUser == null)
+            {
+                return NotFound("Benutzer nicht gefunden.");
+            }
+
+            return Ok(updatedUser);
         }
 
-        [HttpDelete("DeleteUser")]
+        [HttpDelete("{id}")]
         [Authorize]
-        public async Task<IActionResult> DeleteUser(string email)
+        public async Task<IActionResult> DeleteUser(int id)
         {
-            var grpcRequest = new DeleteUserRequest() { Email = email };
-            var grpcResponse = await _grpcClient.DeleteUserAsync(grpcRequest);
-            return Ok(grpcResponse.Success);
+            var success = await userService.DeleteUser(id);
+            if (!success) return NotFound();
+
+            return Ok(true);
         }
 
-        [HttpGet("GetAllClasses")]
+
+        [HttpGet("classes")]
         [Authorize]
         public async Task<IActionResult> GetAllClasses()
         {
-            var grpcRequest = new GetAllClassesRequest();
-            var grpcResponse = await _grpcClient.GetAllClassesAsync(grpcRequest);
-            return Ok(grpcResponse.Classes);
+            return Ok(await userService.GetAllClasses());
         }
 
-        [HttpPost("CreateClass")]
+        [HttpPost("classes")]
         [Authorize]
-        public async Task<IActionResult> GetClassById([FromBody] ClassModel model)
+        public async Task<IActionResult> CreateClass([FromBody] ClassModel model)
         {
-            var grpcRequest = new CreateClassRequest()
+            var createdClass = await userService.CreateClass(model);
+            if (createdClass == null)
             {
-                Class = new ClassMessage()
-                {
-                    Name = model.ClassName
-                }
-            };
-            var grpcResponse = await _grpcClient.CreateClassAsync(grpcRequest);
-            return Ok(grpcResponse.Success);
+                return BadRequest("Klasse existiert bereits.");
+            }
+
+            return Ok(createdClass);
         }
     }
 }

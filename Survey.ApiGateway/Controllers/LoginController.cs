@@ -1,42 +1,42 @@
-﻿using Contracts.Protos;
-using Mapster;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Survey.ApiGateway.Feature.User;
+using Survey.ApiGateway.Feature.User.DTO;
 using Survey.ApiGateway.Models;
+using Survey.ApiGateway.Models.DTO;
+using Survey.ApiGateway.Services;
 
 namespace Survey.ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginController: ControllerBase
+    public class LoginController (LoginService loginService, AuthService authService): ControllerBase
     {
-        private readonly User.UserClient _grpcClient;
-        private readonly Services.AuthService _authService;
-
-        public LoginController(User.UserClient grpcClient, Services.AuthService authService)
+        [HttpPost]
+        [AllowAnonymous] 
+        public async Task<IActionResult> Login([FromBody] LoginDTO request)
         {
-            _grpcClient = grpcClient;
-            _authService = authService;
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> Login(string email, string password)
-        {
-            var grpcRequest = new LoginRequest() { Email = email, Password = password };
-
-            var grpcResponse = await _grpcClient.LoginAsync(grpcRequest);
-
-            if (string.IsNullOrEmpty(grpcResponse.User.Email))
+            if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
             {
-                return Unauthorized();
+                return BadRequest(false);
             }
 
-            var model = grpcResponse.User.Adapt<UserModel>();
+            var userModel = await loginService.Login(request.Email, request.Password);
 
-            var token = _authService.CreateToken(model);
-            Response.Headers.Append("Authorization", $"Bearer {token}");
+            if (userModel == null)
+            {
+                return Unauthorized("Ungültige E-Mail oder falsches Passwort.");
+            }
 
-            return Ok(model);
+            var token = authService.CreateToken(userModel);
+
+            return Ok(new
+            {
+                User = userModel,
+                Token = token
+            });
         }
     }
 }

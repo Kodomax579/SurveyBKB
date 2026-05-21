@@ -1,24 +1,25 @@
 .sf-header {
-    position: relative;
+    position: sticky;
+    top: var(--sf-space-md);
     z-index: 9000;
     overflow: visible;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--sf-space-lg);
-    padding: var(--sf-space-md) var(--sf-space-lg);
+    padding: 14px 18px;
     background: var(--sf-panel-bg-strong);
-    border: 2px solid var(--sf-border);
+    border: 1px solid var(--sf-border);
+    border-top: 4px solid var(--sf-accent);
     border-radius: var(--sf-radius);
-    box-shadow: var(--sf-shadow);
-    backdrop-filter: blur(18px);
+    box-shadow: var(--sf-shadow-sm);
 }
 
 ::deep .sf-brand {
     display: inline-flex;
     align-items: center;
     justify-content: flex-start;
-    gap: var(--sf-space-md);
+    gap: var(--sf-space-sm);
     flex: 0 0 auto;
     color: var(--sf-text-strong);
     text-decoration: none;
@@ -37,8 +38,8 @@
     }
 
 .sf-logo {
-    width: 86px;
-    height: 86px;
+    width: 54px;
+    height: 54px;
     object-fit: contain;
     flex: 0 0 auto;
 }
@@ -51,10 +52,10 @@
     .sf-brand-text h1 {
         margin: 0;
         color: var(--sf-text-strong);
-        font-size: 2.65rem;
-        font-weight: 400;
+        font-size: 1.65rem;
+        font-weight: 850;
         line-height: 1;
-        letter-spacing: -0.06em;
+        letter-spacing: -0.04em;
         white-space: nowrap;
     }
 
@@ -69,42 +70,42 @@
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: var(--sf-space-sm);
+    gap: 6px;
     flex-wrap: nowrap;
 }
 
-/* Standard-Buttons */
+/* Navigation wie klassische Links, aber weiterhin als Buttons erkennbar */
 
 ::deep .sf-nav-button,
 .sf-settings-button {
-    min-height: 58px;
-    padding: 15px 24px;
-    border: 2px solid var(--sf-button-dark-border);
-    border-radius: var(--sf-radius-pill);
-    background: var(--sf-button-dark-bg);
-    color: var(--sf-button-dark-text);
-    font-weight: var(--sf-font-weight-black);
-    font-size: var(--sf-font-size-base);
+    min-height: 40px;
+    padding: 9px 13px;
+    border: 1px solid transparent;
+    border-radius: var(--sf-radius-sm);
+    background: transparent;
+    color: var(--sf-text);
+    font-weight: var(--sf-font-weight-bold);
+    font-size: var(--sf-font-size-sm);
     line-height: 1;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     white-space: nowrap;
     text-decoration: none;
-    box-shadow: var(--sf-shadow-sm);
+    box-shadow: none;
     cursor: pointer;
     transition: var(--sf-transition);
 }
 
     ::deep .sf-nav-button:hover,
     .sf-settings-button:hover {
-        background: var(--sf-button-dark-hover-bg);
-        color: var(--sf-button-dark-hover-text);
+        background: var(--sf-accent-soft);
+        color: var(--sf-text-strong);
         text-decoration: none;
-        transform: var(--sf-hover-lift-sm);
-        border-color: var(--sf-button-dark-hover-border);
-        box-shadow: var(--sf-shadow-md);
+        transform: none;
+        border-color: var(--sf-border);
+        box-shadow: none;
     }
 
     /* Aktive Seite */
@@ -119,7 +120,7 @@
         background: var(--sf-button-bg);
         color: var(--sf-button-text);
         border-color: var(--sf-button-border);
-        box-shadow: var(--sf-shadow-md);
+        box-shadow: none;
     }
 
 /* Einstellungen */
@@ -132,8 +133,8 @@
 }
 
 .sf-settings-button img {
-    width: 28px;
-    height: 28px;
+    width: 23px;
+    height: 23px;
     object-fit: contain;
     flex: 0 0 auto;
     opacity: 1;
@@ -142,66 +143,67 @@
 
 .sf-settings-menu {
     position: absolute;
-    top: calc(100% + 14px);
+    top: calc(100% + 10px);
     right: 0;
     z-index: 99999;
     width: 270px;
     padding: var(--sf-space-sm);
     background: var(--sf-panel-bg-strong);
-    border: 2px solid var(--sf-border);
-    border-radius: var(--sf-radius-md);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius);
     box-shadow: var(--sf-shadow-hover);
-    animation: sf-dropdown-open 0.22s ease forwards;
+    animation: sf-dropdown-open 0.18s ease forwards;
     transform-origin: top right;
 }
 
 .sf-settings-menu-closing {
-    animation: sf-dropdown-close 0.18s ease forwards;
+    animation: sf-dropdown-close 0.16s ease forwards;
 }
 
 .sf-settings-menu::before {
     content: "";
     position: absolute;
-    top: -8px;
-    right: 34px;
-    width: 14px;
-    height: 14px;
+    top: -7px;
+    right: 28px;
+    width: 12px;
+    height: 12px;
     background: var(--sf-panel-bg-strong);
-    border-left: 2px solid var(--sf-border);
-    border-top: 2px solid var(--sf-border);
+    border-left: 1px solid var(--sf-border);
+    border-top: 1px solid var(--sf-border);
     transform: rotate(45deg);
 }
 
 .sf-settings-user {
-    padding: 14px 16px;
+    padding: 12px 14px;
     margin-bottom: var(--sf-space-xs);
-    border-radius: var(--sf-radius-md);
+    border-radius: var(--sf-radius-sm);
     background: var(--sf-card-bg);
     border: 1px solid var(--sf-border);
     display: grid;
-    gap: 5px;
+    gap: 4px;
 }
 
     .sf-settings-user strong {
         color: var(--sf-text-strong);
-        font-weight: var(--sf-font-weight-black);
+        font-weight: var(--sf-font-weight-bold);
     }
 
     .sf-settings-user span {
         color: var(--sf-text-muted);
-        font-weight: var(--sf-font-weight-bold);
+        font-weight: var(--sf-font-weight-medium);
         font-size: var(--sf-font-size-sm);
     }
 
 .sf-settings-menu-item {
     width: 100%;
-    min-height: 46px;
-    padding: 12px 14px;
+    min-height: 40px;
+    padding: 10px 12px;
     border: none;
     border-radius: var(--sf-radius-sm);
     background: transparent;
-    color: var(--sf-text-strong);
-    font-weight: var(--sf-font-weight-black);
+    color: var(--sf-text);
+    font-size: var(--sf-font-size-sm);
+    font-weight: var(--sf-font-weight-bold);
     text-align: left;
     display: flex;
     align-items: center;
@@ -214,7 +216,7 @@
         background: var(--sf-accent-soft);
         color: var(--sf-text-strong);
         text-decoration: none;
-        transform: translateX(3px);
+        transform: none;
     }
 
 .sf-settings-logout {
@@ -226,16 +228,16 @@
         color: var(--sf-text-strong);
     }
 
-/* Theme Toggle im Dropdown, kommt später im nächsten Schritt dazu */
+/* Theme Toggle */
 
 .sf-theme-toggle {
     justify-content: flex-start;
-    gap: 12px;
+    gap: var(--sf-space-sm);
 }
 
 .sf-theme-toggle-icon {
-    width: 28px;
-    height: 28px;
+    width: 26px;
+    height: 26px;
     border-radius: var(--sf-radius-pill);
     background: var(--sf-accent-soft);
     display: inline-flex;
@@ -249,7 +251,7 @@
 @keyframes sf-dropdown-open {
     from {
         opacity: 0;
-        transform: translateY(-10px) scale(0.96);
+        transform: translateY(-6px) scale(0.98);
     }
 
     to {
@@ -266,7 +268,7 @@
 
     to {
         opacity: 0;
-        transform: translateY(-10px) scale(0.96);
+        transform: translateY(-6px) scale(0.98);
     }
 }
 
@@ -292,8 +294,9 @@
 
 @media (max-width: 680px) {
     .sf-header {
+        top: var(--sf-space-sm);
         padding: var(--sf-space-md);
-        border-radius: var(--sf-radius-md);
+        border-radius: var(--sf-radius);
     }
 
     ::deep .sf-brand {
@@ -301,12 +304,12 @@
     }
 
     .sf-logo {
-        width: 68px;
-        height: 68px;
+        width: 48px;
+        height: 48px;
     }
 
     .sf-brand-text h1 {
-        font-size: 2rem;
+        font-size: 1.45rem;
     }
 
     .sf-navbar {
@@ -318,6 +321,7 @@
     .sf-settings-dropdown,
     .sf-settings-button {
         width: 100%;
+        justify-content: flex-start;
     }
 
     .sf-settings-menu {
@@ -328,6 +332,6 @@
 
         .sf-settings-menu::before {
             right: auto;
-            left: 34px;
+            left: 28px;
         }
 }

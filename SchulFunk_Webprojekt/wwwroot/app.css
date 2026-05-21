@@ -12,7 +12,7 @@ html,
 body {
     margin: 0;
     min-height: 100%;
-    background: radial-gradient(circle at top left, rgba(var(--sf-color-accent-rgb), 0.14), transparent 30%), radial-gradient(circle at bottom right, rgba(var(--sf-color-secondary-rgb), 0.42), transparent 34%), linear-gradient(135deg, var(--sf-page-bg) 0%, var(--sf-page-bg-secondary) 100%);
+    background: linear-gradient(135deg, var(--sf-page-bg) 0%, var(--sf-page-bg-secondary) 100%);
     color: var(--sf-text);
     font-family: var(--sf-font-family);
 }
@@ -47,8 +47,8 @@ select {
     input:focus-visible,
     textarea:focus-visible,
     select:focus-visible {
-        outline: 4px solid var(--sf-focus);
-        outline-offset: 4px;
+        outline: 3px solid var(--sf-focus);
+        outline-offset: 3px;
     }
 
 /* =========================================================
@@ -59,7 +59,7 @@ select {
     position: relative;
     overflow: hidden;
     background: var(--sf-panel-bg);
-    border: var(--sf-border-width, 2px) solid var(--sf-border);
+    border: 1px solid var(--sf-border);
     border-radius: var(--sf-radius);
     box-shadow: var(--sf-shadow);
     color: var(--sf-text);
@@ -75,9 +75,10 @@ select {
     position: relative;
     background: var(--sf-card-bg);
     border: 1px solid var(--sf-border);
-    border-radius: var(--sf-radius-md);
+    border-radius: var(--sf-radius);
     color: var(--sf-text);
     transition: var(--sf-transition);
+    box-shadow: var(--sf-shadow-sm);
 }
 
     .sf-card:hover {
@@ -89,9 +90,9 @@ select {
 
 .sf-toolbar {
     background: var(--sf-toolbar-bg);
-    border: var(--sf-border-width, 2px) solid var(--sf-border);
+    border: 1px solid var(--sf-border);
     border-radius: var(--sf-radius);
-    box-shadow: var(--sf-shadow);
+    box-shadow: var(--sf-shadow-sm);
     color: var(--sf-text);
 }
 
@@ -102,21 +103,22 @@ select {
 .sf-button {
     position: relative;
     z-index: 1;
-    min-height: 52px;
-    padding: 14px 24px;
-    border: 2px solid var(--sf-button-border);
-    border-radius: var(--sf-radius-pill);
+    min-height: 44px;
+    padding: 11px 18px;
+    border: 1px solid var(--sf-button-border);
+    border-radius: var(--sf-radius-sm);
     background: var(--sf-button-bg);
     color: var(--sf-button-text);
-    font-weight: var(--sf-font-weight-black);
+    font-weight: var(--sf-font-weight-bold);
+    font-size: var(--sf-font-size-sm);
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     cursor: pointer;
     text-align: center;
     transition: var(--sf-transition);
-    box-shadow: var(--sf-shadow-sm);
+    box-shadow: none;
 }
 
     .sf-button:hover {
@@ -124,11 +126,11 @@ select {
         color: var(--sf-button-hover-text);
         border-color: var(--sf-button-hover-border);
         transform: var(--sf-hover-lift-sm);
-        box-shadow: var(--sf-shadow-md);
+        box-shadow: var(--sf-shadow-sm);
     }
 
     .sf-button:active {
-        transform: translateY(-1px) scale(0.98);
+        transform: translateY(0) scale(0.99);
     }
 
 .sf-button-dark {
@@ -171,15 +173,16 @@ select {
 .preview-label {
     position: relative;
     z-index: 1;
-    padding: 8px 14px;
+    padding: 5px 10px;
     border: 1px solid var(--sf-border);
     border-radius: var(--sf-radius-pill);
     background: var(--sf-accent-soft);
     color: var(--sf-accent);
-    font-weight: var(--sf-font-weight-black);
+    font-size: var(--sf-font-size-xs);
+    font-weight: var(--sf-font-weight-bold);
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .preview-label {
@@ -205,29 +208,22 @@ select {
     .form-group label,
     .answer-list > label {
         display: block;
-        margin-bottom: 8px;
-        color: var(--sf-accent);
-        font-weight: var(--sf-font-weight-black);
+        margin-bottom: 7px;
+        color: var(--sf-text-strong);
+        font-size: var(--sf-font-size-sm);
+        font-weight: var(--sf-font-weight-bold);
     }
-
-.form-control,
-.sf-input,
-input,
-textarea,
-select {
-    border-color: var(--sf-input-border, var(--sf-border));
-}
 
 .form-control,
 .sf-input {
     width: 100%;
-    border: 2px solid var(--sf-border);
-    border-radius: var(--sf-radius-md);
-    padding: 15px 18px;
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius-sm);
+    padding: 12px 14px;
     background: var(--sf-input-bg);
     color: var(--sf-input-text);
     caret-color: var(--sf-accent);
-    font-size: var(--sf-font-size-base);
+    font-size: var(--sf-font-size-sm);
     font-weight: var(--sf-font-weight-medium);
     outline: none;
     transition: var(--sf-transition);
@@ -241,7 +237,7 @@ select {
 
     .form-control:hover,
     .sf-input:hover {
-        border-color: var(--sf-accent);
+        border-color: var(--sf-border-strong);
         background: var(--sf-input-bg-hover);
     }
 
@@ -250,7 +246,7 @@ select {
         border-color: var(--sf-accent);
         background: var(--sf-input-bg-focus);
         color: var(--sf-input-text);
-        box-shadow: 0 0 0 4px var(--sf-focus);
+        box-shadow: 0 0 0 3px var(--sf-focus);
     }
 
 textarea.form-control {
@@ -265,18 +261,19 @@ select.sf-input {
 
 .validation-message {
     display: block;
-    margin-top: 8px;
+    margin-top: 7px;
     color: var(--sf-accent);
+    font-size: var(--sf-font-size-sm);
     font-weight: var(--sf-font-weight-bold);
 }
 
 .readonly-info-box {
     position: relative;
     z-index: 1;
-    min-height: 54px;
-    padding: 14px 18px;
-    border: 2px solid var(--sf-border);
-    border-radius: var(--sf-radius-md);
+    min-height: 46px;
+    padding: 12px 14px;
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius-sm);
     background: var(--sf-card-bg);
     color: var(--sf-text);
     display: flex;
@@ -287,12 +284,12 @@ select.sf-input {
 
     .readonly-info-box strong {
         color: var(--sf-text-strong);
-        font-weight: var(--sf-font-weight-black);
+        font-weight: var(--sf-font-weight-bold);
     }
 
     .readonly-info-box span {
         color: var(--sf-accent);
-        font-weight: var(--sf-font-weight-black);
+        font-weight: var(--sf-font-weight-bold);
     }
 
 .form-actions {
@@ -310,7 +307,7 @@ select.sf-input {
 }
 
 /* =========================================================
-   Wiederverwendbare Admin-/Listen-Klassen
+   Admin / Listen
    ========================================================= */
 
 .admin-header {
@@ -331,24 +328,24 @@ select.sf-input {
 }
 
     .admin-title img {
-        width: 86px;
-        height: 86px;
+        width: 72px;
+        height: 72px;
         object-fit: contain;
     }
 
     .admin-title h2 {
         margin: 0;
         color: var(--sf-text-strong);
-        font-size: clamp(2rem, 4vw, 3.2rem);
-        line-height: 1.05;
-        letter-spacing: -0.04em;
+        font-size: clamp(1.8rem, 3vw, 2.5rem);
+        line-height: 1.08;
+        letter-spacing: -0.03em;
     }
 
     .admin-title p {
-        margin: 10px 0 0;
+        margin: 8px 0 0;
         color: var(--sf-text-muted);
-        font-size: var(--sf-font-size-md);
-        line-height: 1.6;
+        font-size: var(--sf-font-size-base);
+        line-height: 1.55;
     }
 
 .admin-dashboard-grid {
@@ -359,7 +356,7 @@ select.sf-input {
 
 .admin-dashboard-card {
     position: relative;
-    min-height: 245px;
+    min-height: 205px;
     padding: var(--sf-space-lg);
     transition: var(--sf-transition);
 }
@@ -371,16 +368,16 @@ select.sf-input {
     }
 
     .admin-dashboard-card:hover {
-        transform: var(--sf-hover-lift-lg);
-        border-color: var(--sf-accent);
+        transform: var(--sf-hover-lift-md);
+        border-color: var(--sf-border-strong);
         box-shadow: var(--sf-shadow-hover);
     }
 
     .admin-dashboard-card img {
         position: relative;
         z-index: 1;
-        width: 76px;
-        height: 76px;
+        width: 58px;
+        height: 58px;
         object-fit: contain;
         margin-bottom: var(--sf-space-md);
     }
@@ -390,15 +387,16 @@ select.sf-input {
         z-index: 1;
         margin: 0;
         color: var(--sf-text-strong);
-        font-size: var(--sf-font-size-xl);
+        font-size: var(--sf-font-size-lg);
     }
 
     .admin-dashboard-card p {
         position: relative;
         z-index: 1;
-        margin: 12px 0 0;
+        margin: 10px 0 0;
         color: var(--sf-text-muted);
-        line-height: 1.6;
+        line-height: 1.55;
+        font-size: var(--sf-font-size-sm);
     }
 
 .admin-toolbar {
@@ -410,15 +408,15 @@ select.sf-input {
     position: relative;
     z-index: 1;
     width: 100%;
-    min-height: 52px;
-    border: 2px solid var(--sf-border);
-    border-radius: var(--sf-radius-pill);
-    padding: 14px 22px;
+    min-height: 44px;
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius-sm);
+    padding: 12px 14px;
     background: var(--sf-input-bg);
     color: var(--sf-input-text);
     caret-color: var(--sf-accent);
-    font-size: var(--sf-font-size-base);
-    font-weight: var(--sf-font-weight-bold);
+    font-size: var(--sf-font-size-sm);
+    font-weight: var(--sf-font-weight-medium);
     outline: none;
     transition: var(--sf-transition);
 }
@@ -432,7 +430,7 @@ select.sf-input {
         border-color: var(--sf-accent);
         background: var(--sf-input-bg-focus);
         color: var(--sf-input-text);
-        box-shadow: 0 0 0 4px var(--sf-focus);
+        box-shadow: 0 0 0 3px var(--sf-focus);
     }
 
 .admin-list {
@@ -458,7 +456,7 @@ select.sf-input {
 
     .admin-list-card:hover {
         transform: var(--sf-hover-lift-sm);
-        border-color: var(--sf-accent);
+        border-color: var(--sf-border-strong);
         box-shadow: var(--sf-shadow-hover);
     }
 
@@ -471,33 +469,36 @@ select.sf-input {
 }
 
     .admin-list-card-main img {
-        width: 72px;
-        height: 72px;
+        width: 58px;
+        height: 58px;
         object-fit: contain;
         flex: 0 0 auto;
     }
 
     .admin-list-card-main span {
         color: var(--sf-accent);
-        font-weight: var(--sf-font-weight-black);
+        font-size: var(--sf-font-size-xs);
+        font-weight: var(--sf-font-weight-bold);
     }
 
     .admin-list-card-main h3 {
-        margin: 6px 0 8px;
+        margin: 5px 0 7px;
         color: var(--sf-text-strong);
-        font-size: var(--sf-font-size-xl);
+        font-size: var(--sf-font-size-lg);
     }
 
     .admin-list-card-main p {
         margin: 0;
         color: var(--sf-text-muted);
-        line-height: 1.6;
+        line-height: 1.55;
+        font-size: var(--sf-font-size-sm);
     }
 
 .admin-meta {
     margin-top: var(--sf-space-xs);
     color: var(--sf-text-muted);
-    font-weight: var(--sf-font-weight-bold);
+    font-size: var(--sf-font-size-sm);
+    font-weight: var(--sf-font-weight-medium);
 }
 
     .admin-meta strong {
@@ -530,7 +531,7 @@ select.sf-input {
         z-index: 1;
         margin: 0;
         color: var(--sf-text-muted);
-        line-height: 1.6;
+        line-height: 1.55;
     }
 
 .admin-edit-panel {
@@ -543,7 +544,7 @@ select.sf-input {
         z-index: 1;
         margin: 0 0 var(--sf-space-md);
         color: var(--sf-text-strong);
-        font-size: 1.8rem;
+        font-size: 1.5rem;
     }
 
 .admin-user-grid {
@@ -566,21 +567,22 @@ select.sf-input {
 }
 
     .admin-user-head img {
-        width: 72px;
-        height: 72px;
+        width: 58px;
+        height: 58px;
         object-fit: contain;
     }
 
     .admin-user-head h3 {
         margin: 0;
         color: var(--sf-text-strong);
-        font-size: 1.4rem;
+        font-size: var(--sf-font-size-lg);
     }
 
     .admin-user-head p {
-        margin: 6px 0 0;
+        margin: 5px 0 0;
         color: var(--sf-text-muted);
-        font-weight: var(--sf-font-weight-bold);
+        font-size: var(--sf-font-size-sm);
+        font-weight: var(--sf-font-weight-medium);
     }
 
 /* =========================================================
@@ -665,8 +667,8 @@ select.sf-input {
         .admin-title img,
         .admin-list-card-main img,
         .admin-user-head img {
-            width: 72px;
-            height: 72px;
+            width: 58px;
+            height: 58px;
         }
 
     .admin-list-actions .sf-button,
