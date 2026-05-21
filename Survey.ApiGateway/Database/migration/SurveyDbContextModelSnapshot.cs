@@ -9,7 +9,7 @@ using Survey.ApiGateway.Database;
 
 #nullable disable
 
-namespace Survey.ApiGateway.Migrations
+namespace Survey.ApiGateway.Database.migration
 {
     [DbContext(typeof(SurveyDbContext))]
     partial class SurveyDbContextModelSnapshot : ModelSnapshot
