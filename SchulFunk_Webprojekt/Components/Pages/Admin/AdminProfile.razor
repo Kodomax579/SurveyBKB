@@ -13,14 +13,19 @@
 }
 else
 {
-    <section class="admin-toolbar sf-panel admin-user-toolbar">
+    <section class="sf-page-header">
+        <h1>Benutzer bearbeiten</h1>
+        <p>Ändere Klassen und Gruppen entsprechend deiner Berechtigung.</p>
+    </section>
+
+    <section class="sf-filter-bar admin-user-toolbar">
         <input type="text"
-               class="admin-search-input admin-user-search"
+               class="sf-input sf-filter-search"
                placeholder="Nach Benutzer suchen..."
                @bind="Suchtext"
                @bind:event="oninput" />
 
-        <div class="admin-filter-dropdown">
+        <div class="admin-filter-dropdown sf-filter-action">
             <button type="button"
                     class="sf-button sf-button-dark admin-filter-button"
                     @onclick="ToggleFilterPanel">
@@ -76,70 +81,68 @@ else
         </div>
     </section>
 
-    <section class="admin-user-result-info">
-        <span>
-            @GefilterteUsers.Count() Benutzer gefunden
-        </span>
-    </section>
+    <div class="admin-user-result-info">
+        <span class="sf-badge">@GefilterteUsers.Count() Benutzer gefunden</span>
+    </div>
 
-    <section class="admin-user-grid">
+    <section class="sf-auto-grid">
         @foreach (var user in GefilterteUsers)
         {
-            <article class="admin-user-card sf-panel">
-                <div class="admin-user-head">
-                    <img src="/lib/images/Icon-User.png" alt="" />
-
-                    <div>
-                        <h3>@GetFullName(user)</h3>
-                        <p>@user.Email</p>
-                        <p>@PermissionRules.GetGroupLabel(user.Group)</p>
+            <article class="sf-flat-card">
+                <div class="sf-flat-card-body">
+                    <div class="sf-card-meta">
+                        <span>@PermissionRules.GetGroupLabel(user.Group)</span>
+                        <span>@user.Class.ClassName</span>
                     </div>
-                </div>
 
-                <div class="form-group">
-                    <label>Klasse</label>
+                    <h3>@GetFullName(user)</h3>
+                    <p>@user.Email</p>
 
-                    @if (user.Group == Groups.Teacher)
-                    {
-                        <div class="readonly-info-box">
-                            <strong>Lehrer</strong>
-                        </div>
-                    }
-                    else
-                    {
-                        <select class="form-control" @bind="user.Class.ClassName">
-                            @foreach (var klasse in AvailableClasses)
+                    <div class="form-group">
+                        <label>Klasse</label>
+
+                        @if (user.Group == Groups.Teacher)
+                        {
+                            <div class="readonly-info-box">
+                                <strong>Lehrer</strong>
+                            </div>
+                        }
+                        else
+                        {
+                            <select class="form-control" @bind="user.Class.ClassName">
+                                @foreach (var klasse in AvailableClasses)
+                                {
+                                    <option value="@klasse.ClassName">@klasse.ClassName</option>
+                                }
+                            </select>
+                        }
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gruppe</label>
+
+                        <select class="form-control" @bind="user.Group">
+                            @foreach (var group in GetEditableGroupsForUser(user))
                             {
-                                <option value="@klasse.ClassName">@klasse.ClassName</option>
+                                <option value="@group">@PermissionRules.GetGroupLabel(group)</option>
                             }
                         </select>
-                    }
-                </div>
+                    </div>
 
-                <div class="form-group">
-                    <label>Gruppe</label>
-
-                    <select class="form-control" @bind="user.Group">
-                        @foreach (var group in GetEditableGroupsForUser(user))
-                        {
-                            <option value="@group">@PermissionRules.GetGroupLabel(group)</option>
-                        }
-                    </select>
-                </div>
-
-                <div class="form-actions">
-                    <button type="button" class="sf-button sf-button-dark">
-                        Änderungen speichern
-                    </button>
-
-                    @if (CanDeleteUser(user))
-                    {
-                        <button type="button"
-                                class="sf-button sf-danger-button"
-                                @onclick="() => DeleteUser(user)">
-                            Benutzer löschen
+                    <div class="form-actions">
+                        <button type="button" class="sf-button sf-button-dark">
+                            Änderungen speichern
                         </button>
-                    }
+
+                        @if (CanDeleteUser(user))
+                        {
+                            <button type="button"
+                                    class="sf-button sf-danger-button"
+                                    @onclick="() => DeleteUser(user)">
+                                Benutzer löschen
+                            </button>
+                        }
+                    </div>
                 </div>
             </article>
         }

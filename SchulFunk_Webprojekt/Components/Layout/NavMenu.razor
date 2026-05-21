@@ -1,59 +1,73 @@
+@using Microsoft.JSInterop
 @using SchulFunk_Webprojekt.Model
+@inject NavigationManager NavManager
+@inject IJSRuntime JS
 
 <header class="sf-header">
-    <NavLink href="/home" class="sf-brand">
-        <img src="/lib/images/SchulFunk-Logo.png" alt="SchulFunk Logo" class="sf-logo" />
+    <NavLink class="sf-brand" href="/home" Match="NavLinkMatch.All">
+        <img class="sf-logo" src="/lib/images/SchulFunk-Logo.png" alt="SchulFunk Logo" />
 
         <div class="sf-brand-text">
-            <h1>
-                Schul<span>Funk</span>
-            </h1>
+            <h1>Schul<span>Funk</span></h1>
         </div>
     </NavLink>
 
     <nav class="sf-navbar">
-        @if (CanSeeAdminPanel)
+        <NavLink class="sf-nav-button" href="/home" Match="NavLinkMatch.All">
+            Startseite
+        </NavLink>
+
+        <NavLink class="sf-nav-button" href="/survey">
+            Umfragen
+        </NavLink>
+
+        <NavLink class="sf-nav-button" href="/news">
+            Nachrichten
+        </NavLink>
+
+        @if (CanOpenAdminPanel)
         {
-            <NavLink href="/admin" class="sf-nav-button sf-admin-button">
+            <NavLink class="sf-nav-button sf-admin-button" href="/admin">
                 Admin Panel
             </NavLink>
         }
 
-        <NavLink href="/survey" class="sf-nav-button sf-nav-button-dark">
-            Umfragen ansehen
-        </NavLink>
-
-        <NavLink href="/news" class="sf-nav-button">
-            Aktuelle Nachrichten
-        </NavLink>
-
         <div class="sf-settings-dropdown">
             <button type="button"
-                    class="sf-nav-button sf-settings-button"
-                    @onclick="ToggleSettingsMenu">
-                <img src="/lib/images/Icon-User.png" alt="" />
-                Einstellungen
+                    class="sf-settings-button"
+                    @onclick="ToggleSettingsMenu"
+                    aria-label="Profil öffnen">
+                <span>Profil</span>
             </button>
 
-            @if (SettingsMenuVisible)
+            @if (SettingsMenuOpen)
             {
-                <div class="sf-settings-menu @(SettingsMenuClosing ? "sf-settings-menu-closing" : "")">
+                <div class="sf-settings-menu">
                     <div class="sf-settings-user">
-                        <strong>@UserName</strong>
-                        <span>@UserClass</span>
-                        <span>@UserRole</span>
+                        <strong>@CurrentUser.Name @CurrentUser.Lastname</strong>
+                        <span>@PermissionRules.GetGroupLabel(CurrentUser.Group)</span>
                     </div>
 
-                    <a href="/profile"
-                           class="sf-settings-menu-item"
-                           @onclick="CloseSettingsMenu">
-                        Profil ansehen
-                    </a>
+                    <NavLink class="sf-settings-menu-item" href="/profile" @onclick="CloseSettingsMenu">
+                        Mein Profil
+                    </NavLink>
+
+                    <button type="button"
+                            class="sf-settings-menu-item sf-theme-toggle"
+                            @onclick="ToggleTheme">
+                        <span class="sf-theme-toggle-icon">
+                            @(IsDarkMode ? "☀" : "🌙")
+                        </span>
+
+                        <span>
+                            @(IsDarkMode ? "White Mode aktivieren" : "Dark Mode aktivieren")
+                        </span>
+                    </button>
 
                     <button type="button"
                             class="sf-settings-menu-item sf-settings-logout"
                             @onclick="Logout">
-                        Ausloggen
+                        Abmelden
                     </button>
                 </div>
             }
@@ -62,68 +76,50 @@
 </header>
 
 @code {
-    private bool SettingsMenuVisible = false;
-    private bool SettingsMenuClosing = false;
+    private bool SettingsMenuOpen = false;
+    private bool IsDarkMode = true;
 
-    // Testdaten fürs Frontend.
-    // Später kommt dieser User aus eurem Login/Auth-System.
     private UserModel CurrentUser => TestLoginData.CurrentUser;
 
-    private bool CanSeeAdminPanel =>
-    PermissionRules.HasPermission(CurrentUser, Permission.OpenAdminPanel);
+    private bool CanOpenAdminPanel =>
+        PermissionRules.HasPermission(CurrentUser, Permission.OpenAdminPanel);
 
-    private string UserName =>
-        $"{CurrentUser.Name} {CurrentUser.Lastname}".Trim();
-
-    private string UserClass =>
-        CurrentUser.Class.ClassName;
-
-    private string UserRole =>
-        GetGroupLabel(CurrentUser.Group);
-
-    private async Task ToggleSettingsMenu()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (SettingsMenuVisible)
+        if (firstRender)
         {
-            await CloseSettingsMenu();
-        }
-        else
-        {
-            SettingsMenuClosing = false;
-            SettingsMenuVisible = true;
+            var theme = await JS.InvokeAsync<string>("schulFunkTheme.get");
+
+            IsDarkMode = theme != "light";
+
+            await JS.InvokeVoidAsync("schulFunkTheme.apply", IsDarkMode ? "dark" : "light");
+
+            StateHasChanged();
         }
     }
 
-    private async Task CloseSettingsMenu()
+    private void ToggleSettingsMenu()
     {
-        if (!SettingsMenuVisible)
-        {
-            return;
-        }
-
-        SettingsMenuClosing = true;
-        await Task.Delay(180);
-
-        SettingsMenuVisible = false;
-        SettingsMenuClosing = false;
+        SettingsMenuOpen = !SettingsMenuOpen;
     }
 
-    private async Task Logout()
+    private void CloseSettingsMenu()
     {
-        await CloseSettingsMenu();
-
-        // Später kommt hier eure echte Logout-Logik hin.
+        SettingsMenuOpen = false;
     }
 
-    private static string GetGroupLabel(Groups group)
+    private async Task ToggleTheme()
     {
-        return group switch
-        {
-            Groups.Teacher => "Lehrer",
-            Groups.ClassRepresentatives => "Klassensprecher",
-            Groups.StudentRepresentatives => "Schülersprecher",
-            Groups.Admin => "Admin",
-            _ => "Schüler"
-        };
+        IsDarkMode = !IsDarkMode;
+
+        var theme = IsDarkMode ? "dark" : "light";
+
+        await JS.InvokeVoidAsync("schulFunkTheme.set", theme);
+    }
+
+    private void Logout()
+    {
+        SettingsMenuOpen = false;
+        NavManager.NavigateTo("/", forceLoad: true);
     }
 }

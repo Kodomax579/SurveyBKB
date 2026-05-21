@@ -4,12 +4,52 @@
 }
 
 .profile-edit-form {
-    padding: 34px;
+    padding: var(--sf-space-xl);
+    background: var(--sf-panel-bg);
+    border-color: var(--sf-border);
 }
+
+    .profile-edit-form::before,
+    .profile-edit-form::after {
+        content: none !important;
+        display: none !important;
+    }
+
+    .profile-edit-form input,
+    .profile-edit-form textarea,
+    .profile-edit-form select {
+        background: var(--sf-input-bg) !important;
+        border: 2px solid var(--sf-border) !important;
+        color: var(--sf-input-text) !important;
+        caret-color: var(--sf-accent);
+    }
+
+        .profile-edit-form input::placeholder,
+        .profile-edit-form textarea::placeholder,
+        .profile-edit-form select::placeholder {
+            color: var(--sf-input-placeholder) !important;
+        }
+
+        .profile-edit-form input:hover,
+        .profile-edit-form textarea:hover,
+        .profile-edit-form select:hover {
+            background: var(--sf-input-bg-hover) !important;
+            border-color: var(--sf-accent) !important;
+            color: var(--sf-input-text) !important;
+        }
+
+        .profile-edit-form input:focus,
+        .profile-edit-form textarea:focus,
+        .profile-edit-form select:focus {
+            background: var(--sf-input-bg-focus) !important;
+            border-color: var(--sf-accent) !important;
+            color: var(--sf-input-text) !important;
+            box-shadow: 0 0 0 4px var(--sf-focus) !important;
+        }
 
 @media (max-width: 680px) {
     .profile-edit-form {
-        padding: 24px;
-        border-radius: 24px;
+        padding: var(--sf-space-md);
+        border-radius: var(--sf-radius-md);
     }
 }

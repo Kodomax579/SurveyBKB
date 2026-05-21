@@ -4,17 +4,18 @@
 
 <PageTitle>SchulFunk</PageTitle>
 
-<section class="home-hero">
-    <div class="home-hero-box sf-panel" id="aktuelle-nachrichten">
-        <div class="home-news-header">
-            <div class="home-news-icon">
-                <img src="/lib/images/Icon-News.png" alt="Aktuelle Nachrichten Icon" />
-            </div>
+<section class="home-overview">
+    <section class="home-news-panel sf-panel" id="aktuelle-nachrichten">
+        <div class="home-panel-head">
+            <img src="/lib/images/Icon-News.png" alt="Aktuelle Nachrichten Icon" />
 
-            <h2>Neuigkeiten aus deiner Schule</h2>
+            <div>
+                <span>Aktuelle Meldungen</span>
+                <h2>Neuigkeiten</h2>
+            </div>
         </div>
 
-        <div class="home-news-preview">
+        <div class="home-news-list">
             @foreach (var news in AktuellsteNews)
             {
                 <a href="/news/@news.Id" class="home-news-item home-news-link">
@@ -24,21 +25,21 @@
                 </a>
             }
         </div>
-    </div>
+    </section>
 
-    <div class="home-survey-preview sf-panel" id="umfragen">
+    <section class="home-survey-panel sf-panel" id="umfragen">
         @if (AusgewerteteUmfragen.Any())
         {
             var aktuelleUmfrage = AusgewerteteUmfragen[AktuelleUmfrageIndex];
             var ersteFrage = aktuelleUmfrage.Questions.FirstOrDefault();
 
             <div class="home-survey-slide @SurveyAnimationClass" @key="AktuelleUmfrageIndex">
-                <div class="home-preview-header">
+                <div class="home-panel-head">
                     <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" />
 
                     <div>
-                        <h3>@aktuelleUmfrage.Title</h3>
-                        <p>@aktuelleUmfrage.CreatorName</p>
+                        <span>Ausgewertete Umfrage</span>
+                        <h2>@aktuelleUmfrage.Title</h2>
                     </div>
                 </div>
 
@@ -48,128 +49,128 @@
 
                 @if (ersteFrage is not null)
                 {
-                    <h4>@ersteFrage.Question</h4>
+                    <div class="home-question-box">
+                        <span>Frage</span>
+                        <h3>@ersteFrage.Question</h3>
+                    </div>
 
-                    @foreach (var answer in ersteFrage.Options)
-                    {
-                        var percentage = BerechneProzent(ersteFrage, answer);
+                    <div class="home-result-list">
+                        @foreach (var answer in ersteFrage.Options)
+                        {
+                            var percentage = BerechneProzent(ersteFrage, answer);
+                            var isTopAnswer = percentage == HoechsterProzentwert(ersteFrage);
 
-                        <div class="home-vote-card @(percentage == HoechsterProzentwert(ersteFrage) ? "active" : "")">
-                            <span>@answer.options</span>
-                            <strong>@percentage%</strong>
-                        </div>
-                    }
+                            <div class="home-result-card @(isTopAnswer ? "active" : "")">
+                                <div class="home-result-line">
+                                    <span>@answer.options</span>
+                                    <strong>@percentage%</strong>
+                                </div>
+
+                                <div class="home-result-bar">
+                                    <div style="width: @percentage%"></div>
+                                </div>
+                            </div>
+                        }
+                    </div>
                 }
 
-                <div class="home-survey-actions">
-                    <button type="button"
-                            class="home-survey-arrow"
-                            @onclick="VorherigeUmfrage"
-                            disabled="@(AusgewerteteUmfragen.Count <= 1)">
-                        ↑
-                    </button>
+                <div class="home-survey-bottom">
+                    <div class="home-survey-actions">
+                        <button type="button"
+                                class="home-survey-arrow"
+                                @onclick="VorherigeUmfrage"
+                                disabled="@(AusgewerteteUmfragen.Count <= 1)"
+                                aria-label="Vorherige Umfrage">
+                            ↑
+                        </button>
 
-                    <button type="button"
-                            class="home-survey-arrow"
-                            @onclick="NaechsteUmfrage"
-                            disabled="@(AusgewerteteUmfragen.Count <= 1)">
-                        ↓
-                    </button>
+                        <button type="button"
+                                class="home-survey-arrow"
+                                @onclick="NaechsteUmfrage"
+                                disabled="@(AusgewerteteUmfragen.Count <= 1)"
+                                aria-label="Nächste Umfrage">
+                            ↓
+                        </button>
+                    </div>
+
+                    <a href="/survey/results/@aktuelleUmfrage.GroupId" class="sf-button home-survey-link">
+                        Ergebnisse ansehen
+                    </a>
                 </div>
-
-                <a href="/survey/results/@aktuelleUmfrage.GroupId" class="sf-button sf-button-dark home-survey-link">
-                    Ergebnisse ansehen
-                </a>
             </div>
         }
         else
         {
-            <div class="home-preview-header">
+            <div class="home-empty-state">
                 <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" />
-
-                <div>
-                    <h3>Keine ausgewerteten Umfragen</h3>
-                    <p>Aktuell sind keine abgelaufenen Umfragen verfügbar.</p>
-                </div>
+                <h2>Keine ausgewerteten Umfragen</h2>
+                <p>Aktuell sind keine abgelaufenen Umfragen verfügbar.</p>
             </div>
         }
-    </div>
+    </section>
 </section>
 
 <section class="home-useful-links">
-    <article class="home-link-card sf-panel">
+    <a href="https://bkbeckum.webuntis.com/WebUntis/?school=bkbeckum#/basic/login"
+           class="home-link-card"
+           target="_blank"
+           rel="noopener noreferrer">
         <div class="home-link-icon">
             <img src="/lib/images/Icon-Calender.png" alt="Untis Icon" />
         </div>
 
-        <h3>Untis</h3>
-        <p>Öffne deinen Stundenplan, Vertretungsplan und aktuelle Planänderungen.</p>
+        <div>
+            <h3>Untis</h3>
+            <p>Stundenplan und Vertretungen</p>
+        </div>
+    </a>
 
-        <a href="https://bkbeckum.webuntis.com/WebUntis/?school=bkbeckum#/basic/login"
-           class="sf-button sf-button-dark"
+    <a href="https://bkb-ecampus.de/login/index.php"
+           class="home-link-card"
            target="_blank"
            rel="noopener noreferrer">
-            Zu Untis
-        </a>
-    </article>
-
-    <article class="home-link-card sf-panel">
         <div class="home-link-icon">
             <img src="/lib/images/Icon-News.png" alt="Moodle Icon" />
         </div>
 
-        <h3>Moodle</h3>
-        <p>Greife auf Kurse, Aufgaben, Materialien und digitale Lerninhalte zu.</p>
+        <div>
+            <h3>Moodle</h3>
+            <p>Kurse, Aufgaben und Materialien</p>
+        </div>
+    </a>
 
-        <a href="https://bkb-ecampus.de/login/index.php"
-           class="sf-button sf-button-dark"
+    <a href="https://bkb-erasmus.de/"
+           class="home-link-card"
            target="_blank"
            rel="noopener noreferrer">
-            Zu Moodle
-        </a>
-    </article>
-
-    <article class="home-link-card sf-panel">
         <div class="home-link-icon">
             <img src="/lib/images/Icon-Messages.png" alt="Erasmus Icon" />
         </div>
 
-        <h3>Erasmus</h3>
-        <p>Informiere dich über Austauschprogramme, Projekte und internationale Angebote.</p>
-
-        <a href="https://bkb-erasmus.de/"
-           class="sf-button sf-button-dark"
-           target="_blank"
-           rel="noopener noreferrer">
-            Zu Erasmus
-        </a>
-    </article>
+        <div>
+            <h3>Erasmus</h3>
+            <p>Projekte und Austauschprogramme</p>
+        </div>
+    </a>
 </section>
 
-<footer class="home-impressum sf-panel" id="impressum">
-    <div>
-        <h2>Impressum</h2>
+<footer class="home-impressum" id="impressum">
+    <div class="home-footer-content">
+        <h2>SchulFunk</h2>
+
         <p>
             SchulFunk ist ein Webprojekt zur Darstellung von Umfragen, Schulnachrichten
             und nützlichen Links für Schülerinnen und Schüler.
         </p>
-    </div>
 
-    <div class="home-impressum-grid">
-        <div>
-            <h3>Projekt</h3>
-            <p>SchulFunk Webprojekt</p>
-        </div>
+        <nav class="home-footer-links">
+            <a href="#impressum">Impressum</a>
+            <a href="#">Datenschutz</a>
+            <a href="#">Kontakt</a>
+            <a href="#">Schulordnung</a>
+        </nav>
 
-        <div>
-            <h3>Verantwortlich</h3>
-            <p>Schülerprojekt / Projektgruppe SchulFunk</p>
-        </div>
-
-        <div>
-            <h3>Kontakt</h3>
-            <p>Bitte hier später eure Schul- oder Projektadresse eintragen.</p>
-        </div>
+        <small>© 2026 SchulFunk Webprojekt. Alle Rechte vorbehalten.</small>
     </div>
 </footer>
 

@@ -1,33 +1,33 @@
 .sf-header {
+    position: sticky;
+    top: 0;
+    z-index: 9000;
+    overflow: visible;
+    width: 100%;
+    min-height: 78px;
+    padding: 0 174px 0 34px;
+    background: var(--sf-panel-bg-strong);
+    border-bottom: 1px solid var(--sf-border);
+    border-top: 4px solid var(--sf-accent);
+    border-radius: 0;
+    box-shadow: var(--sf-shadow-sm);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 28px;
-    padding: 20px 26px;
-    background: rgba(255, 255, 255, 0.94);
-    border: 2px solid var(--sf-border);
-    border-radius: var(--sf-radius);
-    box-shadow: var(--sf-shadow);
+    gap: var(--sf-space-lg);
 }
-
-/* 
-   Wichtig:
-   NavLink ist in Blazor eine eigene Komponente.
-   Deshalb brauchen die Styles für NavLink-Klassen ::deep.
-*/
 
 ::deep .sf-brand {
     display: inline-flex;
     align-items: center;
-    justify-content: flex-start;
-    gap: 18px;
+    gap: 14px;
     flex: 0 0 auto;
-    color: var(--sf-navy);
+    color: var(--sf-text-strong);
     text-decoration: none;
 }
 
     ::deep .sf-brand:hover {
-        color: var(--sf-navy);
+        color: var(--sf-text-strong);
         text-decoration: none;
     }
 
@@ -39,217 +39,213 @@
     }
 
 .sf-logo {
-    width: 86px;
-    height: 86px;
+    width: 54px;
+    height: 54px;
     object-fit: contain;
     flex: 0 0 auto;
 }
 
-.sf-brand-text {
-    display: flex;
-    align-items: center;
+.sf-brand-text h1 {
+    margin: 0;
+    color: var(--sf-text-strong);
+    font-size: 1.65rem;
+    font-weight: var(--sf-font-weight-black);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    white-space: nowrap;
 }
 
-    .sf-brand-text h1 {
-        margin: 0;
-        color: var(--sf-navy);
-        font-size: 2.65rem;
-        font-weight: 400;
-        line-height: 1;
-        letter-spacing: -0.06em;
-        white-space: nowrap;
+    .sf-brand-text h1 span {
+        color: var(--sf-accent);
     }
 
-        .sf-brand-text h1 span {
-            color: #75c6c8;
-        }
-
 .sf-navbar {
+    position: relative;
+    z-index: 9100;
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    gap: 14px;
+    gap: 28px;
     flex-wrap: nowrap;
 }
 
-/* NavLink-Buttons */
+/* normale Navigationslinks */
 
 ::deep .sf-nav-button,
 .sf-settings-button {
-    min-height: 58px;
-    padding: 15px 24px;
-    border: 2px solid transparent;
-    border-radius: 999px;
-    background: var(--sf-turquoise);
-    color: var(--sf-white);
-    font-weight: 900;
-    font-size: 1rem;
+    position: relative;
+    min-height: auto;
+    padding: 0;
+    border: none;
+    border-radius: 0;
+    background: transparent;
+    color: var(--sf-text);
+    font-size: var(--sf-font-size-base);
+    font-weight: var(--sf-font-weight-bold);
     line-height: 1;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     white-space: nowrap;
     text-decoration: none;
-    box-shadow: 0 14px 28px rgba(24, 191, 192, 0.28);
-    transition: 0.2s ease;
+    box-shadow: none;
+    cursor: pointer;
+    transition: var(--sf-transition);
 }
+
+    ::deep .sf-nav-button::after,
+    .sf-settings-button::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: -8px;
+        width: 0;
+        height: 2px;
+        border-radius: 999px;
+        background: var(--sf-accent);
+        transition: width var(--sf-transition);
+    }
 
     ::deep .sf-nav-button:hover,
     .sf-settings-button:hover {
-        background: var(--sf-turquoise-dark);
-        color: var(--sf-white);
+        background: transparent;
+        color: var(--sf-accent);
         text-decoration: none;
-        transform: translateY(-2px);
     }
+
+        ::deep .sf-nav-button:hover::after,
+        .sf-settings-button:hover::after,
+        ::deep .sf-nav-button.active::after {
+            width: 100%;
+        }
 
     ::deep .sf-nav-button.active {
-        background: var(--sf-navy);
-        color: var(--sf-white);
-        box-shadow: 0 14px 28px rgba(6, 43, 85, 0.22);
+        color: var(--sf-accent);
+        background: transparent;
+        border: none;
+        box-shadow: none;
     }
 
-::deep .sf-nav-button-dark {
-    background: var(--sf-navy);
-    color: var(--sf-white);
-    box-shadow: 0 14px 28px rgba(6, 43, 85, 0.22);
-}
-
-    ::deep .sf-nav-button-dark:hover {
-        background: var(--sf-navy-light);
-        color: var(--sf-white);
-    }
-
-::deep .sf-admin-button {
-    background: var(--sf-navy-light);
-    color: var(--sf-white);
-    box-shadow: 0 14px 28px rgba(6, 43, 85, 0.2);
-}
-
-    ::deep .sf-admin-button:hover {
-        background: var(--sf-navy);
-        color: var(--sf-white);
-    }
-
-/* Einstellungen */
+/* Einstellungen Dropdown */
 
 .sf-settings-dropdown {
     position: relative;
+    z-index: 9500;
     display: inline-flex;
 }
 
-.sf-settings-button {
-    background: var(--sf-white);
-    color: var(--sf-navy);
-    border-color: var(--sf-border);
-    cursor: pointer;
-    box-shadow: 0 14px 28px rgba(6, 43, 85, 0.08);
-}
-
-    .sf-settings-button:hover {
-        background: var(--sf-soft);
-        color: var(--sf-navy);
-        border-color: var(--sf-turquoise);
-    }
-
-    .sf-settings-button img {
-        width: 28px;
-        height: 28px;
-        object-fit: contain;
-        flex: 0 0 auto;
-    }
-
 .sf-settings-menu {
     position: absolute;
-    top: calc(100% + 14px);
+    top: calc(100% + 22px);
     right: 0;
-    z-index: 50;
-    width: 260px;
-    padding: 14px;
-    background: rgba(255, 255, 255, 0.98);
-    border: 2px solid var(--sf-border);
-    border-radius: 24px;
-    box-shadow: var(--sf-shadow);
-    animation: sf-dropdown-open 0.22s ease forwards;
+    z-index: 99999;
+    width: 270px;
+    padding: var(--sf-space-sm);
+    background: var(--sf-panel-bg-strong);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius);
+    box-shadow: var(--sf-shadow-hover);
+    animation: sf-dropdown-open 0.18s ease forwards;
     transform-origin: top right;
 }
 
-.sf-settings-menu-closing {
-    animation: sf-dropdown-close 0.18s ease forwards;
-}
-
-.sf-settings-menu::before {
-    content: "";
-    position: absolute;
-    top: -8px;
-    right: 34px;
-    width: 14px;
-    height: 14px;
-    background: rgba(255, 255, 255, 0.98);
-    border-left: 2px solid var(--sf-border);
-    border-top: 2px solid var(--sf-border);
-    transform: rotate(45deg);
-}
+    .sf-settings-menu::before {
+        content: "";
+        position: absolute;
+        top: -7px;
+        right: 28px;
+        width: 12px;
+        height: 12px;
+        background: var(--sf-panel-bg-strong);
+        border-left: 1px solid var(--sf-border);
+        border-top: 1px solid var(--sf-border);
+        transform: rotate(45deg);
+    }
 
 .sf-settings-user {
-    padding: 14px 16px;
-    margin-bottom: 10px;
-    border-radius: 18px;
-    background: #f6fbfc;
-    border: 1px solid rgba(6, 43, 85, 0.08);
+    padding: 12px 14px;
+    margin-bottom: var(--sf-space-xs);
+    border-radius: var(--sf-radius-sm);
+    background: var(--sf-card-bg);
+    border: 1px solid var(--sf-border);
     display: grid;
-    gap: 5px;
+    gap: 4px;
 }
 
     .sf-settings-user strong {
-        color: var(--sf-navy);
-        font-weight: 900;
+        color: var(--sf-text-strong);
+        font-weight: var(--sf-font-weight-bold);
     }
 
     .sf-settings-user span {
-        color: var(--sf-muted);
-        font-weight: 800;
-        font-size: 0.95rem;
+        color: var(--sf-text-muted);
+        font-size: var(--sf-font-size-sm);
     }
 
+::deep .sf-settings-menu-item,
 .sf-settings-menu-item {
     width: 100%;
-    min-height: 46px;
-    padding: 12px 14px;
+    min-height: 40px;
+    padding: 10px 12px;
     border: none;
-    border-radius: 16px;
+    border-radius: var(--sf-radius-sm);
     background: transparent;
-    color: var(--sf-navy);
-    font-weight: 900;
+    color: var(--sf-text);
+    font-size: var(--sf-font-size-sm);
+    font-weight: var(--sf-font-weight-bold);
     text-align: left;
     display: flex;
     align-items: center;
+    gap: var(--sf-space-sm);
     cursor: pointer;
     text-decoration: none;
-    transition: 0.2s ease;
+    transition: var(--sf-transition);
 }
 
+    ::deep .sf-settings-menu-item:hover,
     .sf-settings-menu-item:hover {
-        background: var(--sf-soft);
-        color: var(--sf-navy);
+        background: var(--sf-accent-soft);
+        color: var(--sf-text-strong);
         text-decoration: none;
     }
 
-.sf-settings-logout {
-    color: #b3261e;
-}
-
-    .sf-settings-logout:hover {
-        background: rgba(179, 38, 30, 0.08);
-        color: #b3261e;
+    ::deep .sf-settings-menu-item.active {
+        background: var(--sf-accent-soft);
+        color: var(--sf-text-strong);
     }
 
-/* Animationen */
+::deep .sf-settings-logout,
+.sf-settings-logout {
+    color: var(--sf-accent);
+}
+
+    ::deep .sf-settings-logout:hover,
+    .sf-settings-logout:hover {
+        background: var(--sf-accent-soft);
+        color: var(--sf-text-strong);
+    }
+
+.sf-theme-toggle {
+    justify-content: flex-start;
+    gap: var(--sf-space-sm);
+}
+
+.sf-theme-toggle-icon {
+    width: 26px;
+    height: 26px;
+    border-radius: var(--sf-radius-pill);
+    background: var(--sf-accent-soft);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+}
 
 @keyframes sf-dropdown-open {
     from {
         opacity: 0;
-        transform: translateY(-10px) scale(0.96);
+        transform: translateY(-6px) scale(0.98);
     }
 
     to {
@@ -257,56 +253,34 @@
         transform: translateY(0) scale(1);
     }
 }
-
-@keyframes sf-dropdown-close {
-    from {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-
-    to {
-        opacity: 0;
-        transform: translateY(-10px) scale(0.96);
-    }
-}
-
-/* Responsive */
 
 @media (max-width: 980px) {
     .sf-header {
         align-items: flex-start;
         flex-direction: column;
+        padding: 18px 24px;
     }
 
     .sf-navbar {
         width: 100%;
         justify-content: flex-start;
         flex-wrap: wrap;
-    }
-
-    ::deep .sf-nav-button,
-    .sf-settings-button {
-        flex: 0 1 auto;
+        gap: 18px 24px;
     }
 }
 
 @media (max-width: 680px) {
     .sf-header {
-        padding: 18px;
-        border-radius: 24px;
-    }
-
-    ::deep .sf-brand {
-        gap: 14px;
+        padding: 16px;
     }
 
     .sf-logo {
-        width: 68px;
-        height: 68px;
+        width: 46px;
+        height: 46px;
     }
 
     .sf-brand-text h1 {
-        font-size: 2rem;
+        font-size: 1.4rem;
     }
 
     .sf-navbar {
@@ -318,6 +292,7 @@
     .sf-settings-dropdown,
     .sf-settings-button {
         width: 100%;
+        justify-content: flex-start;
     }
 
     .sf-settings-menu {
@@ -328,6 +303,6 @@
 
         .sf-settings-menu::before {
             right: auto;
-            left: 34px;
+            left: 28px;
         }
 }

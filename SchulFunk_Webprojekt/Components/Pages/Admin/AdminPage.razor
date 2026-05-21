@@ -12,58 +12,93 @@
 }
 else
 {
-    <section class="admin-dashboard-grid">
+    <section class="sf-page-header">
+        <h1>Admin Panel</h1>
+        <p>Verwalte Umfragen, Nachrichten und Benutzer entsprechend deiner Berechtigungen.</p>
+    </section>
+
+    <section class="sf-auto-grid">
         @if (CanCreateSurveys)
         {
-            <a href="/survey/create" class="admin-dashboard-card sf-panel">
-                <img src="/lib/images/Icon-Survey.png" alt="" />
-                <h3>Umfrage erstellen</h3>
-                <p>Erstelle neue Umfragen für deine Klasse oder Zielgruppe.</p>
+            <a href="/survey/create" class="sf-flat-card">
+                <div class="sf-flat-card-body">
+                    <div class="sf-card-icon">
+                        <img src="/lib/images/Icon-Survey.png" alt="" />
+                    </div>
+
+                    <h3>Umfrage erstellen</h3>
+                    <p>Erstelle neue Umfragen für deine Klasse oder Zielgruppe.</p>
+                </div>
             </a>
         }
 
         @if (CanManageSurveys)
         {
-            <a href="/admin/surveys" class="admin-dashboard-card sf-panel">
-                <img src="/lib/images/Icon-Survey.png" alt="" />
-                <h3>Umfragen verwalten</h3>
-                <p>Verwalte und lösche berechtigte Umfragen.</p>
+            <a href="/admin/surveys" class="sf-flat-card">
+                <div class="sf-flat-card-body">
+                    <div class="sf-card-icon">
+                        <img src="/lib/images/Icon-Survey.png" alt="" />
+                    </div>
+
+                    <h3>Umfragen verwalten</h3>
+                    <p>Verwalte, beende oder lösche berechtigte Umfragen.</p>
+                </div>
             </a>
         }
 
         @if (CanCreateNews)
         {
-            <a href="/news/create" class="admin-dashboard-card sf-panel">
-                <img src="/lib/images/Icon-News.png" alt="" />
-                <h3>Nachricht erstellen</h3>
-                <p>Erstelle neue Schulnachrichten für SchulFunk.</p>
+            <a href="/news/create" class="sf-flat-card">
+                <div class="sf-flat-card-body">
+                    <div class="sf-card-icon">
+                        <img src="/lib/images/Icon-News.png" alt="" />
+                    </div>
+
+                    <h3>Nachricht erstellen</h3>
+                    <p>Erstelle neue Schulnachrichten für SchulFunk.</p>
+                </div>
             </a>
         }
 
         @if (CanManageNews)
         {
-            <a href="/admin/news" class="admin-dashboard-card sf-panel">
-                <img src="/lib/images/Icon-News.png" alt="" />
-                <h3>Nachrichten verwalten</h3>
-                <p>Bearbeite oder lösche Nachrichten entsprechend deiner Berechtigung.</p>
+            <a href="/admin/news" class="sf-flat-card">
+                <div class="sf-flat-card-body">
+                    <div class="sf-card-icon">
+                        <img src="/lib/images/Icon-News.png" alt="" />
+                    </div>
+
+                    <h3>Nachrichten verwalten</h3>
+                    <p>Bearbeite oder lösche Nachrichten entsprechend deiner Berechtigung.</p>
+                </div>
             </a>
         }
 
         @if (CanRegisterUsers)
         {
-            <a href="/admin/register" class="admin-dashboard-card sf-panel">
-                <img src="/lib/images/Icon-User.png" alt="" />
-                <h3>Benutzer registrieren</h3>
-                <p>Lege neue Benutzer entsprechend deiner Berechtigung an.</p>
+            <a href="/admin/register" class="sf-flat-card">
+                <div class="sf-flat-card-body">
+                    <div class="sf-card-icon">
+                        <img src="/lib/images/Icon-User.png" alt="" />
+                    </div>
+
+                    <h3>Benutzer registrieren</h3>
+                    <p>Lege neue Benutzer entsprechend deiner Berechtigung an.</p>
+                </div>
             </a>
         }
 
         @if (CanEditUsers)
         {
-            <a href="/admin/users" class="admin-dashboard-card sf-panel">
-                <img src="/lib/images/Icon-User.png" alt="" />
-                <h3>Benutzer bearbeiten</h3>
-                <p>Ändere Klassen und Gruppen von Benutzern entsprechend deiner Rolle.</p>
+            <a href="/admin/users" class="sf-flat-card">
+                <div class="sf-flat-card-body">
+                    <div class="sf-card-icon">
+                        <img src="/lib/images/Icon-User.png" alt="" />
+                    </div>
+
+                    <h3>Benutzer bearbeiten</h3>
+                    <p>Ändere Klassen und Gruppen von Benutzern entsprechend deiner Rolle.</p>
+                </div>
             </a>
         }
     </section>
