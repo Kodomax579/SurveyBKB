@@ -14,7 +14,6 @@ namespace Survey.ApiGateway.Controllers
     public class NewsController(IHubContext<RealtimeHub.RealtimeHub> realtimeHub, NewsService newsService) : ControllerBase
     {
         [HttpGet]
-        [Authorize]
         public async Task<IActionResult> GetAllNews()
         {
             return Ok(await newsService.GetAllNews());
