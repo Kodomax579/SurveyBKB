@@ -1,6 +1,7 @@
 ﻿@page "/admin/surveys"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
+@inject ApiService apiService
 
 <PageTitle>Umfragen verwalten</PageTitle>
 
@@ -91,7 +92,7 @@ else
 
     private UserModel CurrentUser => TestLoginData.CurrentUser;
 
-    private List<SurveyModel> Surveys = SurveyData.SurveyListe.ToList();
+    private List<SurveyModel> Surveys = new();
 
     private bool CanAccessAdmin =>
         PermissionRules.HasPermission(CurrentUser, Permission.ManageOwnSurveys) ||
@@ -110,6 +111,10 @@ else
                 string.IsNullOrWhiteSpace(Suchtext) ||
                 survey.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
 
+    protected async override Task OnInitializedAsync()
+    {
+        Surveys = await apiService.GetFromJsonAsync<List<SurveyModel>>("/api/survey");
+    }
     private bool CanSeeSurvey(SurveyModel survey)
     {
         if (CanManageAllSurveys)

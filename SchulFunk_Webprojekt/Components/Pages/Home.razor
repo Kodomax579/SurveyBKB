@@ -57,14 +57,14 @@
                     </div>
 
                     <div class="home-result-list">
-                        @foreach (var answer in ersteFrage.Options)
+                        @foreach (var answer in ersteFrage.Option)
                         {
                             var percentage = BerechneProzent(ersteFrage, answer);
                             var isTopAnswer = percentage == HoechsterProzentwert(ersteFrage);
 
                             <div class="home-result-card @(isTopAnswer ? "active" : "")">
                                 <div class="home-result-line">
-                                    <span>@answer.options</span>
+                                    <span>@answer.Answers</span>
                                     <strong>@percentage%</strong>
                                 </div>
 
@@ -230,7 +230,7 @@
 
     private int BerechneProzent(QuestionModel question, AnswerModel answer)
     {
-        var gesamtStimmen = question.Options.Sum(option => option.NumberOfSelectedAnswer);
+        var gesamtStimmen = question.Option.Sum(option => option.NumberOfSelectedAnswer);
 
         if (gesamtStimmen == 0)
         {
@@ -242,12 +242,12 @@
 
     private int HoechsterProzentwert(QuestionModel question)
     {
-        if (!question.Options.Any())
+        if (!question.Option.Any())
         {
             return 0;
         }
 
-        return question.Options
+        return question.Option
             .Select(answer => BerechneProzent(question, answer))
             .Max();
     }

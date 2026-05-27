@@ -1,5 +1,6 @@
-@page "/survey/results/{GroupId:int}"
+@page "/survey/results/{SurveyId:int}"
 @using SchulFunk_Webprojekt.Model
+@inject ApiService apiService
 
 <PageTitle>@(Survey?.Title ?? "Umfrage-Ergebnisse")</PageTitle>
 
@@ -43,16 +44,16 @@ else
                     <p>@question.Question</p>
 
                     <div class="survey-results-answer-list">
-                        @foreach (var answer in question.Options)
+                        @foreach (var answer in question.Option)
                         {
-                            var totalVotes = question.Options.Sum(option => option.NumberOfSelectedAnswer);
+                            var totalVotes = question.Option.Sum(option => option.NumberOfSelectedAnswer);
                             var percentage = totalVotes == 0
                                 ? 0
                                 : Math.Round((double)answer.NumberOfSelectedAnswer / totalVotes * 100);
 
                             <div class="survey-results-answer">
                                 <div class="survey-results-answer-top">
-                                    <strong>@answer.options</strong>
+                                    <strong>@answer.Answers</strong>
                                     <span>@percentage%</span>
                                 </div>
 
@@ -76,12 +77,12 @@ else
 
 @code {
     [Parameter]
-    public int GroupId { get; set; }
+    public int SurveyId { get; set; }
 
     private SurveyModel? Survey;
 
-    protected override void OnParametersSet()
+    protected override async Task OnParametersSetAsync()
     {
-        Survey = SurveyData.SurveyListe.FirstOrDefault(survey => survey.GroupId == GroupId);
+        Survey = await apiService.GetFromJsonAsync<SurveyModel>($"/api/User/Survey/{SurveyId}");
     }
 }

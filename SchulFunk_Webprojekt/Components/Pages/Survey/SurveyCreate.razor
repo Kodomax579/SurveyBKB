@@ -1,6 +1,7 @@
 @page "/survey/create"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
+@inject ApiService apiService
 
 <PageTitle>Umfrage erstellen</PageTitle>
 
@@ -140,19 +141,19 @@ else
                         <div class="answer-list">
                             <label>Antwortmöglichkeiten</label>
 
-                            @for (var answerIndex = 0; answerIndex < question.Options.Count; answerIndex++)
+                            @for (var answerIndex = 0; answerIndex < question.Option.Count; answerIndex++)
                             {
                                 var currentAnswerIndex = answerIndex;
-                                var answer = question.Options[currentAnswerIndex];
+                                var answer = question.Option[currentAnswerIndex];
 
                                 <div class="answer-row">
                                     <input type="text"
                                            class="form-control"
                                            placeholder="Antwortmöglichkeit eingeben"
-                                           @bind="answer.options"
+                                           @bind="answer.Answers"
                                            @bind:event="oninput" />
 
-                                    @if (question.Options.Count > 2)
+                                    @if (question.Option.Count > 2)
                                     {
                                         <button type="button"
                                                 class="remove-answer-button"
@@ -222,10 +223,10 @@ else
                     <div class="preview-question">
                         <h4>@(string.IsNullOrWhiteSpace(question.Question) ? "Neue Frage" : question.Question)</h4>
 
-                        @foreach (var answer in question.Options)
+                        @foreach (var answer in question.Option)
                         {
                             <div class="preview-answer">
-                                @(string.IsNullOrWhiteSpace(answer.options) ? "Antwortmöglichkeit" : answer.options)
+                                @(string.IsNullOrWhiteSpace(answer.Answers) ? "Antwortmöglichkeit" : answer.Answers)
                             </div>
                         }
                     </div>
@@ -265,7 +266,7 @@ else
             _ => "Klassen manuell auswählen"
         };
 
-    private List<ClassModel> AvailableClasses => SurveyData.AvailableClasses;
+    private List<ClassModel> AvailableClasses = new();
     private List<ClassModel> SelectedClasses = new();
 
     private List<QuestionModel> Questions = new()
@@ -273,7 +274,7 @@ else
         new QuestionModel
         {
             Question = "",
-            Options = new()
+            Option = new()
             {
                 new AnswerModel(),
                 new AnswerModel()
@@ -298,6 +299,11 @@ else
         }
     }
 
+    protected override async Task OnInitializedAsync()
+    {
+        AvailableClasses = await apiService.GetFromJsonAsync<List<ClassModel>>("/api/User/classes");
+    }
+
     private bool IstKlasseAusgewaehlt(ClassModel klasse)
     {
         return SelectedClasses.Any(selected => selected.ClassName == klasse.ClassName);
@@ -319,7 +325,7 @@ else
         Questions.Add(new QuestionModel
         {
             Question = "",
-            Options = new()
+            Option = new()
             {
                 new AnswerModel(),
                 new AnswerModel()
@@ -337,14 +343,14 @@ else
 
     private void AddAnswer(int questionIndex)
     {
-        Questions[questionIndex].Options.Add(new AnswerModel());
+        Questions[questionIndex].Option.Add(new AnswerModel());
     }
 
     private void RemoveAnswer(int questionIndex, int answerIndex)
     {
-        if (Questions[questionIndex].Options.Count > 2)
+        if (Questions[questionIndex].Option.Count > 2)
         {
-            Questions[questionIndex].Options.RemoveAt(answerIndex);
+            Questions[questionIndex].Option.RemoveAt(answerIndex);
         }
     }
 
@@ -354,11 +360,6 @@ else
         {
             return;
         }
-
-        var neueId = SurveyData.SurveyListe.Count == 0
-            ? 1
-            : SurveyData.SurveyListe.Max(survey => survey.GroupId) + 1;
-
      
         SurveyTitle = "";
         Description = "";
@@ -368,7 +369,7 @@ else
             new QuestionModel
             {
                 Question = "",
-                Options = new()
+                Option = new()
                 {
                     new AnswerModel(),
                     new AnswerModel()

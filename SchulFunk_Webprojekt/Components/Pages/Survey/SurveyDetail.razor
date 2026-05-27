@@ -1,6 +1,7 @@
-@page "/survey/{GroupId:int}"
+@page "/survey/{SurveyId:int}"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
+@inject ApiService apiService
 
 <PageTitle>@(Survey?.Title ?? "Umfrage")</PageTitle>
 
@@ -68,16 +69,16 @@ else
                     <p>@question.Question</p>
 
                     <div class="survey-answer-list">
-                        @for (var answerIndex = 0; answerIndex < question.Options.Count; answerIndex++)
+                        @for (var answerIndex = 0; answerIndex < question.Option.Count; answerIndex++)
                         {
-                            var answer = question.Options[answerIndex];
+                            var answer = question.Option[answerIndex];
 
                             <label class="survey-answer-option @(!CanVote ? "survey-answer-option-disabled" : "")">
                                 <input type="radio"
                                        name="question-@questionIndex"
                                        value="@answerIndex"
                                        disabled="@(!CanVote)" />
-                                <span>@answer.options</span>
+                                <span>@answer.Answers</span>
                             </label>
                         }
                     </div>
@@ -112,7 +113,7 @@ else
 
 @code {
     [Parameter]
-    public int GroupId { get; set; }
+    public int SurveyId { get; set; }
 
     private SurveyModel? Survey;
 
@@ -127,9 +128,9 @@ else
         !IsExpired &&
         PermissionRules.HasPermission(CurrentUser, Permission.VoteInSurveys);
 
-    protected override void OnParametersSet()
+    protected override async Task OnInitializedAsync()
     {
-        Survey = SurveyData.SurveyListe.FirstOrDefault(survey => survey.GroupId == GroupId);
+        Survey = await apiService.GetFromJsonAsync<SurveyModel>($"/api/Survey/{SurveyId}");
     }
 
     private string GetSurveyStatusText()

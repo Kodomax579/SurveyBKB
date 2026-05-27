@@ -158,11 +158,13 @@ else
     private bool FilterPanelVisible = false;
     private UserModel CurrentUser = new();
     private List<UserModel> AllUser = new();
+    private List<ClassModel> AvailableClasses = new();
 
     protected async override Task OnInitializedAsync()
     {
         CurrentUser = userService.CurrentUser;
         AllUser = await apiService.GetFromJsonAsync<List<UserModel>>("/api/users");
+        AvailableClasses = await apiService.GetFromJsonAsync<List<ClassModel>>("/api/User/classes");
     }
 
 
@@ -173,7 +175,6 @@ else
     private bool CanDeleteUsers =>
         PermissionRules.HasPermission(CurrentUser, Permission.DeleteUsers);
 
-    private List<ClassModel> AvailableClasses => SurveyData.AvailableClasses;
 
     private List<Groups> AvailableGroupFilters =>
         CurrentUser.Group == Groups.Admin

@@ -1,11 +1,16 @@
-﻿namespace SchulFunk_Webprojekt.Model
+﻿using System.Text.Json.Serialization;
+
+namespace SchulFunk_Webprojekt.Model
 {
     public class AnswerModel
     {
+        [JsonPropertyName("id")]
+        public int Id { get; set; }
 
-        public string options { get; set; }
+        [JsonPropertyName("answers")]
+        public string Answers { get; set; } = string.Empty;
 
+        [JsonPropertyName("numberOfSelectedAnswer")]
         public int NumberOfSelectedAnswer { get; set; }
-
     }
 }
