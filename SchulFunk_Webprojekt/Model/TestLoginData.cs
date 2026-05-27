@@ -1,4 +1,7 @@
-﻿namespace SchulFunk_Webprojekt.Model;
+﻿using SchulFunk_Webprojekt.Feature.UserHandling;
+using SchulFunk_Webprojekt.Feature.UserHandling.Model;
+
+namespace SchulFunk_Webprojekt.Model;
 
 public static class TestLoginData
 {
@@ -18,7 +21,7 @@ public static class TestLoginData
     {
         TestUserRole.Student => new UserModel
         {
-            Name = "Lina",
+            Firstname = "Lina",
             Lastname = "Schülerin",
             Email = "lina.schuelerin@schule.de",
             Class = new ClassModel { ClassName = "10A" },
@@ -27,7 +30,7 @@ public static class TestLoginData
 
         TestUserRole.ClassRepresentative => new UserModel
         {
-            Name = "Tom",
+            Firstname = "Tom",
             Lastname = "Klassensprecher",
             Email = "tom.klassensprecher@schule.de",
             Class = new ClassModel { ClassName = "10A" },
@@ -36,7 +39,7 @@ public static class TestLoginData
 
         TestUserRole.StudentRepresentative => new UserModel
         {
-            Name = "Mia",
+            Firstname = "Mia",
             Lastname = "Schülersprecherin",
             Email = "mia.schuelersprecherin@schule.de",
             Class = new ClassModel { ClassName = "SV" },
@@ -45,7 +48,7 @@ public static class TestLoginData
 
         TestUserRole.Teacher => new UserModel
         {
-            Name = "Max",
+            Firstname = "Max",
             Lastname = "Mustermann",
             Email = "max.mustermann@schule.de",
             Class = new ClassModel { ClassName = "Lehrer" },
@@ -54,7 +57,7 @@ public static class TestLoginData
 
         TestUserRole.Admin => new UserModel
         {
-            Name = "Ada",
+            Firstname = "Ada",
             Lastname = "Admin",
             Email = "admin@schule.de",
             Class = new ClassModel { ClassName = "Verwaltung" },
@@ -63,7 +66,7 @@ public static class TestLoginData
 
         _ => new UserModel
         {
-            Name = "Lina",
+            Firstname = "Lina",
             Lastname = "Schülerin",
             Email = "lina.schuelerin@schule.de",
             Class = new ClassModel { ClassName = "10A" },

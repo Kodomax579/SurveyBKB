@@ -1,18 +1,21 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Survey.ApiGateway.Database;
+using Survey.ApiGateway.Feature.Survey.DTO;
 using Survey.ApiGateway.Feature.Survey.Models;
+using Survey.ApiGateway.Models.DTO;
 
 namespace Survey.ApiGateway.Feature.Survey
 {
     public class SurveyService(SurveyDbContext surveyDbContext)
     {
-        public async Task<SurveyModel?> CreateSurvey(SurveyModel survey)
+        public async Task<SurveyDTO?> CreateSurvey(SurveyModel survey)
         {
             try
             {
                 await surveyDbContext.Surveys.AddAsync(survey);
                 await surveyDbContext.SaveChangesAsync();
-                return survey;
+
+                return await GetSurveyById(survey.Id);
             }
             catch (Exception)
             {
@@ -20,29 +23,46 @@ namespace Survey.ApiGateway.Feature.Survey
             }
         }
 
-        public async Task<List<SurveyModel>> GetAllSurveys()
+        public async Task<List<SurveyDTO>> GetAllSurveys()
         {
-            return await surveyDbContext.Surveys
+            var surveys = await surveyDbContext.Surveys
                 .Where(s => s.OnlineUntil >= DateOnly.FromDateTime(DateTime.UtcNow))
                 .Include(s => s.User)
+                    .ThenInclude(u => u.Class) 
                 .Include(s => s.Questions)
                     .ThenInclude(q => q.Options)
                 .OrderByDescending(s => s.CreatedAt)
                 .ToListAsync();
+
+            return surveys.Select(ConvertToDto).ToList();
         }
 
-        public async Task<SurveyModel?> GetSurveyById(int id)
+        public async Task<SurveyDTO?> GetSurveyById(int id)
         {
-            return await surveyDbContext.Surveys
+            var survey = await surveyDbContext.Surveys
                 .Include(s => s.User)
-                .Include(s => s.Questions)            
-                    .ThenInclude(q => q.Options)      
+                    .ThenInclude(u => u.Class) 
+                .Include(s => s.Questions)
+                    .ThenInclude(q => q.Options)
                 .FirstOrDefaultAsync(s => s.Id == id);
+
+            if (survey == null)
+            {
+                return null;
+            }
+
+            return ConvertToDto(survey);
         }
 
-        public async Task<SurveyModel?> UpdateSurvey(int id, SurveyModel surveyUpdate)
+        public async Task<SurveyDTO?> UpdateSurvey(int id, SurveyModel surveyUpdate)
         {
-            var existingSurvey = await surveyDbContext.Surveys.FindAsync(id);
+            var existingSurvey = await surveyDbContext.Surveys
+                .Include(s => s.User)
+                    .ThenInclude(u => u.Class)
+                .Include(s => s.Questions)
+                    .ThenInclude(q => q.Options)
+                .FirstOrDefaultAsync(s => s.Id == id);
+
             if (existingSurvey == null)
             {
                 return null;
@@ -55,7 +75,7 @@ namespace Survey.ApiGateway.Feature.Survey
             try
             {
                 await surveyDbContext.SaveChangesAsync();
-                return existingSurvey;
+                return ConvertToDto(existingSurvey);
             }
             catch (Exception)
             {
@@ -93,6 +113,44 @@ namespace Survey.ApiGateway.Feature.Survey
             {
                 return false;
             }
+        }
+
+        private SurveyDTO ConvertToDto(SurveyModel survey)
+        {
+            return new SurveyDTO()
+            {
+                Id = survey.Id,
+                Title = survey.Title,
+                GroupId = survey.GroupId,
+                User = new UserDTO()
+                {
+                    Id = survey.User.Id,
+                    Firstname = survey.User.Firstname,
+                    Email = survey.User.Email,
+                    Group = survey.User.Group,
+                    Lastname = survey.User.Lastname,
+                    Class = new User.DTO.ClassDTO()
+                    {
+                        Classname = survey.User.Class.ClassName
+                    }
+                },
+                CreatedAt = survey.CreatedAt,
+                OnlineUntil = survey.OnlineUntil,
+                Classes = survey.Classes,
+                UserIDs = survey.UserIDs,
+                Questions = survey.Questions.Select(q => new QuestionDTO()
+                {
+                    Id = q.Id,
+                    Question = q.Question,
+                    SurveyModelId = q.SurveyModelId,
+                    Options = q.Options.Select(o => new AnswerDTO()
+                    {
+                        Id = o.Id,
+                        Answers = o.Answers,
+                        NumberOfSelectedAnswer = o.NumberOfSelectedAnswer
+                    }).ToList()
+                }).ToList()
+            };
         }
     }
 }

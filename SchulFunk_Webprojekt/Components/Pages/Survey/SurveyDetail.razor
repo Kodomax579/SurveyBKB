@@ -1,6 +1,8 @@
-@page "/survey/{GroupId:int}"
+@page "/survey/{SurveyId:int}"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
+@inject UserStateService userStateService
+@inject SurveyStateService surveyStateService
 
 <PageTitle>@(Survey?.Title ?? "Umfrage")</PageTitle>
 
@@ -68,16 +70,16 @@ else
                     <p>@question.Question</p>
 
                     <div class="survey-answer-list">
-                        @for (var answerIndex = 0; answerIndex < question.Options.Count; answerIndex++)
+                        @for (var answerIndex = 0; answerIndex < question.AnswerModels.Count; answerIndex++)
                         {
-                            var answer = question.Options[answerIndex];
+                            var answer = question.AnswerModels[answerIndex];
 
                             <label class="survey-answer-option @(!CanVote ? "survey-answer-option-disabled" : "")">
                                 <input type="radio"
                                        name="question-@questionIndex"
                                        value="@answerIndex"
                                        disabled="@(!CanVote)" />
-                                <span>@answer.options</span>
+                                <span>@answer.Answers</span>
                             </label>
                         }
                     </div>
@@ -112,11 +114,11 @@ else
 
 @code {
     [Parameter]
-    public int GroupId { get; set; }
+    public int SurveyId { get; set; }
 
     private SurveyModel? Survey;
 
-    private UserModel CurrentUser => TestLoginData.CurrentUser;
+    private UserModel CurrentUser = new();
 
     private bool IsExpired =>
         Survey is not null &&
@@ -127,9 +129,11 @@ else
         !IsExpired &&
         PermissionRules.HasPermission(CurrentUser, Permission.VoteInSurveys);
 
-    protected override void OnParametersSet()
+    protected override async Task OnInitializedAsync()
     {
-        Survey = SurveyData.SurveyListe.FirstOrDefault(survey => survey.GroupId == GroupId);
+        CurrentUser = userStateService.GetUser();
+
+        Survey = surveyStateService.GetAllSurveys().FirstOrDefault(s => s.Id == SurveyId);
     }
 
     private string GetSurveyStatusText()

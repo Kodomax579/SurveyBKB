@@ -1,4 +1,6 @@
-﻿namespace SchulFunk_Webprojekt.Model;
+﻿using SchulFunk_Webprojekt.Feature.UserHandling.Model;
+
+namespace SchulFunk_Webprojekt.Model;
 
 public enum Permission
 {

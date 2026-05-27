@@ -5,7 +5,7 @@ services:
       - "7224:7224"
     environment:
       - ASPNETCORE_URLS=http://+:7224
-      - ConnectionStrings__DefaultConnectionPublish=Host=db;Port=5432;Database=schulfunkdb;Username=schulfunk_admin;Password=DeinSicheresPasswort;
+      - DefaultConnectionPublish=Host=db;Port=5432;Database=SchulfunkDb;Username=schulfunk_admin;Password=DeinSicheresPasswort;
     depends_on:
       - db
     volumes:
@@ -14,7 +14,7 @@ services:
   db:
     image: postgres:16
     environment:
-      - POSTGRES_DB=schulfunkdb
+      - POSTGRES_DB=SchulfunkDb
       - POSTGRES_USER=schulfunk_admin
       - POSTGRES_PASSWORD=DeinSicheresPasswort
     volumes:

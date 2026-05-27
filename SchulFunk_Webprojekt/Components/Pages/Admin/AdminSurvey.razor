@@ -1,6 +1,8 @@
 ﻿@page "/admin/surveys"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
+@inject UserStateService userStateService
+@inject SurveyStateService surveyStateService
 
 <PageTitle>Umfragen verwalten</PageTitle>
 
@@ -89,9 +91,9 @@ else
 @code {
     private string Suchtext = "";
 
-    private UserModel CurrentUser => TestLoginData.CurrentUser;
+    private UserModel CurrentUser => userStateService.GetUser();
 
-    private List<SurveyModel> Surveys = SurveyData.SurveyListe.ToList();
+    private List<SurveyModel> Surveys => surveyStateService.GetAllSurveys();
 
     private bool CanAccessAdmin =>
         PermissionRules.HasPermission(CurrentUser, Permission.ManageOwnSurveys) ||

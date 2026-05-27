@@ -2,11 +2,8 @@
 @rendermode InteractiveServer
 @using System.Text.Json
 @using SchulFunk_Webprojekt.Model
-@using SchulFunk_Webprojekt.Services
-@inject SignalRHub.SignalRHub hub
-@implements IDisposable
-
-@inject ApiService ApiService
+@inject NewsStateService newsStateService
+@inject NewsService newsService
 
 <PageTitle>Aktuelle Nachrichten</PageTitle>
 
@@ -60,15 +57,6 @@ else
     protected override async Task OnInitializedAsync()
     {
         await LadeNachrichten();
-        await hub.Connect();
-
-        hub.OnNewsItemsUpdated += HandleNewsUpdated;
-
-    }
-    private void HandleNewsUpdated(NewsItem updatedNews)
-    {
-        NewsListe.Add(updatedNews);
-        InvokeAsync( StateHasChanged);
     }
 
     private async Task LadeNachrichten()
@@ -76,28 +64,7 @@ else
         IsLoading = true;
         Fehlermeldung = "";
 
-        try
-        {
-            var response = await ApiService.GetAsync("/api/News");
-
-            if (!response.IsSuccessStatusCode)
-            {
-                Fehlermeldung = "Nachrichten konnten nicht geladen werden.";
-                return;
-            }
-
-            var json = await response.Content.ReadAsStringAsync();
-
-            NewsListe = ParseNewsJson(json);
-        }
-        catch
-        {
-            Fehlermeldung = "Es ist ein Fehler beim Laden der Nachrichten aufgetreten.";
-        }
-        finally
-        {
-            IsLoading = false;
-        }
+        NewsListe = newsStateService.GetNewsItems();
     }
 
     private static List<NewsItem> ParseNewsJson(string json)
@@ -123,7 +90,7 @@ else
                 Title = GetString(element, "titel"),
                 PreviewText = GetString(element, "previewText"),
                 MainText = GetString(element, "mainText"),
-                Image = GetBytes(element, "image"),
+                ImageLink = GetString(element, "image"),
                 CreatedAt = createdAt,
                 ExpiredDate = expiredDate,
             });
@@ -177,39 +144,5 @@ else
         return property.TryGetDateTime(out var date)
             ? date
             : default;
-    }
-
-    private static byte[] GetBytes(JsonElement element, string propertyName)
-    {
-        if (!element.TryGetProperty(propertyName, out var property))
-        {
-            return Array.Empty<byte>();
-        }
-
-        if (property.ValueKind == JsonValueKind.Null)
-        {
-            return Array.Empty<byte>();
-        }
-
-        var base64 = property.GetString();
-
-        if (string.IsNullOrWhiteSpace(base64))
-        {
-            return Array.Empty<byte>();
-        }
-
-        try
-        {
-            return Convert.FromBase64String(base64);
-        }
-        catch
-        {
-            return Array.Empty<byte>();
-        }
-    }
-
-    public void Dispose()
-    {
-        hub.OnNewsItemsUpdated -= HandleNewsUpdated;
     }
 }

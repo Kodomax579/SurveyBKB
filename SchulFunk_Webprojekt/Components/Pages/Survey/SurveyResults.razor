@@ -1,6 +1,7 @@
 @page "/survey/results"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
+@inject SurveyStateService surveyStateService
 
 <PageTitle>Ausgewertete Umfragen</PageTitle>
 
@@ -82,7 +83,12 @@
     private string Suchtext = "";
     private string UserRole = "Klassensprecher";
     private string UserClass = "10A";
-    private List<SurveyModel> SurveyListe = SurveyData.SurveyListe;
+    private List<SurveyModel> SurveyListe = new();
+
+    protected override void OnInitialized()
+    {
+        SurveyListe = surveyStateService.GetAllSurveys();
+    }
 
     private IEnumerable<SurveyModel> GefilterteAusgewerteteSurveyListe =>
         SurveyListe
@@ -98,6 +104,6 @@
             return true;
         }
 
-        return survey.Classes.Any(klasse => klasse.ClassName == UserClass);
+        return survey.Classes.Any(klasse => klasse == UserClass);
     }
 }

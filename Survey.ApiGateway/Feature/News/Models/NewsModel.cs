@@ -14,6 +14,6 @@ namespace Survey.ApiGateway.Feature.News.Models
         public DateTime CreatedAt { get; set; }
         public DateTime ExpiredDate { get; set; }
         public int NumberOfMembers { get; set; }
-        public UserModel User { get; set; } = new UserModel();
+        public UserModel User { get; set; } = new();
     }
 }

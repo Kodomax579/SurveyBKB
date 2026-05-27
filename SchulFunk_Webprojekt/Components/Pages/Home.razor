@@ -1,6 +1,11 @@
 @page "/home"
 @rendermode InteractiveServer
-@using SchulFunk_Webprojekt.Model
+@inject NewsService newsService
+@inject SurveyService surveyService
+@inject NewsStateService newsStateService
+@inject SurveyStateService surveyStateService
+@inject SignalRHub hub
+@implements IDisposable
 
 <PageTitle>SchulFunk</PageTitle>
 
@@ -16,7 +21,7 @@
         </div>
 
         <div class="home-news-list">
-            @foreach (var news in AktuellsteNews)
+            @foreach (var news in NewsItems)
             {
                 <a href="/news/@news.Id" class="home-news-item home-news-link">
                     <span>@news.CreatedAt</span>
@@ -28,9 +33,9 @@
     </section>
 
     <section class="home-survey-panel sf-panel" id="umfragen">
-        @if (AusgewerteteUmfragen.Any())
+        @if (surveyModels.Any())
         {
-            var aktuelleUmfrage = AusgewerteteUmfragen[AktuelleUmfrageIndex];
+            var aktuelleUmfrage = surveyModels[AktuelleUmfrageIndex];
             var ersteFrage = aktuelleUmfrage.Questions.FirstOrDefault();
 
             <div class="home-survey-slide @SurveyAnimationClass" @key="AktuelleUmfrageIndex">
@@ -55,14 +60,14 @@
                     </div>
 
                     <div class="home-result-list">
-                        @foreach (var answer in ersteFrage.Options)
+                        @foreach (var answer in ersteFrage.AnswerModels)
                         {
                             var percentage = BerechneProzent(ersteFrage, answer);
                             var isTopAnswer = percentage == HoechsterProzentwert(ersteFrage);
 
                             <div class="home-result-card @(isTopAnswer ? "active" : "")">
                                 <div class="home-result-line">
-                                    <span>@answer.options</span>
+                                    <span>@answer.Answers</span>
                                     <strong>@percentage%</strong>
                                 </div>
 
@@ -79,7 +84,7 @@
                         <button type="button"
                                 class="home-survey-arrow"
                                 @onclick="VorherigeUmfrage"
-                                disabled="@(AusgewerteteUmfragen.Count <= 1)"
+                                disabled="@(surveyModels.Count <= 1)"
                                 aria-label="Vorherige Umfrage">
                             ↑
                         </button>
@@ -87,13 +92,13 @@
                         <button type="button"
                                 class="home-survey-arrow"
                                 @onclick="NaechsteUmfrage"
-                                disabled="@(AusgewerteteUmfragen.Count <= 1)"
+                                disabled="@(surveyModels.Count <= 1)"
                                 aria-label="Nächste Umfrage">
                             ↓
                         </button>
                     </div>
 
-                    <a href="/survey/results/@aktuelleUmfrage.GroupId" class="sf-button home-survey-link">
+                    <a href="/survey/results/@aktuelleUmfrage.Id" class="sf-button home-survey-link">
                         Ergebnisse ansehen
                     </a>
                 </div>
@@ -177,22 +182,25 @@
 @code {
     private int AktuelleUmfrageIndex = 0;
     private string SurveyAnimationClass = "slide-in";
+    private IReadOnlyList<NewsItem> NewsItems => newsStateService.GetNewsItems();
+    private IReadOnlyList<SurveyModel> surveyModels => surveyStateService.GetAllSurveys();
 
-    private IEnumerable<NewsItem> AktuellsteNews =>
-        NewsData.NewsListe
-            .OrderByDescending(news => news.Id)
-            .Take(4);
+    protected async override Task OnInitializedAsync()
+    {
+        newsStateService.OnChange += UpdateUI;
+        surveyStateService.OnChange += UpdateUI;
 
-    private List<SurveyModel> AusgewerteteUmfragen =>
-        SurveyData.SurveyListe
-            .Where(survey => survey.OnlineUntil < DateOnly.FromDateTime(DateTime.Today))
-            .OrderByDescending(survey => survey.OnlineUntil)
-            .Take(3)
-            .ToList();
+        await hub.Connect();
+    }
+
+    private void UpdateUI()
+    {
+        InvokeAsync(StateHasChanged);
+    }
 
     private async Task NaechsteUmfrage()
     {
-        if (AusgewerteteUmfragen.Count == 0)
+        if (surveyModels.Count == 0)
         {
             return;
         }
@@ -202,7 +210,7 @@
 
         AktuelleUmfrageIndex++;
 
-        if (AktuelleUmfrageIndex >= AusgewerteteUmfragen.Count)
+        if (AktuelleUmfrageIndex >= surveyModels.Count)
         {
             AktuelleUmfrageIndex = 0;
         }
@@ -212,7 +220,7 @@
 
     private async Task VorherigeUmfrage()
     {
-        if (AusgewerteteUmfragen.Count == 0)
+        if (surveyModels.Count == 0)
         {
             return;
         }
@@ -224,7 +232,7 @@
 
         if (AktuelleUmfrageIndex < 0)
         {
-            AktuelleUmfrageIndex = AusgewerteteUmfragen.Count - 1;
+            AktuelleUmfrageIndex = surveyModels.Count - 1;
         }
 
         SurveyAnimationClass = "slide-in";
@@ -232,7 +240,7 @@
 
     private int BerechneProzent(QuestionModel question, AnswerModel answer)
     {
-        var gesamtStimmen = question.Options.Sum(option => option.NumberOfSelectedAnswer);
+        var gesamtStimmen = question.AnswerModels.Sum(option => option.NumberOfSelectedAnswer);
 
         if (gesamtStimmen == 0)
         {
@@ -244,13 +252,18 @@
 
     private int HoechsterProzentwert(QuestionModel question)
     {
-        if (!question.Options.Any())
+        if (!question.AnswerModels.Any())
         {
             return 0;
         }
 
-        return question.Options
+        return question.AnswerModels
             .Select(answer => BerechneProzent(question, answer))
             .Max();
+    }
+    public void Dispose()
+    {
+        newsStateService.OnChange -= StateHasChanged;
+        surveyStateService.OnChange -= StateHasChanged;
     }
 }

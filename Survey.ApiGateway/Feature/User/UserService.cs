@@ -58,7 +58,7 @@ namespace Survey.ApiGateway.Feature.User
                 .Select(u => new UserModel
                 {
                     Id = u.Id,
-                    Name = u.Name,
+                    Firstname = u.Firstname,
                     Lastname = u.Lastname,
                     Email = u.Email,
                     ClassId = u.ClassId,
@@ -91,7 +91,7 @@ namespace Survey.ApiGateway.Feature.User
                 return null; 
             }
 
-            existingUser.Name = userUpdate.Name;
+            existingUser.Firstname = userUpdate.Firstname;
             existingUser.Lastname = userUpdate.Lastname;
             existingUser.Group = userUpdate.Group;
 
