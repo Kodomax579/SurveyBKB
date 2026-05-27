@@ -14,6 +14,7 @@ namespace Survey.ApiGateway.Controllers
     public class NewsController(IHubContext<RealtimeHub.RealtimeHub> realtimeHub, NewsService newsService) : ControllerBase
     {
         [HttpGet]
+        [Authorize]
         public async Task<IActionResult> GetAllNews()
         {
             return Ok(await newsService.GetAllNews());
@@ -27,6 +28,7 @@ namespace Survey.ApiGateway.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateNews([FromForm] NewsModel news, IFormFile? image)
         {
             if (image != null)
