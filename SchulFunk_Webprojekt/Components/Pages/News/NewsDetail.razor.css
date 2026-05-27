@@ -1,0 +1,100 @@
+.news-detail-page {
+    padding: var(--sf-space-lg);
+    background: var(--sf-panel-bg);
+    border-color: var(--sf-border);
+}
+
+    .news-detail-page::before,
+    .news-detail-page::after {
+        content: none !important;
+        display: none !important;
+    }
+
+.news-detail-header {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: var(--sf-space-md);
+    margin-bottom: var(--sf-space-lg);
+}
+
+    .news-detail-header img {
+        width: 78px;
+        height: 78px;
+        object-fit: contain;
+    }
+
+    .news-detail-header span {
+        color: var(--sf-accent);
+        font-weight: var(--sf-font-weight-black);
+    }
+
+    .news-detail-header h2 {
+        margin: 6px 0;
+        color: var(--sf-text-strong);
+        font-size: clamp(1.9rem, 3.6vw, 3rem);
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+    }
+
+    .news-detail-header p {
+        margin: 0;
+        color: var(--sf-text-muted);
+        font-weight: var(--sf-font-weight-bold);
+    }
+
+.news-detail-description {
+    position: relative;
+    z-index: 1;
+    color: var(--sf-text-muted);
+    font-size: var(--sf-font-size-md);
+    line-height: 1.7;
+    margin: 0 0 var(--sf-space-md);
+}
+
+.news-detail-article {
+    position: relative;
+    z-index: 1;
+    padding: var(--sf-space-lg);
+    border-radius: var(--sf-radius-md);
+    background: var(--sf-card-bg);
+    border: 1px solid var(--sf-border);
+    color: var(--sf-text);
+    font-size: var(--sf-font-size-md);
+    line-height: 1.8;
+    white-space: pre-wrap;
+}
+
+    .news-detail-article p,
+    .news-detail-article span,
+    .news-detail-article div {
+        color: var(--sf-text);
+    }
+
+.news-detail-back {
+    position: relative;
+    z-index: 1;
+    margin-top: var(--sf-space-lg);
+}
+
+@media (max-width: 680px) {
+    .news-detail-page {
+        padding: var(--sf-space-md);
+        border-radius: var(--sf-radius-md);
+    }
+
+    .news-detail-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+        .news-detail-header img {
+            width: 72px;
+            height: 72px;
+        }
+
+    .news-detail-back {
+        width: 100%;
+    }
+}

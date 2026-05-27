@@ -1,0 +1,241 @@
+@page "/admin/register"
+@rendermode InteractiveServer
+@using SchulFunk_Webprojekt.Model
+@inject NavigationManager NavManager
+
+<PageTitle>Benutzer registrieren - SchulFunk</PageTitle>
+
+@if (!CanRegisterUsers)
+{
+    <section class="admin-empty sf-panel">
+        <h3>Kein Zugriff</h3>
+        <p>Du darfst keine neuen Benutzer registrieren.</p>
+    </section>
+}
+else
+{
+    <section class="register-layout">
+        <div class="sf-panel register-panel">
+            <div class="register-header">
+                <img src="/lib/images/Icon-User.png" alt="Benutzer Icon" />
+                <div>
+                    <h2>Benutzer registrieren</h2>
+                    <p>Lege hier neue Benutzer für SchulFunk an.</p>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrWhiteSpace(Erfolgsmeldung))
+            {
+                <div class="register-success">
+                    @Erfolgsmeldung
+                </div>
+            }
+
+            @if (!string.IsNullOrWhiteSpace(Fehlermeldung))
+            {
+                <div class="register-error">
+                    @Fehlermeldung
+                </div>
+            }
+
+            <div class="auth-form">
+                <div class="row-group">
+                    <div class="form-group half-width">
+                        <label>Vorname</label>
+                        <input type="text"
+                               class="sf-input"
+                               placeholder="Max"
+                               @bind="Vorname"
+                               @bind:event="oninput" />
+                    </div>
+
+                    <div class="form-group half-width">
+                        <label>Nachname</label>
+                        <input type="text"
+                               class="sf-input"
+                               placeholder="Mustermann"
+                               @bind="Nachname"
+                               @bind:event="oninput" />
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Benutzerrolle</label>
+
+                    <select class="sf-input" @bind="SelectedGroup">
+                        @foreach (var group in RegisterableGroups)
+                        {
+                            <option value="@group">@PermissionRules.GetGroupLabel(group)</option>
+                        }
+                    </select>
+                </div>
+
+                @if (SelectedGroup == Groups.Teacher)
+                {
+                    <div class="form-group">
+                        <label>Klasse / Bereich</label>
+
+                        <div class="readonly-info-box">
+                            <strong>Lehrer</strong>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="form-group">
+                        <label>Klasse</label>
+
+                        <select class="sf-input" @bind="SelectedClassName">
+                            @foreach (var klasse in AvailableClasses)
+                            {
+                                <option value="@klasse.ClassName">@klasse.ClassName</option>
+                            }
+                        </select>
+                    </div>
+                }
+
+                <div class="form-group">
+                    <label>E-Mail Adresse</label>
+                    <input type="email"
+                           class="sf-input"
+                           placeholder="max.mustermann@schule.de"
+                           @bind="Email"
+                           @bind:event="oninput" />
+                </div>
+
+                <div class="form-group">
+                    <label>Passwort wählen</label>
+                    <input type="password"
+                           class="sf-input"
+                           placeholder="••••••••"
+                           @bind="Password"
+                           @bind:event="oninput" />
+                </div>
+
+                <div class="form-actions">
+                    <button class="sf-button sf-button-dark" @onclick="Registrieren">
+                        Benutzer registrieren
+                    </button>
+
+                    <a href="/admin" class="sf-button">
+                        Zurück zum Admin Panel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+}
+
+@code {
+    private UserModel CurrentUser => TestLoginData.CurrentUser;
+
+    private string Vorname = "";
+    private string Nachname = "";
+    private string Email = "";
+    private string Password = "";
+    private string SelectedClassName = SurveyData.AvailableClasses.FirstOrDefault()?.ClassName ?? "";
+    private string Erfolgsmeldung = "";
+    private string Fehlermeldung = "";
+
+    private Groups SelectedGroup = Groups.Student;
+
+    private bool CanRegisterUsers =>
+        PermissionRules.HasPermission(CurrentUser, Permission.RegisterStudentUsers) ||
+        PermissionRules.HasPermission(CurrentUser, Permission.RegisterTeacherUsers);
+
+    private List<ClassModel> AvailableClasses => SurveyData.AvailableClasses;
+
+    private List<Groups> RegisterableGroups
+    {
+        get
+        {
+            var groups = new List<Groups>();
+
+            if (PermissionRules.HasPermission(CurrentUser, Permission.RegisterStudentUsers))
+            {
+                groups.Add(Groups.Student);
+            }
+
+            if (PermissionRules.HasPermission(CurrentUser, Permission.RegisterTeacherUsers))
+            {
+                groups.Add(Groups.Teacher);
+            }
+
+            return groups;
+        }
+    }
+
+    protected override void OnInitialized()
+    {
+        SelectedGroup = RegisterableGroups.FirstOrDefault();
+
+        if (string.IsNullOrWhiteSpace(SelectedClassName) && AvailableClasses.Count > 0)
+        {
+            SelectedClassName = AvailableClasses[0].ClassName;
+        }
+    }
+
+    private void Registrieren()
+    {
+        Erfolgsmeldung = "";
+        Fehlermeldung = "";
+
+        if (!CanRegisterUsers)
+        {
+            Fehlermeldung = "Du hast keine Berechtigung, Benutzer zu registrieren.";
+            return;
+        }
+
+        if (!RegisterableGroups.Contains(SelectedGroup))
+        {
+            Fehlermeldung = "Du darfst diese Benutzerrolle nicht registrieren.";
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(Vorname) ||
+            string.IsNullOrWhiteSpace(Nachname) ||
+            string.IsNullOrWhiteSpace(Email) ||
+            string.IsNullOrWhiteSpace(Password))
+        {
+            Fehlermeldung = "Bitte fülle alle Pflichtfelder aus.";
+            return;
+        }
+
+        if (UserData.Users.Any(user => user.Email.Equals(Email, StringComparison.OrdinalIgnoreCase)))
+        {
+            Fehlermeldung = "Es existiert bereits ein Benutzer mit dieser E-Mail-Adresse.";
+            return;
+        }
+
+        var className = SelectedGroup == Groups.Teacher
+            ? "Lehrer"
+            : SelectedClassName;
+
+        UserData.Users.Add(new UserModel
+        {
+            Name = Vorname.Trim(),
+            Lastname = Nachname.Trim(),
+            Email = Email.Trim(),
+            Password = Password,
+            Class = new ClassModel { ClassName = className },
+            Group = SelectedGroup
+        });
+
+        Erfolgsmeldung = $"Benutzer {Vorname.Trim()} {Nachname.Trim()} wurde erfolgreich registriert.";
+
+        Vorname = "";
+        Nachname = "";
+        Email = "";
+        Password = "";
+
+        if (RegisterableGroups.Count > 0)
+        {
+            SelectedGroup = RegisterableGroups[0];
+        }
+
+        if (AvailableClasses.Count > 0)
+        {
+            SelectedClassName = AvailableClasses[0].ClassName;
+        }
+    }
+}

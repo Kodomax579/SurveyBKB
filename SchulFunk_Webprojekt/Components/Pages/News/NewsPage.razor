@@ -1,12 +1,215 @@
-﻿@page "/news"
+@page "/news"
+@rendermode InteractiveServer
+@using System.Text.Json
+@using SchulFunk_Webprojekt.Model
+@using SchulFunk_Webprojekt.Services
+@inject SignalRHub.SignalRHub hub
+@implements IDisposable
 
-<h3>NewsPage</h3>
+@inject ApiService ApiService
 
-@for(int i = 0; i < 5; i++)
+<PageTitle>Aktuelle Nachrichten</PageTitle>
+
+<section class="news-page-header sf-panel">
+    <div class="news-search-box">
+        <input type="text"
+               class="news-search-input"
+               placeholder="Nach Artikel suchen..."
+               @bind="Suchtext"
+               @bind:event="oninput" />
+    </div>
+</section>
+
+@if (IsLoading)
 {
-    <NewsCard Header="i" Text="fdasjfköasj"></NewsCard>
+    <section class="admin-empty sf-panel">
+        <h3>Nachrichten werden geladen...</h3>
+        <p>Bitte warten.</p>
+    </section>
+}
+else if (!string.IsNullOrWhiteSpace(Fehlermeldung))
+{
+    <section class="admin-empty sf-panel">
+        <h3>Fehler</h3>
+        <p>@Fehlermeldung</p>
+    </section>
+}
+else
+{
+    <section class="news-card-grid">
+        @foreach (var news in GefilterteNewsListe)
+        {
+            <NewsCard Item="@news" />
+        }
+    </section>
 }
 
 @code {
+    private string Suchtext = "";
+    private List<NewsItem> NewsListe = new();
+    private bool IsLoading = true;
+    private string Fehlermeldung = "";
 
+    private IEnumerable<NewsItem> GefilterteNewsListe =>
+        NewsListe.Where(news =>
+            string.IsNullOrWhiteSpace(Suchtext) ||
+            news.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
+            news.PreviewText.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
+            news.Tag.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LadeNachrichten();
+        await hub.Connect();
+
+        hub.OnNewsItemsUpdated += HandleNewsUpdated;
+
+    }
+    private void HandleNewsUpdated(NewsItem updatedNews)
+    {
+        NewsListe.Add(updatedNews);
+        InvokeAsync( StateHasChanged);
+    }
+
+    private async Task LadeNachrichten()
+    {
+        IsLoading = true;
+        Fehlermeldung = "";
+
+        try
+        {
+            var response = await ApiService.GetAsync("/api/News");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                Fehlermeldung = "Nachrichten konnten nicht geladen werden.";
+                return;
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+
+            NewsListe = ParseNewsJson(json);
+        }
+        catch
+        {
+            Fehlermeldung = "Es ist ein Fehler beim Laden der Nachrichten aufgetreten.";
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+
+    private static List<NewsItem> ParseNewsJson(string json)
+    {
+        var result = new List<NewsItem>();
+
+        using var document = JsonDocument.Parse(json);
+
+        if (document.RootElement.ValueKind != JsonValueKind.Array)
+        {
+            return result;
+        }
+
+        foreach (var element in document.RootElement.EnumerateArray())
+        {
+            var createdAt = GetDateTime(element, "createdAt");
+            var expiredDate = GetDateTime(element, "expiredDate");
+
+            result.Add(new NewsItem
+            {
+                Id = GetInt(element, "id"),
+                Tag = GetString(element, "tag"),
+                Title = GetString(element, "titel"),
+                PreviewText = GetString(element, "previewText"),
+                MainText = GetString(element, "mainText"),
+                Image = GetBytes(element, "image"),
+                CreatedAt = createdAt,
+                ExpiredDate = expiredDate,
+            });
+        }
+
+        return result;
+    }
+
+    private static string GetString(JsonElement element, string propertyName)
+    {
+        if (!element.TryGetProperty(propertyName, out var property))
+        {
+            return "";
+        }
+
+        if (property.ValueKind == JsonValueKind.Null)
+        {
+            return "";
+        }
+
+        return property.GetString() ?? "";
+    }
+
+    private static int GetInt(JsonElement element, string propertyName)
+    {
+        if (!element.TryGetProperty(propertyName, out var property))
+        {
+            return 0;
+        }
+
+        if (property.ValueKind != JsonValueKind.Number)
+        {
+            return 0;
+        }
+
+        return property.GetInt32();
+    }
+
+    private static DateTime GetDateTime(JsonElement element, string propertyName)
+    {
+        if (!element.TryGetProperty(propertyName, out var property))
+        {
+            return default;
+        }
+
+        if (property.ValueKind == JsonValueKind.Null)
+        {
+            return default;
+        }
+
+        return property.TryGetDateTime(out var date)
+            ? date
+            : default;
+    }
+
+    private static byte[] GetBytes(JsonElement element, string propertyName)
+    {
+        if (!element.TryGetProperty(propertyName, out var property))
+        {
+            return Array.Empty<byte>();
+        }
+
+        if (property.ValueKind == JsonValueKind.Null)
+        {
+            return Array.Empty<byte>();
+        }
+
+        var base64 = property.GetString();
+
+        if (string.IsNullOrWhiteSpace(base64))
+        {
+            return Array.Empty<byte>();
+        }
+
+        try
+        {
+            return Convert.FromBase64String(base64);
+        }
+        catch
+        {
+            return Array.Empty<byte>();
+        }
+    }
+
+    public void Dispose()
+    {
+        hub.OnNewsItemsUpdated -= HandleNewsUpdated;
+    }
 }

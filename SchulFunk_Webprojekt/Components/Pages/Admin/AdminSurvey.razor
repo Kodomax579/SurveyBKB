@@ -1,0 +1,168 @@
+﻿@page "/admin/surveys"
+@rendermode InteractiveServer
+@using SchulFunk_Webprojekt.Model
+
+<PageTitle>Umfragen verwalten</PageTitle>
+
+@if (!CanAccessAdmin)
+{
+    <section class="admin-empty sf-panel">
+        <h3>Kein Zugriff</h3>
+        <p>Du darfst keine Umfragen verwalten.</p>
+    </section>
+}
+else
+{
+    <section class="sf-page-header">
+        <h1>Umfragen verwalten</h1>
+        <p>Verwalte, beende oder lösche Umfragen entsprechend deiner Berechtigung.</p>
+    </section>
+
+    <section class="sf-filter-bar">
+        <input type="text"
+               class="sf-input sf-filter-search"
+               placeholder="Nach Umfrage suchen..."
+               @bind="Suchtext"
+               @bind:event="oninput" />
+    </section>
+
+    <section class="admin-list">
+        @foreach (var survey in GefilterteUmfragen)
+        {
+            var isExpired = IsSurveyExpired(survey);
+
+            <article class="admin-list-card sf-panel">
+                <div class="admin-list-card-main">
+                    <div>
+                        <span class="sf-badge @(isExpired ? "sf-badge-muted" : "sf-badge-success")">
+                            @(isExpired ? "Ausgewertet" : "Aktiv")
+                        </span>
+
+                        <h3>@survey.Title</h3>
+                        <p>@survey.Description</p>
+
+                        <div class="admin-meta">
+                            <strong>Ersteller:</strong> @survey.CreatorName ·
+                            <strong>Fragen:</strong> @survey.Questions.Count ·
+                            <strong>@(isExpired ? "Beendet am:" : "Läuft bis:")</strong> @survey.OnlineUntil.ToString("dd.MM.yyyy")
+                        </div>
+                    </div>
+                </div>
+
+                <div class="admin-list-actions">
+                    @if (CanVoteInSurvey(survey))
+                    {
+                        <a href="/survey/@survey.GroupId" class="sf-button">
+                            Öffnen
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="/survey/results/@survey.GroupId" class="sf-button sf-button-dark">
+                            Ergebnisse
+                        </a>
+                    }
+
+                    @if (CanEndSurveyEarly(survey))
+                    {
+                        <button type="button"
+                                class="sf-button sf-button-dark"
+                                @onclick="() => EndSurveyEarly(survey)">
+                            Beenden
+                        </button>
+                    }
+
+                    @if (CanDeleteSurvey(survey))
+                    {
+                        <button type="button"
+                                class="sf-button sf-danger-button"
+                                @onclick="() => DeleteSurvey(survey)">
+                            Löschen
+                        </button>
+                    }
+                </div>
+            </article>
+        }
+    </section>
+}
+
+@code {
+    private string Suchtext = "";
+
+    private UserModel CurrentUser => TestLoginData.CurrentUser;
+
+    private List<SurveyModel> Surveys = SurveyData.SurveyListe.ToList();
+
+    private bool CanAccessAdmin =>
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageOwnSurveys) ||
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageAllSurveys);
+
+    private bool CanManageOwnSurveys =>
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageOwnSurveys);
+
+    private bool CanManageAllSurveys =>
+        PermissionRules.HasPermission(CurrentUser, Permission.ManageAllSurveys);
+
+    private IEnumerable<SurveyModel> GefilterteUmfragen =>
+        Surveys
+            .Where(survey => CanSeeSurvey(survey))
+            .Where(survey =>
+                string.IsNullOrWhiteSpace(Suchtext) ||
+                survey.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
+
+    private bool CanSeeSurvey(SurveyModel survey)
+    {
+        if (CanManageAllSurveys)
+        {
+            return true;
+        }
+
+        if (CanManageOwnSurveys)
+        {
+            return survey.CreatedUserID == TestLoginData.CurrentUserId;
+        }
+
+        return false;
+    }
+
+    private bool CanDeleteSurvey(SurveyModel survey)
+    {
+        return CanSeeSurvey(survey);
+    }
+
+    private bool CanEndSurveyEarly(SurveyModel survey)
+    {
+        return CanManageAllSurveys && !IsSurveyExpired(survey);
+    }
+
+    private bool CanVoteInSurvey(SurveyModel survey)
+    {
+        return PermissionRules.HasPermission(CurrentUser, Permission.VoteInSurveys)
+            && !IsSurveyExpired(survey);
+    }
+
+    private static bool IsSurveyExpired(SurveyModel survey)
+    {
+        return survey.OnlineUntil < DateOnly.FromDateTime(DateTime.Today);
+    }
+
+    private void EndSurveyEarly(SurveyModel survey)
+    {
+        if (!CanEndSurveyEarly(survey))
+        {
+            return;
+        }
+
+        survey.OnlineUntil = DateOnly.FromDateTime(DateTime.Today.AddDays(-1));
+    }
+
+    private void DeleteSurvey(SurveyModel survey)
+    {
+        if (!CanDeleteSurvey(survey))
+        {
+            return;
+        }
+
+        Surveys.Remove(survey);
+    }
+}

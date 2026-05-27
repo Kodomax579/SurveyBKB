@@ -1,0 +1,104 @@
+﻿.admin-user-toolbar {
+    overflow: visible;
+}
+
+.admin-filter-dropdown {
+    position: relative;
+    z-index: 80;
+    display: inline-flex;
+}
+
+.admin-filter-button {
+    min-width: 130px;
+}
+
+.admin-filter-menu {
+    position: absolute;
+    top: calc(100% + 10px);
+    right: 0;
+    z-index: 999;
+    width: 320px;
+    padding: var(--sf-space-md);
+    background: var(--sf-panel-bg-strong);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius);
+    box-shadow: var(--sf-shadow-hover);
+    color: var(--sf-text);
+    animation: admin-filter-open 0.18s ease forwards;
+    transform-origin: top right;
+}
+
+    .admin-filter-menu::before {
+        content: "";
+        position: absolute;
+        top: -7px;
+        right: 34px;
+        width: 12px;
+        height: 12px;
+        background: var(--sf-panel-bg-strong);
+        border-left: 1px solid var(--sf-border);
+        border-top: 1px solid var(--sf-border);
+        transform: rotate(45deg);
+    }
+
+.admin-filter-menu-head {
+    padding: var(--sf-space-sm);
+    margin-bottom: var(--sf-space-sm);
+    border-radius: var(--sf-radius-sm);
+    background: var(--sf-card-bg);
+    border: 1px solid var(--sf-border);
+    display: grid;
+    gap: 4px;
+}
+
+    .admin-filter-menu-head strong {
+        color: var(--sf-text-strong);
+        font-weight: var(--sf-font-weight-bold);
+    }
+
+    .admin-filter-menu-head span {
+        color: var(--sf-text-muted);
+        font-size: var(--sf-font-size-sm);
+    }
+
+.admin-filter-menu .form-group {
+    margin-bottom: var(--sf-space-sm);
+}
+
+.admin-reset-filter-button {
+    width: 100%;
+}
+
+.admin-user-result-info {
+    margin: 0 0 var(--sf-space-md);
+}
+
+@keyframes admin-filter-open {
+    from {
+        opacity: 0;
+        transform: translateY(-6px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 900px) {
+    .admin-filter-dropdown,
+    .admin-filter-button {
+        width: 100%;
+    }
+
+    .admin-filter-menu {
+        left: 0;
+        right: auto;
+        width: 100%;
+    }
+
+        .admin-filter-menu::before {
+            right: auto;
+            left: 34px;
+        }
+}

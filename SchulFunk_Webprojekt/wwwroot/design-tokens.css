@@ -1,0 +1,230 @@
+﻿:root {
+    /* =========================================================
+       SCHULFUNK DESIGN TOKENS
+       Flacheres, simpleres Designsystem mit Dark-/Lightmode
+       ========================================================= */
+    /* =========================================================
+       1. Grundpalette
+       ========================================================= */
+
+    --sf-color-black: #000000;
+    --sf-color-ink: #0C1821;
+    --sf-color-primary: #1B2A41;
+    --sf-color-secondary: #324A5F;
+    --sf-color-accent: #CCC9DC;
+    --sf-color-white: #FFFFFF;
+    --sf-color-black-rgb: 0, 0, 0;
+    --sf-color-ink-rgb: 12, 24, 33;
+    --sf-color-primary-rgb: 27, 42, 65;
+    --sf-color-secondary-rgb: 50, 74, 95;
+    --sf-color-accent-rgb: 204, 201, 220;
+    --sf-color-white-rgb: 255, 255, 255;
+    /* =========================================================
+       2. Abstände
+       ========================================================= */
+
+    --sf-space-2xs: 4px;
+    --sf-space-xs: 8px;
+    --sf-space-sm: 12px;
+    --sf-space-md: 16px;
+    --sf-space-lg: 24px;
+    --sf-space-xl: 32px;
+    --sf-space-2xl: 44px;
+    --sf-page-padding: 24px;
+    --sf-page-padding-mobile: 14px;
+    --sf-container-width: 1200px;
+    /* =========================================================
+       3. Rundungen - flacher als vorher
+       ========================================================= */
+
+    --sf-radius-sm: 8px;
+    --sf-radius-md: 12px;
+    --sf-radius-lg: 16px;
+    --sf-radius-xl: 20px;
+    --sf-radius-pill: 999px;
+    --sf-radius: var(--sf-radius-md);
+    /* =========================================================
+       4. Typografie
+       ========================================================= */
+
+    --sf-font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --sf-font-size-xs: 0.8rem;
+    --sf-font-size-sm: 0.9rem;
+    --sf-font-size-base: 1rem;
+    --sf-font-size-md: 1.05rem;
+    --sf-font-size-lg: 1.2rem;
+    --sf-font-size-xl: 1.45rem;
+    --sf-font-size-2xl: 1.9rem;
+    --sf-font-size-3xl: 2.45rem;
+    --sf-font-weight-medium: 600;
+    --sf-font-weight-bold: 750;
+    --sf-font-weight-black: 850;
+    /* =========================================================
+       5. Animationen - dezenter
+       ========================================================= */
+
+    --sf-transition-fast: 0.12s ease;
+    --sf-transition: 0.18s ease;
+    --sf-transition-slow: 0.24s ease;
+    --sf-hover-lift-sm: translateY(-1px);
+    --sf-hover-lift-md: translateY(-2px);
+    --sf-hover-lift-lg: translateY(-3px);
+    /* =========================================================
+       6. DARK MODE
+       ========================================================= */
+
+    --sf-page-bg: #0F172A;
+    --sf-page-bg-secondary: #111827;
+    --sf-panel-bg: #172033;
+    --sf-panel-bg-strong: #111827;
+    --sf-panel-bg-soft: #1E293B;
+    --sf-card-bg: #1E293B;
+    --sf-card-bg-hover: #263449;
+    --sf-toolbar-bg: #172033;
+    --sf-text: #E5E7EB;
+    --sf-text-strong: #FFFFFF;
+    --sf-text-muted: #A8B3C5;
+    --sf-text-subtle: #7C8798;
+    --sf-text-inverted: #111827;
+    --sf-accent: #CCC9DC;
+    --sf-accent-hover: #FFFFFF;
+    --sf-accent-soft: rgba(var(--sf-color-accent-rgb), 0.14);
+    --sf-accent-softer: rgba(var(--sf-color-accent-rgb), 0.08);
+    --sf-border: rgba(var(--sf-color-accent-rgb), 0.16);
+    --sf-border-strong: rgba(var(--sf-color-accent-rgb), 0.30);
+    --sf-focus: rgba(var(--sf-color-accent-rgb), 0.28);
+    --sf-shadow-sm: 0 2px 8px rgba(var(--sf-color-black-rgb), 0.18);
+    --sf-shadow-md: 0 6px 18px rgba(var(--sf-color-black-rgb), 0.22);
+    --sf-shadow-lg: 0 10px 28px rgba(var(--sf-color-black-rgb), 0.26);
+    --sf-shadow-hover: 0 12px 32px rgba(var(--sf-color-black-rgb), 0.32);
+    --sf-shadow: var(--sf-shadow-md);
+    --sf-input-bg: #111827;
+    --sf-input-bg-hover: #151F31;
+    --sf-input-bg-focus: #172033;
+    --sf-input-text: var(--sf-text-strong);
+    --sf-input-placeholder: #8B95A7;
+    --sf-button-bg: var(--sf-color-accent);
+    --sf-button-text: var(--sf-color-ink);
+    --sf-button-border: var(--sf-color-accent);
+    --sf-button-hover-bg: var(--sf-color-white);
+    --sf-button-hover-text: var(--sf-color-ink);
+    --sf-button-hover-border: var(--sf-color-white);
+    --sf-button-dark-bg: #1B2A41;
+    --sf-button-dark-text: var(--sf-color-white);
+    --sf-button-dark-border: rgba(var(--sf-color-accent-rgb), 0.18);
+    --sf-button-dark-hover-bg: #324A5F;
+    --sf-button-dark-hover-text: var(--sf-color-white);
+    --sf-button-dark-hover-border: #324A5F;
+    --sf-danger-bg: #7F1D1D;
+    --sf-danger-text: #FFFFFF;
+    --sf-danger-hover-bg: #991B1B;
+    --sf-success-bg: rgba(16, 185, 129, 0.14);
+    --sf-success-text: #6EE7B7;
+    --sf-success-border: rgba(16, 185, 129, 0.28);
+    --sf-selection-bg: rgba(var(--sf-color-accent-rgb), 0.34);
+    --sf-selection-text: var(--sf-color-white);
+    /* =========================================================
+       7. Bereichsfarben
+       ========================================================= */
+
+    --sf-news-accent: var(--sf-accent);
+    --sf-news-bg: var(--sf-card-bg);
+    --sf-news-bg-hover: var(--sf-card-bg-hover);
+    --sf-survey-accent: var(--sf-accent);
+    --sf-survey-bg: var(--sf-card-bg);
+    --sf-survey-bg-hover: var(--sf-card-bg-hover);
+    /* =========================================================
+       8. Kompatibilität mit alten Variablennamen
+       ========================================================= */
+
+    --sf-black: var(--sf-color-black);
+    --sf-ink-black: var(--sf-color-ink);
+    --sf-prussian-blue: var(--sf-color-primary);
+    --sf-charcoal-blue: var(--sf-color-secondary);
+    --sf-lavender: var(--sf-color-accent);
+    --sf-white: var(--sf-color-white);
+    --sf-black-rgb: var(--sf-color-black-rgb);
+    --sf-ink-black-rgb: var(--sf-color-ink-rgb);
+    --sf-prussian-blue-rgb: var(--sf-color-primary-rgb);
+    --sf-charcoal-blue-rgb: var(--sf-color-secondary-rgb);
+    --sf-lavender-rgb: var(--sf-color-accent-rgb);
+    --sf-white-rgb: var(--sf-color-white-rgb);
+    --sf-bg: var(--sf-page-bg);
+    --sf-bg-secondary: var(--sf-page-bg-secondary);
+    --sf-panel-bg-light: var(--sf-panel-bg-soft);
+    --sf-card-bg-light: var(--sf-card-bg-hover);
+    --sf-primary: var(--sf-color-primary);
+    --sf-primary-light: var(--sf-color-secondary);
+    --sf-primary-dark: var(--sf-color-ink);
+    --sf-muted: var(--sf-text-muted);
+    --sf-muted-dark: var(--sf-text-subtle);
+    --sf-soft: var(--sf-accent-soft);
+    --sf-navy: var(--sf-primary);
+    --sf-navy-light: var(--sf-primary-light);
+    --sf-turquoise: var(--sf-accent);
+    --sf-turquoise-dark: var(--sf-accent);
+}
+
+
+    /* =========================================================
+   LIGHT MODE
+   ========================================================= */
+
+    :root[data-theme="light"] {
+        --sf-page-bg: #F4F7FB;
+        --sf-page-bg-secondary: #EAF1F8;
+        --sf-panel-bg: #FFFFFF;
+        --sf-panel-bg-strong: #FFFFFF;
+        --sf-panel-bg-soft: #F8FAFC;
+        --sf-card-bg: #FFFFFF;
+        --sf-card-bg-hover: #F8FAFC;
+        --sf-toolbar-bg: #FFFFFF;
+        --sf-text: #1E293B;
+        --sf-text-strong: #0F172A;
+        --sf-text-muted: #64748B;
+        --sf-text-subtle: #94A3B8;
+        --sf-text-inverted: #FFFFFF;
+        --sf-accent: #1B2A41;
+        --sf-accent-hover: #324A5F;
+        --sf-accent-soft: rgba(var(--sf-color-primary-rgb), 0.08);
+        --sf-accent-softer: rgba(var(--sf-color-primary-rgb), 0.05);
+        --sf-border: #E2E8F0;
+        --sf-border-strong: #CBD5E1;
+        --sf-focus: rgba(var(--sf-color-secondary-rgb), 0.22);
+        --sf-shadow-sm: 0 2px 8px rgba(var(--sf-color-black-rgb), 0.04);
+        --sf-shadow-md: 0 4px 14px rgba(var(--sf-color-black-rgb), 0.06);
+        --sf-shadow-lg: 0 8px 22px rgba(var(--sf-color-black-rgb), 0.08);
+        --sf-shadow-hover: 0 10px 26px rgba(var(--sf-color-black-rgb), 0.10);
+        --sf-shadow: var(--sf-shadow-sm);
+        --sf-input-bg: #F8FAFC;
+        --sf-input-bg-hover: #FFFFFF;
+        --sf-input-bg-focus: #FFFFFF;
+        --sf-input-text: #0F172A;
+        --sf-input-placeholder: #94A3B8;
+        --sf-button-bg: var(--sf-color-primary);
+        --sf-button-text: var(--sf-color-white);
+        --sf-button-border: var(--sf-color-primary);
+        --sf-button-hover-bg: var(--sf-color-secondary);
+        --sf-button-hover-text: var(--sf-color-white);
+        --sf-button-hover-border: var(--sf-color-secondary);
+        --sf-button-dark-bg: var(--sf-color-primary);
+        --sf-button-dark-text: var(--sf-color-white);
+        --sf-button-dark-border: var(--sf-color-primary);
+        --sf-button-dark-hover-bg: var(--sf-color-secondary);
+        --sf-button-dark-hover-text: var(--sf-color-white);
+        --sf-button-dark-hover-border: var(--sf-color-secondary);
+        --sf-danger-bg: #DC2626;
+        --sf-danger-text: var(--sf-color-white);
+        --sf-danger-hover-bg: #B91C1C;
+        --sf-success-bg: rgba(16, 185, 129, 0.10);
+        --sf-success-text: #047857;
+        --sf-success-border: rgba(16, 185, 129, 0.22);
+        --sf-selection-bg: rgba(var(--sf-color-primary-rgb), 0.16);
+        --sf-selection-text: var(--sf-color-ink);
+        --sf-news-accent: var(--sf-color-primary);
+        --sf-news-bg: var(--sf-card-bg);
+        --sf-news-bg-hover: var(--sf-card-bg-hover);
+        --sf-survey-accent: var(--sf-color-primary);
+        --sf-survey-bg: var(--sf-card-bg);
+        --sf-survey-bg-hover: var(--sf-card-bg-hover);
+    }

@@ -1,0 +1,52 @@
+@page "/profile"
+@using SchulFunk_Webprojekt.Model
+
+<PageTitle>Profil</PageTitle>
+
+<section class="profile-action-bar">
+    <a href="/profile/edit" class="sf-button sf-button-dark profile-edit-button">
+        Profil bearbeiten
+    </a>
+</section>
+
+<section class="profile-info sf-panel">
+    <h3>Profildaten</h3>
+
+    <div class="profile-info-list">
+        <div class="profile-info-row">
+            <span>Name</span>
+            <strong>@UserName</strong>
+        </div>
+
+        <div class="profile-info-row">
+            <span>E-Mail-Adresse</span>
+            <strong>@UserEmail</strong>
+        </div>
+
+        <div class="profile-info-row">
+            <span>Klasse</span>
+            <strong>@UserClass</strong>
+        </div>
+
+        <div class="profile-info-row">
+            <span>Rolle</span>
+            <strong>@UserRole</strong>
+        </div>
+    </div>
+</section>
+
+@code {
+    private UserModel CurrentUser => TestLoginData.CurrentUser;
+
+    private string UserName =>
+        $"{CurrentUser.Name} {CurrentUser.Lastname}".Trim();
+
+    private string UserEmail =>
+        CurrentUser.Email;
+
+    private string UserClass =>
+        CurrentUser.Class.ClassName;
+
+    private string UserRole =>
+        PermissionRules.GetGroupLabel(CurrentUser.Group);
+}

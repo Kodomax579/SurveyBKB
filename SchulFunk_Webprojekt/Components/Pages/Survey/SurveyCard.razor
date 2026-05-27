@@ -1,0 +1,56 @@
+@using SchulFunk_Webprojekt.Model
+
+<article class="survey-card @(IsExpired ? "is-ended" : "is-active")">
+    <div class="survey-card-meta">
+        <span class="survey-card-status">
+            @(IsExpired ? "BEENDET" : "AKTIV")
+        </span>
+
+        <span class="survey-card-participants">
+            <img src="/lib/images/Icon-User.png" alt="" />
+            @TeilnehmerAnzahl Teilnehmer
+        </span>
+    </div>
+
+    <h3>@Item.Title</h3>
+
+    <p class="survey-card-description">
+        @Item.Description
+    </p>
+
+    <div class="survey-card-footer">
+        <a href="@ActionLink" class="survey-card-action">
+            @ActionText
+        </a>
+    </div>
+</article>
+
+@code {
+    [Parameter]
+    public SurveyModel Item { get; set; } = new();
+
+    private bool IsExpired =>
+        Item.OnlineUntil < DateOnly.FromDateTime(DateTime.Today);
+
+    private string ActionText =>
+        IsExpired ? "Ergebnisse ansehen" : "Jetzt abstimmen";
+
+    private string ActionLink =>
+        IsExpired ? $"/survey/results/{Item.GroupId}" : $"/survey/{Item.GroupId}";
+
+    private int TeilnehmerAnzahl
+    {
+        get
+        {
+            if (Item.Questions is null || !Item.Questions.Any())
+            {
+                return 0;
+            }
+
+            return Item.Questions
+                .Select(question => question.Options.Sum(option => option.NumberOfSelectedAnswer))
+                .DefaultIfEmpty(0)
+                .Max();
+        }
+    }
+}
