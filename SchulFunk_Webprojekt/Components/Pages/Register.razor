@@ -2,6 +2,7 @@
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
 @inject NavigationManager NavManager
+@inject ApiService apiService
 
 <PageTitle>Benutzer registrieren - SchulFunk</PageTitle>
 
@@ -133,7 +134,8 @@ else
     private string Nachname = "";
     private string Email = "";
     private string Password = "";
-    private string SelectedClassName = SurveyData.AvailableClasses.FirstOrDefault()?.ClassName ?? "";
+    private List<ClassModel> AvailableClasses = new();
+    private string SelectedClassName = string.Empty;
     private string Erfolgsmeldung = "";
     private string Fehlermeldung = "";
 
@@ -143,7 +145,6 @@ else
         PermissionRules.HasPermission(CurrentUser, Permission.RegisterStudentUsers) ||
         PermissionRules.HasPermission(CurrentUser, Permission.RegisterTeacherUsers);
 
-    private List<ClassModel> AvailableClasses => SurveyData.AvailableClasses;
 
     private List<Groups> RegisterableGroups
     {
@@ -175,6 +176,11 @@ else
         }
     }
 
+    protected async override Task OnInitializedAsync()
+    {
+        AvailableClasses = await apiService.GetFromJsonAsync<List<ClassModel>>("/api/User/classes");
+    }
+
     private void Registrieren()
     {
         Erfolgsmeldung = "";
@@ -201,25 +207,10 @@ else
             return;
         }
 
-        if (UserData.Users.Any(user => user.Email.Equals(Email, StringComparison.OrdinalIgnoreCase)))
-        {
-            Fehlermeldung = "Es existiert bereits ein Benutzer mit dieser E-Mail-Adresse.";
-            return;
-        }
-
         var className = SelectedGroup == Groups.Teacher
             ? "Lehrer"
             : SelectedClassName;
 
-        UserData.Users.Add(new UserModel
-        {
-            Name = Vorname.Trim(),
-            Lastname = Nachname.Trim(),
-            Email = Email.Trim(),
-            Password = Password,
-            Class = new ClassModel { ClassName = className },
-            Group = SelectedGroup
-        });
 
         Erfolgsmeldung = $"Benutzer {Vorname.Trim()} {Nachname.Trim()} wurde erfolgreich registriert.";
 

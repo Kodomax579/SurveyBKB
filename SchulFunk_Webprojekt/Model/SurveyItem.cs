@@ -15,7 +15,7 @@
 
         public DateOnly OnlineUntil { get; set; }
 
-        public List<ClassModel> Classes { get; set; } = new();
+        public List<string> Classes { get; set; } = new();
 
         public List<int> UserIDs { get; set; } = new();
 

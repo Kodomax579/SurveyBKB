@@ -26,11 +26,11 @@
     public NewsItem Item { get; set; } = new();
 
     private bool HasImage =>
-        Item.Image is not null && Item.Image.Length > 0;
+        Item.ImageLink is not null && Item.ImageLink.Length > 0;
 
     private string ImageSource =>
         HasImage
-            ? $"data:image/png;base64,{Convert.ToBase64String(Item.Image)}"
+            ? Item.ImageLink
             : "/lib/images/Icon-News.png";
 
     private string BadgeClass =>
