@@ -1,6 +1,8 @@
 @page "/home"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
+@inject ApiService apiService
+@inject SignalRHub hub
 
 <PageTitle>SchulFunk</PageTitle>
 
@@ -16,7 +18,7 @@
         </div>
 
         <div class="home-news-list">
-            @foreach (var news in AktuellsteNews)
+            @foreach (var news in NewsItems)
             {
                 <a href="/news/@news.Id" class="home-news-item home-news-link">
                     <span>@news.CreatedAt</span>
@@ -28,9 +30,9 @@
     </section>
 
     <section class="home-survey-panel sf-panel" id="umfragen">
-        @if (AusgewerteteUmfragen.Any())
+        @if (surveyModels.Any())
         {
-            var aktuelleUmfrage = AusgewerteteUmfragen[AktuelleUmfrageIndex];
+            var aktuelleUmfrage = surveyModels[AktuelleUmfrageIndex];
             var ersteFrage = aktuelleUmfrage.Questions.FirstOrDefault();
 
             <div class="home-survey-slide @SurveyAnimationClass" @key="AktuelleUmfrageIndex">
@@ -79,7 +81,7 @@
                         <button type="button"
                                 class="home-survey-arrow"
                                 @onclick="VorherigeUmfrage"
-                                disabled="@(AusgewerteteUmfragen.Count <= 1)"
+                                disabled="@(surveyModels.Count <= 1)"
                                 aria-label="Vorherige Umfrage">
                             ↑
                         </button>
@@ -87,7 +89,7 @@
                         <button type="button"
                                 class="home-survey-arrow"
                                 @onclick="NaechsteUmfrage"
-                                disabled="@(AusgewerteteUmfragen.Count <= 1)"
+                                disabled="@(surveyModels.Count <= 1)"
                                 aria-label="Nächste Umfrage">
                             ↓
                         </button>
@@ -177,22 +179,18 @@
 @code {
     private int AktuelleUmfrageIndex = 0;
     private string SurveyAnimationClass = "slide-in";
+    private List<NewsItem> NewsItems = new();
+    private List<SurveyModel> surveyModels = new();
 
-    private IEnumerable<NewsItem> AktuellsteNews =>
-        NewsData.NewsListe
-            .OrderByDescending(news => news.Id)
-            .Take(4);
-
-    private List<SurveyModel> AusgewerteteUmfragen =>
-        SurveyData.SurveyListe
-            .Where(survey => survey.OnlineUntil < DateOnly.FromDateTime(DateTime.Today))
-            .OrderByDescending(survey => survey.OnlineUntil)
-            .Take(3)
-            .ToList();
+    protected async override Task OnInitializedAsync()
+    {
+        NewsItems = await apiService.GetFromJsonAsync<List<NewsItem>>("/api/News");
+        surveyModels = await apiService.GetFromJsonAsync<List<SurveyModel>>("/api/Survey");
+    }
 
     private async Task NaechsteUmfrage()
     {
-        if (AusgewerteteUmfragen.Count == 0)
+        if (surveyModels.Count == 0)
         {
             return;
         }
@@ -202,7 +200,7 @@
 
         AktuelleUmfrageIndex++;
 
-        if (AktuelleUmfrageIndex >= AusgewerteteUmfragen.Count)
+        if (AktuelleUmfrageIndex >= surveyModels.Count)
         {
             AktuelleUmfrageIndex = 0;
         }
@@ -212,7 +210,7 @@
 
     private async Task VorherigeUmfrage()
     {
-        if (AusgewerteteUmfragen.Count == 0)
+        if (surveyModels.Count == 0)
         {
             return;
         }
@@ -224,7 +222,7 @@
 
         if (AktuelleUmfrageIndex < 0)
         {
-            AktuelleUmfrageIndex = AusgewerteteUmfragen.Count - 1;
+            AktuelleUmfrageIndex = surveyModels.Count - 1;
         }
 
         SurveyAnimationClass = "slide-in";

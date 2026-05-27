@@ -15,7 +15,6 @@ namespace Survey.ApiGateway.Controllers
     public class LoginController (LoginService loginService, AuthService authService): ControllerBase
     {
         [HttpPost]
-        [AllowAnonymous] 
         public async Task<IActionResult> Login([FromBody] LoginDTO request)
         {
             if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))

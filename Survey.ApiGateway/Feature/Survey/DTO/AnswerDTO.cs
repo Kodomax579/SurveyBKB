@@ -1,6 +1,6 @@
-﻿namespace Survey.ApiGateway.Feature.Survey.Models
+﻿namespace Survey.ApiGateway.Feature.Survey.DTO
 {
-    public class AnswerModel
+    public class AnswerDTO
     {
         public int Id { get; set; }
         public string Answers { get; set; } = string.Empty;

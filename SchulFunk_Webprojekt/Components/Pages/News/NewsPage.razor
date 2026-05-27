@@ -3,7 +3,7 @@
 @using System.Text.Json
 @using SchulFunk_Webprojekt.Model
 @using SchulFunk_Webprojekt.Services
-@inject SignalRHub.SignalRHub hub
+@inject SignalRHub hub
 @implements IDisposable
 
 @inject ApiService ApiService
@@ -123,7 +123,7 @@ else
                 Title = GetString(element, "titel"),
                 PreviewText = GetString(element, "previewText"),
                 MainText = GetString(element, "mainText"),
-                Image = GetBytes(element, "image"),
+                ImageLink = GetString(element, "image"),
                 CreatedAt = createdAt,
                 ExpiredDate = expiredDate,
             });
@@ -177,35 +177,6 @@ else
         return property.TryGetDateTime(out var date)
             ? date
             : default;
-    }
-
-    private static byte[] GetBytes(JsonElement element, string propertyName)
-    {
-        if (!element.TryGetProperty(propertyName, out var property))
-        {
-            return Array.Empty<byte>();
-        }
-
-        if (property.ValueKind == JsonValueKind.Null)
-        {
-            return Array.Empty<byte>();
-        }
-
-        var base64 = property.GetString();
-
-        if (string.IsNullOrWhiteSpace(base64))
-        {
-            return Array.Empty<byte>();
-        }
-
-        try
-        {
-            return Convert.FromBase64String(base64);
-        }
-        catch
-        {
-            return Array.Empty<byte>();
-        }
     }
 
     public void Dispose()

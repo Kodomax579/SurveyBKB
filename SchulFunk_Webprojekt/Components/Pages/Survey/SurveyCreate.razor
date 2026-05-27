@@ -359,19 +359,7 @@ else
             ? 1
             : SurveyData.SurveyListe.Max(survey => survey.GroupId) + 1;
 
-        SurveyData.SurveyListe.Add(new SurveyModel
-        {
-            Title = SurveyTitle,
-            Description = Description,
-            CreatorName = CreatorName,
-            CreatedUserID = TestLoginData.CurrentUserId,
-            GroupId = neueId,
-            CreatedAt = DateOnly.FromDateTime(CreatedAt),
-            OnlineUntil = DateOnly.FromDateTime(OnlineUntil),
-            Classes = SelectedClasses.ToList(),
-            Questions = Questions
-        });
-
+     
         SurveyTitle = "";
         Description = "";
         OnlineUntil = DateTime.Today.AddDays(14);

@@ -7,6 +7,7 @@ public class ApiService
 {
     private readonly HttpClient _httpClient;
     private readonly AuthTokenService _authTokenService;
+    private const string BaseUrl = "http://212.227.82.199:7224";
 
     public ApiService(HttpClient httpClient, AuthTokenService authTokenService)
     {
@@ -28,36 +29,37 @@ public class ApiService
     public async Task<HttpResponseMessage> GetAsync(string url)
     {
         AddToken();
-        return await _httpClient.GetAsync(url);
+        return await _httpClient.GetAsync($"{BaseUrl}{url}");
     }
 
     public async Task<T?> GetFromJsonAsync<T>(string url)
     {
         AddToken();
-        return await _httpClient.GetFromJsonAsync<T>(url);
+        var result = await _httpClient.GetFromJsonAsync<T>($"{BaseUrl}{url}");
+        return result;
     }
 
     public async Task<HttpResponseMessage> PostAsJsonAsync<T>(string url, T data)
     {
         AddToken();
-        return await _httpClient.PostAsJsonAsync(url, data);
+        return await _httpClient.PostAsJsonAsync($"{BaseUrl}{url}", data);
     }
 
     public async Task<HttpResponseMessage> PutAsJsonAsync<T>(string url, T data)
     {
         AddToken();
-        return await _httpClient.PutAsJsonAsync(url, data);
+        return await _httpClient.PutAsJsonAsync($"{BaseUrl}{url}", data);
     }
 
     public async Task<HttpResponseMessage> PutAsync(string url)
     {
         AddToken();
-        return await _httpClient.PutAsync(url, null);
+        return await _httpClient.PutAsync($"{BaseUrl}{url}", null);
     }
 
     public async Task<HttpResponseMessage> DeleteAsync(string url)
     {
         AddToken();
-        return await _httpClient.DeleteAsync(url);
+        return await _httpClient.DeleteAsync($"{BaseUrl}{url}");
     }
 }

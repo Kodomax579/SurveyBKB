@@ -5,7 +5,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Survey.ApiGateway.Migrations
+namespace Survey.ApiGateway.Database.migration
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
