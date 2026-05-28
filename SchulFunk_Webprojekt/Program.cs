@@ -1,5 +1,7 @@
 using SchulFunk_Webprojekt.Components;
-using SchulFunk_Webprojekt.Services;
+using SchulFunk_Webprojekt.Feature.NewsHandling;
+using SchulFunk_Webprojekt.Feature.SurveyHandling;
+using SchulFunk_Webprojekt.Feature.UserHandling;
 using SchulFunk_Webprojekt.SignalRHub;
 
 namespace SchulFunk_Webprojekt
@@ -16,25 +18,13 @@ namespace SchulFunk_Webprojekt
 
             builder.Services.AddSingleton<AuthTokenService>();
             builder.Services.AddSingleton<SignalRHub.SignalRHub>();
-            builder.Services.AddScoped<ApiService>();
 
-            builder.Services.AddScoped(sp =>
-            {
-                var configuration = sp.GetRequiredService<IConfiguration>();
-                var baseUrl = configuration["ApiSettings:BaseUrl"];
-
-                if (string.IsNullOrWhiteSpace(baseUrl))
-                {
-                    throw new InvalidOperationException("ApiSettings:BaseUrl fehlt in appsettings.json.");
-                }
-
-                return new HttpClient
-                {
-                    BaseAddress = new Uri(baseUrl)
-                };
-            });
-
-            builder.Services.AddScoped<UserService>();
+            builder.Services.AddSingleton<NewsStateService>();
+            builder.Services.AddSingleton<UserStateService>();
+            builder.Services.AddSingleton<SurveyStateService>();
+            builder.Services.AddHttpClient<NewsService>();
+            builder.Services.AddHttpClient<SurveyService>();
+            builder.Services.AddHttpClient<UserService>();
 
             var app = builder.Build();
 

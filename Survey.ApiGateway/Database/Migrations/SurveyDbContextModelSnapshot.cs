@@ -9,7 +9,7 @@ using Survey.ApiGateway.Database;
 
 #nullable disable
 
-namespace Survey.ApiGateway.Database.migration
+namespace Survey.ApiGateway.Database.Migrations
 {
     [DbContext(typeof(SurveyDbContext))]
     partial class SurveyDbContextModelSnapshot : ModelSnapshot
@@ -188,14 +188,14 @@ namespace Survey.ApiGateway.Database.migration
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("Firstname")
+                        .IsRequired()
+                        .HasColumnType("text");
+
                     b.Property<int>("Group")
                         .HasColumnType("integer");
 
                     b.Property<string>("Lastname")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("text");
 

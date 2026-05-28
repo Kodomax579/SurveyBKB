@@ -1,6 +1,7 @@
-﻿using System.Text.Json.Serialization;
+﻿using SchulFunk_Webprojekt.Feature.SurveyHandling.Model;
+using System.Text.Json.Serialization;
 
-namespace SchulFunk_Webprojekt.Model
+namespace SchulFunk_Webprojekt.Feature.NewsHandling.Model
 {
     public class NewsItem
     {
@@ -31,7 +32,9 @@ namespace SchulFunk_Webprojekt.Model
         [JsonPropertyName("numberOfMembers")]
         public int NumberOfMembers { get; set; }
 
-        // Hier ist der entscheidende Teil für deinen Fehler:
+        [JsonPropertyName("questions")]
+        public List<QuestionModel> QuestionModels { get; set; }
+
         [JsonPropertyName("user")]
         public UserModel? UserModel { get; set; }
     }

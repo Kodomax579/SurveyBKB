@@ -1,7 +1,9 @@
 @page "/survey/create"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
-@inject ApiService apiService
+@inject UserService userService
+@inject UserStateService userStateService
+@inject SurveyService surveyService
 
 <PageTitle>Umfrage erstellen</PageTitle>
 
@@ -22,7 +24,7 @@ else
                        type="text"
                        class="form-control"
                        placeholder="Zum Beispiel: Gestaltung der Pausenbereiche"
-                       @bind="SurveyTitle"
+                       @bind="surveyModel.Title"
                        @bind:event="oninput" />
             </div>
 
@@ -49,7 +51,7 @@ else
                        type="date"
                        class="form-control"
                        min="@MinimumOnlineUntil.ToString("yyyy-MM-dd")"
-                       @bind="OnlineUntil" />
+                       @bind="surveyModel.OnlineUntil" />
 
                 @if (OnlineUntil <= CreatedAt)
                 {
@@ -65,7 +67,7 @@ else
                           class="form-control"
                           rows="4"
                           placeholder="Warum wird diese Umfrage erstellt?"
-                          @bind="Description"
+                          @bind="surveyModel.Description"
                           @bind:event="oninput"></textarea>
             </div>
 
@@ -110,16 +112,16 @@ else
             </div>
 
             <div class="question-list">
-                @for (var questionIndex = 0; questionIndex < Questions.Count; questionIndex++)
+                @for (var questionIndex = 0; questionIndex < surveyModel.Questions.Count; questionIndex++)
                 {
                     var currentQuestionIndex = questionIndex;
-                    var question = Questions[currentQuestionIndex];
+                    var question = surveyModel.Questions[currentQuestionIndex];
 
                     <article class="question-editor">
                         <div class="question-editor-header">
                             <h4>Frage @(currentQuestionIndex + 1)</h4>
 
-                            @if (Questions.Count > 1)
+                            @if (surveyModel.Questions.Count > 1)
                             {
                                 <button type="button"
                                         class="remove-button"
@@ -141,10 +143,10 @@ else
                         <div class="answer-list">
                             <label>Antwortmöglichkeiten</label>
 
-                            @for (var answerIndex = 0; answerIndex < question.Option.Count; answerIndex++)
+                            @for (var answerIndex = 0; answerIndex < question.AnswerModels.Count; answerIndex++)
                             {
                                 var currentAnswerIndex = answerIndex;
-                                var answer = question.Option[currentAnswerIndex];
+                                var answer = question.AnswerModels[currentAnswerIndex];
 
                                 <div class="answer-row">
                                     <input type="text"
@@ -153,7 +155,7 @@ else
                                            @bind="answer.Answers"
                                            @bind:event="oninput" />
 
-                                    @if (question.Option.Count > 2)
+                                    @if (question.AnswerModels.Count > 2)
                                     {
                                         <button type="button"
                                                 class="remove-answer-button"
@@ -190,7 +192,7 @@ else
                 <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" />
             </div>
 
-            <h3>@(string.IsNullOrWhiteSpace(SurveyTitle) ? "Umfragetitel" : SurveyTitle)</h3>
+            <h3>@(string.IsNullOrWhiteSpace(surveyModel.Title) ? "Umfragetitel" : surveyModel.Title)</h3>
 
             <div class="preview-meta">
                 <span>@CreatorName</span>
@@ -199,9 +201,9 @@ else
             </div>
 
             <p>
-                @(string.IsNullOrWhiteSpace(Description)
+                @(string.IsNullOrWhiteSpace(surveyModel.Description)
                     ? "Hier erscheint später der Beweggrund oder die Beschreibung der Umfrage."
-                    : Description)
+                    : surveyModel.Description)
             </p>
 
             <div class="preview-classes">
@@ -218,12 +220,12 @@ else
             </div>
 
             <div class="preview-questions">
-                @foreach (var question in Questions)
+                @foreach (var question in surveyModel.Questions)
                 {
                     <div class="preview-question">
                         <h4>@(string.IsNullOrWhiteSpace(question.Question) ? "Neue Frage" : question.Question)</h4>
 
-                        @foreach (var answer in question.Option)
+                        @foreach (var answer in question.AnswerModels)
                         {
                             <div class="preview-answer">
                                 @(string.IsNullOrWhiteSpace(answer.Answers) ? "Antwortmöglichkeit" : answer.Answers)
@@ -237,20 +239,32 @@ else
 }
 
 @code {
-    private string SurveyTitle = "";
-    private string Description = "";
-
+    private SurveyModel surveyModel = new()
+    {
+        Questions = new()
+        {
+            new QuestionModel
+            {
+                Question = "",
+                AnswerModels = new()
+                {
+                    new AnswerModel(),
+                    new AnswerModel()
+                }
+            }
+        }
+    };
     private DateTime CreatedAt = DateTime.Today;
     private DateTime OnlineUntil = DateTime.Today.AddDays(14);
     private DateTime MinimumOnlineUntil => CreatedAt.AddDays(1);
 
-    private UserModel CurrentUser => TestLoginData.CurrentUser;
+    private UserModel CurrentUser => userStateService.GetUser();
 
     private bool CanCreateSurveys =>
         PermissionRules.HasPermission(CurrentUser, Permission.CreateSurveys);
 
     private string CreatorName =>
-        $"{CurrentUser.Name} {CurrentUser.Lastname}".Trim();
+        $"{CurrentUser.Lastname} {CurrentUser.Firstname}".Trim();
 
     private string UserRole =>
         PermissionRules.GetGroupLabel(CurrentUser.Group);
@@ -268,19 +282,6 @@ else
 
     private List<ClassModel> AvailableClasses = new();
     private List<ClassModel> SelectedClasses = new();
-
-    private List<QuestionModel> Questions = new()
-    {
-        new QuestionModel
-        {
-            Question = "",
-            Option = new()
-            {
-                new AnswerModel(),
-                new AnswerModel()
-            }
-        }
-    };
 
     protected override void OnInitialized()
     {
@@ -301,7 +302,12 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        AvailableClasses = await apiService.GetFromJsonAsync<List<ClassModel>>("/api/User/classes");
+        var classes = await userService.GetAllClasses();
+        if(classes == null)
+        {
+            return;
+        }
+        AvailableClasses = classes;
     }
 
     private bool IstKlasseAusgewaehlt(ClassModel klasse)
@@ -322,10 +328,10 @@ else
 
     private void AddQuestion()
     {
-        Questions.Add(new QuestionModel
+        surveyModel.Questions.Add(new QuestionModel
         {
             Question = "",
-            Option = new()
+            AnswerModels = new()
             {
                 new AnswerModel(),
                 new AnswerModel()
@@ -335,46 +341,32 @@ else
 
     private void RemoveQuestion(int questionIndex)
     {
-        if (Questions.Count > 1)
+        if (surveyModel.Questions.Count > 1)
         {
-            Questions.RemoveAt(questionIndex);
+            surveyModel.Questions.RemoveAt(questionIndex);
         }
     }
 
     private void AddAnswer(int questionIndex)
     {
-        Questions[questionIndex].Option.Add(new AnswerModel());
+        surveyModel.Questions[questionIndex].AnswerModels.Add(new AnswerModel());
     }
 
     private void RemoveAnswer(int questionIndex, int answerIndex)
     {
-        if (Questions[questionIndex].Option.Count > 2)
+        if (surveyModel.Questions[questionIndex].AnswerModels.Count > 2)
         {
-            Questions[questionIndex].Option.RemoveAt(answerIndex);
+            surveyModel.Questions[questionIndex].AnswerModels.RemoveAt(answerIndex);
         }
     }
 
-    private void UmfrageVeroeffentlichen()
+    private async Task UmfrageVeroeffentlichen()
     {
         if (!CanCreateSurveys || OnlineUntil <= CreatedAt)
         {
             return;
         }
-     
-        SurveyTitle = "";
-        Description = "";
-        OnlineUntil = DateTime.Today.AddDays(14);
-        Questions = new()
-        {
-            new QuestionModel
-            {
-                Question = "",
-                Option = new()
-                {
-                    new AnswerModel(),
-                    new AnswerModel()
-                }
-            }
-        };
+
+        await surveyService.CreateSurvey(surveyModel);
     }
 }

@@ -1,4 +1,4 @@
-﻿namespace SchulFunk_Webprojekt.Services;
+﻿namespace SchulFunk_Webprojekt.Feature.UserHandling;
 
 public class AuthTokenService
 {

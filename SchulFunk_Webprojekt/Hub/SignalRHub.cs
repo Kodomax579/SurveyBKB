@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
-using SchulFunk_Webprojekt.Model;
-using SchulFunk_Webprojekt.Services;
+using SchulFunk_Webprojekt.Feature.NewsHandling.Model;
+using SchulFunk_Webprojekt.Feature.UserHandling;
 
 namespace SchulFunk_Webprojekt.SignalRHub
 {
@@ -24,13 +24,12 @@ namespace SchulFunk_Webprojekt.SignalRHub
             }
 
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl("https://localhost:7224/realtimeHub", options =>
+                .WithUrl("http://212.227.82.199:7224/realtimeHub", options =>
                 {
                     options.AccessTokenProvider = () => Task.FromResult(authTokenService.Token);
                 })
                 .WithAutomaticReconnect()
                 .Build();
-
 
             _hubConnection.On<NewsItem>("ReceiveNewNews", newsItems =>
             {

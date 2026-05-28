@@ -1,4 +1,4 @@
-﻿namespace SchulFunk_Webprojekt.Model
+﻿namespace SchulFunk_Webprojekt.Feature.UserHandling.Model
 {
     public class LoginModel
     {

@@ -1,6 +1,7 @@
 @page "/"
-@using SchulFunk_Webprojekt.Services;
 @inject UserService userService
+@inject SurveyService surveyService
+@inject NewsService newsService
 @layout EmptyLayout
 @inject NavigationManager NavManager
 
@@ -60,6 +61,9 @@
             Fehlermeldung = "Login fehlgeschlagen. Bitte prüfe deine Zugangsdaten.";
             return;
         }
+
+        await newsService.GetAllNews();
+        await surveyService.GetAllSurveys();
 
         NavManager.NavigateTo("/home");
     }

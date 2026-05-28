@@ -77,7 +77,7 @@ namespace Survey.ApiGateway.Controllers
 
             await hubContext.Clients.All.SendAsync("SurveyDeleted", id);
 
-            return Ok(true);
+            return Ok(id);
         }
     }
 }

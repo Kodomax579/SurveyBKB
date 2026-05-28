@@ -46,6 +46,9 @@ namespace Survey.ApiGateway.Controllers
                 news.ImageLink = $"/uploads/{fileName}";
             }
             var result = await newsService.CreateNews(news);
+
+            await realtimeHub.Clients.All.SendAsync("NewsCreated", result);
+
             return Ok(result);
         }
 
@@ -80,7 +83,7 @@ namespace Survey.ApiGateway.Controllers
             }
 
             await realtimeHub.Clients.All.SendAsync("NewsDeleted", id);
-            return Ok(true);
+            return Ok(id);
         }
     }
 }

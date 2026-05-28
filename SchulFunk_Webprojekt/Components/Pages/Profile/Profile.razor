@@ -1,5 +1,6 @@
 @page "/profile"
 @using SchulFunk_Webprojekt.Model
+@inject UserStateService userStateService
 
 <PageTitle>Profil</PageTitle>
 
@@ -36,10 +37,10 @@
 </section>
 
 @code {
-    private UserModel CurrentUser => TestLoginData.CurrentUser;
+    private UserModel CurrentUser = new();
 
     private string UserName =>
-        $"{CurrentUser.Name} {CurrentUser.Lastname}".Trim();
+        $"{CurrentUser.Lastname} {CurrentUser.Firstname}".Trim();
 
     private string UserEmail =>
         CurrentUser.Email;
@@ -49,4 +50,9 @@
 
     private string UserRole =>
         PermissionRules.GetGroupLabel(CurrentUser.Group);
+
+    protected override void OnInitialized()
+    {
+        CurrentUser = userStateService.GetUser();
+    }
 }

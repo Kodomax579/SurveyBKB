@@ -31,7 +31,7 @@ namespace Survey.ApiGateway.Feature.User
             return new UserDTO
             {
                 Id = user.Id,
-                Name = user.Name,
+                Firstname = user.Firstname,
                 Lastname = user.Lastname,
                 Email = user.Email,
                 Class = new DTO.ClassDTO

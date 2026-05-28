@@ -1,7 +1,7 @@
 @page "/survey"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
-@inject ApiService apiService
+@inject SurveyStateService surveyStateService
 
 <PageTitle>Umfragen</PageTitle>
 
@@ -78,7 +78,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        SurveyListe = await apiService.GetFromJsonAsync<List<SurveyModel>>("/api/User/Survey");
+        SurveyListe = surveyStateService.GetAllSurveys();
     }
 
     private bool MatchesSearch(SurveyModel survey)

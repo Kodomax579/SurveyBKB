@@ -1,5 +1,5 @@
 @page "/news/{Id:int}"
-@using SchulFunk_Webprojekt.Model
+@inject NewsStateService newsStateService
 
 <PageTitle>@(News?.Title ?? "Nachricht")</PageTitle>
 
@@ -49,6 +49,6 @@ else
 
     protected override void OnParametersSet()
     {
-        News = NewsData.NewsListe.FirstOrDefault(news => news.Id == Id);
+        News = newsStateService.GetNewsItems().FirstOrDefault(n => n.Id == Id);
     }
 }

@@ -74,7 +74,7 @@ else
                         <p>@news.PreviewText</p>
 
                         <div class="admin-meta">
-                            <strong>Ersteller:</strong> @news.UserModel.Lastname @news.UserModel.Name ·
+                            <strong>Ersteller:</strong> @news.UserModel.Lastname @news.UserModel.Firstname ·
                             <strong>Datum:</strong> @news.ExpiredDate
                         </div>
                     </div>
@@ -113,7 +113,7 @@ else
 
     private UserModel CurrentUser => TestLoginData.CurrentUser;
 
-    private List<NewsItem> NewsListe = NewsData.NewsListe.ToList();
+    private List<NewsItem> NewsListe = new();
 
     private NewsItem? NewsInBearbeitung;
 

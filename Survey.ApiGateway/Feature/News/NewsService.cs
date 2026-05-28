@@ -118,7 +118,7 @@ namespace Survey.ApiGateway.Feature.News
                 User = new UserDTO()
                 {
                     Id = news.User.Id,
-                    Name = news.User.Name,
+                    Firstname = news.User.Firstname,
                     Email = news.User.Email,
                     Group = news.User.Group,
                     Lastname = news.User.Lastname,

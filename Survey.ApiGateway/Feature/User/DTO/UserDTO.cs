@@ -6,7 +6,7 @@ namespace Survey.ApiGateway.Models.DTO
     public class UserDTO
     {
         public int Id { get; set; }
-        public string Name { get; set; } = string.Empty;
+        public string Firstname { get; set; } = string.Empty;
         public string Lastname { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
         public ClassDTO Class { get; set; } = new();
