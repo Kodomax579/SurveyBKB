@@ -156,13 +156,12 @@ else
     private string SelectedClass = "";
     private string SelectedGroup = "";
     private bool FilterPanelVisible = false;
-    private UserModel? CurrentUser = new();
+    private UserModel? CurrentUser => userStateService.GetUser();
     private List<UserModel>? AllUser = new();
     private List<ClassModel>? AvailableClasses = new();
 
     protected async override Task OnInitializedAsync()
     {
-        CurrentUser = userStateService.GetUser();
         AllUser = await userService.GetAllUsers();
         AvailableClasses = await userService.GetAllClasses();
     }

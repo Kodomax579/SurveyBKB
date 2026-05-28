@@ -3,6 +3,7 @@
 @using SchulFunk_Webprojekt.Model
 @inject UserStateService userStateService
 @inject SurveyStateService surveyStateService
+@implements IDisposable
 
 <PageTitle>@(Survey?.Title ?? "Umfrage")</PageTitle>
 
@@ -116,9 +117,9 @@ else
     [Parameter]
     public int SurveyId { get; set; }
 
-    private SurveyModel? Survey;
+    private SurveyModel? Survey => surveyStateService.GetAllSurveys().FirstOrDefault(s => s.Id == SurveyId);
 
-    private UserModel CurrentUser = new();
+    private UserModel CurrentUser => userStateService.GetUser();
 
     private bool IsExpired =>
         Survey is not null &&
@@ -129,11 +130,9 @@ else
         !IsExpired &&
         PermissionRules.HasPermission(CurrentUser, Permission.VoteInSurveys);
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        CurrentUser = userStateService.GetUser();
-
-        Survey = surveyStateService.GetAllSurveys().FirstOrDefault(s => s.Id == SurveyId);
+        userStateService.OnChange += StateHasChanged;
     }
 
     private string GetSurveyStatusText()
@@ -149,5 +148,10 @@ else
         }
 
         return "Umfrage";
+    }
+
+    public void Dispose()
+    {
+        userStateService.OnChange -= StateHasChanged;
     }
 }

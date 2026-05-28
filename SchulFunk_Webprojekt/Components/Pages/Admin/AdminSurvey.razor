@@ -3,6 +3,7 @@
 @using SchulFunk_Webprojekt.Model
 @inject UserStateService userStateService
 @inject SurveyStateService surveyStateService
+@implements IDisposable
 
 <PageTitle>Umfragen verwalten</PageTitle>
 
@@ -112,10 +113,11 @@ else
                 string.IsNullOrWhiteSpace(Suchtext) ||
                 survey.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
 
-    protected async override Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        Surveys = await apiService.GetFromJsonAsync<List<SurveyModel>>("/api/survey");
+        surveyStateService.OnChange += StateHasChanged;
     }
+
     private bool CanSeeSurvey(SurveyModel survey)
     {
         if (CanManageAllSurveys)
@@ -170,5 +172,10 @@ else
         }
 
         Surveys.Remove(survey);
+    }
+
+    public void Dispose()
+    {
+        surveyStateService.OnChange -= StateHasChanged;
     }
 }

@@ -5,6 +5,13 @@ namespace SchulFunk_Webprojekt.Feature.SurveyHandling
 {
     public class SurveyStateService
     {
+        public SurveyStateService(SignalRHub.SignalRHub signalRHub)
+        {
+            signalRHub.OnSurveyCreated += AddSurveyItem;
+            signalRHub.OnSurveyDeleted += DeleteSurveyItem;
+            signalRHub.OnSurveyVoteUpdate += UpdateAnswerVote;
+        }
+
         private List<SurveyModel> surveyItems = new();
 
         public event Action OnChange;
@@ -38,18 +45,17 @@ namespace SchulFunk_Webprojekt.Feature.SurveyHandling
             return true;
         }
 
-        public bool DeleteSurveyItem(int id)
+        public void DeleteSurveyItem(int id)
         {
             var news = surveyItems.FirstOrDefault(n => n.Id == id);
 
             if (news == null)
             {
-                return false;
+                return;
             }
 
             surveyItems.Remove(news);
             NotifyStateChanged();
-            return true;
         }
 
         public void AddSurveyItem(SurveyModel SurveyItem)

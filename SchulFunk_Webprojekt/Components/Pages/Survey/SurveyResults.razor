@@ -2,6 +2,7 @@
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
 @inject SurveyStateService surveyStateService
+@implements IDisposable
 
 <PageTitle>Ausgewertete Umfragen</PageTitle>
 
@@ -83,11 +84,11 @@
     private string Suchtext = "";
     private string UserRole = "Klassensprecher";
     private string UserClass = "10A";
-    private List<SurveyModel> SurveyListe = new();
+    private List<SurveyModel> SurveyListe => surveyStateService.GetAllSurveys();
 
     protected override void OnInitialized()
     {
-        SurveyListe = surveyStateService.GetAllSurveys();
+        surveyStateService.OnChange += StateHasChanged;
     }
 
     private IEnumerable<SurveyModel> GefilterteAusgewerteteSurveyListe =>
@@ -105,5 +106,10 @@
         }
 
         return survey.Classes.Any(klasse => klasse == UserClass);
+    }
+
+    public void Dispose()
+    {
+        surveyStateService.OnChange -= StateHasChanged;
     }
 }

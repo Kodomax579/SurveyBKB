@@ -1,5 +1,6 @@
 ﻿@page "/admin"
 @using SchulFunk_Webprojekt.Model
+@inject UserStateService userStateService
 
 <PageTitle>Admin Panel</PageTitle>
 
@@ -105,7 +106,7 @@ else
 }
 
 @code {
-    private UserModel CurrentUser => TestLoginData.CurrentUser;
+    private UserModel CurrentUser => userStateService.GetUser();
 
     private bool CanAccessAdmin =>
         PermissionRules.HasPermission(CurrentUser, Permission.OpenAdminPanel);

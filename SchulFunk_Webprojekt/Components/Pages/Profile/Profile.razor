@@ -37,7 +37,7 @@
 </section>
 
 @code {
-    private UserModel CurrentUser = new();
+    private UserModel CurrentUser => userStateService.GetUser();
 
     private string UserName =>
         $"{CurrentUser.Lastname} {CurrentUser.Firstname}".Trim();
@@ -51,8 +51,4 @@
     private string UserRole =>
         PermissionRules.GetGroupLabel(CurrentUser.Group);
 
-    protected override void OnInitialized()
-    {
-        CurrentUser = userStateService.GetUser();
-    }
 }

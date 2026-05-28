@@ -98,16 +98,16 @@ else
                 }
             </div>
 
-            <h3>@(string.IsNullOrWhiteSpace(Titel) ? "Nachrichtentitel" : Titel)</h3>
+            <h3>@(string.IsNullOrWhiteSpace(newsItem.Title) ? "Nachrichtentitel" : newsItem.Title)</h3>
 
             <span class="preview-tag">
-                @(string.IsNullOrWhiteSpace(Tag) ? "Tag" : Tag)
+                @(string.IsNullOrWhiteSpace(newsItem.Tag) ? "Tag" : newsItem.Tag)
             </span>
 
             <p>
-                @(string.IsNullOrWhiteSpace(Description)
+                @(string.IsNullOrWhiteSpace(newsItem.PreviewText)
                     ? "Hier wird später eine Vorschau der Nachricht angezeigt."
-                    : Description)
+                    : newsItem.PreviewText)
             </p>
         </aside>
     </section>
@@ -116,22 +116,13 @@ else
 @code {
     private NewsItem newsItem = new();
 
-    private string Titel = "";
-    private string Tag = "";
-    private string Description = "";
-    private string Artikel = "";
     private string BildVorschauUrl = "";
     private byte[] BildBytes = Array.Empty<byte>();
 
-    private UserModel CurrentUser = new();
+    private UserModel CurrentUser => userStateService.GetUser();
 
     private bool CanCreateNews =>
         PermissionRules.HasPermission(CurrentUser, Permission.CreateNews);
-
-    protected override void OnInitialized()
-    {
-        CurrentUser = userStateService.GetUser();
-    }
 
     private async Task BildAusgewaehlt(InputFileChangeEventArgs e)
     {
