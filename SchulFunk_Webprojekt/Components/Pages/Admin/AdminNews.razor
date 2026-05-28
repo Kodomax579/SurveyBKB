@@ -144,7 +144,12 @@ else
 
     protected override void OnInitialized()
     {
-        newsStateService.OnChange += StateHasChanged;
+        newsStateService.OnChange += HandleStateChanged;
+    }
+
+    private void HandleStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     private bool CanSeeNews(NewsItem news)
@@ -227,6 +232,6 @@ else
 
     public void Dispose()
     {
-        newsStateService.OnChange -= StateHasChanged;
+        newsStateService.OnChange -= HandleStateChanged;
     }
 }

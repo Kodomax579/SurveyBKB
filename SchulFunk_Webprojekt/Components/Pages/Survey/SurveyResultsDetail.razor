@@ -84,11 +84,16 @@ else
 
     protected override void OnInitialized()
     {
-        surveyStateService.OnChange += StateHasChanged;
+        surveyStateService.OnChange += HandleStateChanged;
+    }
+
+    private void HandleStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()
     {
-        surveyStateService.OnChange -= StateHasChanged;
+        surveyStateService.OnChange -= HandleStateChanged;
     }
 }
