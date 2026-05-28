@@ -125,7 +125,7 @@ namespace Survey.ApiGateway.Feature.Survey
                 User = new UserDTO()
                 {
                     Id = survey.User.Id,
-                    Name = survey.User.Name,
+                    Firstname = survey.User.Firstname,
                     Email = survey.User.Email,
                     Group = survey.User.Group,
                     Lastname = survey.User.Lastname,

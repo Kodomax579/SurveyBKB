@@ -17,25 +17,33 @@ namespace Survey.ApiGateway.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginDTO request)
         {
-            if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
+            try
             {
-                return BadRequest(false);
+                if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Password))
+                {
+                    return BadRequest(false);
+                }
+
+                var userModel = await loginService.Login(request.Email, request.Password);
+
+                if (userModel == null)
+                {
+                    return Unauthorized("Ungültige E-Mail oder falsches Passwort.");
+                }
+
+                var token = authService.CreateToken(userModel);
+
+                return Ok(new
+                {
+                    User = userModel,
+                    Token = token
+                });
             }
-
-            var userModel = await loginService.Login(request.Email, request.Password);
-
-            if (userModel == null)
+            catch (Exception ex)
             {
-                return Unauthorized("Ungültige E-Mail oder falsches Passwort.");
+                // HIER IST DER TRICK: Wir schicken die echte Fehlermeldung an Swagger zurück!
+                return StatusCode(500, $"Backend-Absturz: {ex.Message} -> {ex.InnerException?.Message}");
             }
-
-            var token = authService.CreateToken(userModel);
-
-            return Ok(new
-            {
-                User = userModel,
-                Token = token
-            });
         }
     }
 }

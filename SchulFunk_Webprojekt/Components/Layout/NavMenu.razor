@@ -1,6 +1,7 @@
 @using Microsoft.JSInterop
 @using SchulFunk_Webprojekt.Model
 @inject NavigationManager NavManager
+@inject UserStateService userStateService
 @inject IJSRuntime JS
 
 <header class="sf-header">
@@ -44,7 +45,7 @@
             {
                 <div class="sf-settings-menu">
                     <div class="sf-settings-user">
-                        <strong>@CurrentUser.Name @CurrentUser.Lastname</strong>
+                        <strong>@CurrentUser.Lastname @CurrentUser.Firstname</strong>
                         <span>@PermissionRules.GetGroupLabel(CurrentUser.Group)</span>
                     </div>
 
@@ -79,10 +80,15 @@
     private bool SettingsMenuOpen = false;
     private bool IsDarkMode = true;
 
-    private UserModel CurrentUser => TestLoginData.CurrentUser;
+    private UserModel CurrentUser = new();
 
     private bool CanOpenAdminPanel =>
         PermissionRules.HasPermission(CurrentUser, Permission.OpenAdminPanel);
+
+    protected override void OnInitialized()
+    {
+        userStateService.GetUser();
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {

@@ -2,6 +2,8 @@
 @rendermode InteractiveServer
 @using Microsoft.AspNetCore.Components.Forms
 @using SchulFunk_Webprojekt.Model
+@inject UserStateService userStateService
+@inject NewsService newsService
 
 <PageTitle>Nachricht erstellen</PageTitle>
 
@@ -22,7 +24,7 @@ else
                        type="text"
                        class="form-control"
                        placeholder="Titel der Nachricht eingeben"
-                       @bind="Titel"
+                       @bind="newsItem.Title"
                        @bind:event="oninput" />
             </div>
 
@@ -32,7 +34,7 @@ else
                        type="text"
                        class="form-control"
                        placeholder="Zum Beispiel: Schulnews, Projektwoche, Wichtig"
-                       @bind="Tag"
+                       @bind="newsItem.Tag"
                        @bind:event="oninput" />
             </div>
 
@@ -42,7 +44,7 @@ else
                           class="form-control"
                           rows="4"
                           placeholder="Kurze Beschreibung der Nachricht eingeben"
-                          @bind="Description"
+                          @bind="newsItem.PreviewText"
                           @bind:event="oninput"></textarea>
             </div>
 
@@ -52,7 +54,7 @@ else
                           class="form-control"
                           rows="8"
                           placeholder="Hier kommt später der komplette Artikeltext rein"
-                          @bind="Artikel"
+                          @bind="newsItem.MainText"
                           @bind:event="oninput"></textarea>
             </div>
 
@@ -112,6 +114,8 @@ else
 }
 
 @code {
+    private NewsItem newsItem = new();
+
     private string Titel = "";
     private string Tag = "";
     private string Description = "";
@@ -119,10 +123,15 @@ else
     private string BildVorschauUrl = "";
     private byte[] BildBytes = Array.Empty<byte>();
 
-    private UserModel CurrentUser => TestLoginData.CurrentUser;
+    private UserModel CurrentUser = new();
 
     private bool CanCreateNews =>
         PermissionRules.HasPermission(CurrentUser, Permission.CreateNews);
+
+    protected override void OnInitialized()
+    {
+        CurrentUser = userStateService.GetUser();
+    }
 
     private async Task BildAusgewaehlt(InputFileChangeEventArgs e)
     {
@@ -144,7 +153,8 @@ else
         BildVorschauUrl = $"data:{datei.ContentType};base64,{base64}";
     }
 
-    private void ArtikelVeroeffentlichen()
+    private async Task ArtikelVeroeffentlichen()
     {
+        await newsService.CreateNews(newsItem);
     }
 }

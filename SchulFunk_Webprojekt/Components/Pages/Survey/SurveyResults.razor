@@ -1,7 +1,7 @@
 @page "/survey/results"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
-@inject ApiService apiService
+@inject SurveyStateService surveyStateService
 
 <PageTitle>Ausgewertete Umfragen</PageTitle>
 
@@ -85,9 +85,9 @@
     private string UserClass = "10A";
     private List<SurveyModel> SurveyListe = new();
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        SurveyListe = await apiService.GetFromJsonAsync<List<SurveyModel>>("/api/survey");
+        SurveyListe = surveyStateService.GetAllSurveys();
     }
 
     private IEnumerable<SurveyModel> GefilterteAusgewerteteSurveyListe =>

@@ -1,6 +1,8 @@
 @page "/profile/edit"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
+@inject UserStateService userStateService
+@inject UserService userService
 @inject NavigationManager NavigationManager
 
 <PageTitle>Profil bearbeiten</PageTitle>
@@ -9,12 +11,17 @@
     <div class="profile-edit-form sf-panel">
         <div class="form-group">
             <label for="profile-name">Name</label>
-            <input id="profile-name" type="text" class="form-control" @bind="UserName" @bind:event="oninput" />
+            <input id="profile-name" type="text" class="form-control" @bind="CurrentUser.Lastname" @bind:event="oninput" />
+        </div>
+
+        <div class="form-group">
+            <label for="profile-name">Name</label>
+            <input id="profile-name" type="text" class="form-control" @bind="CurrentUser.Firstname" @bind:event="oninput" />
         </div>
 
         <div class="form-group">
             <label for="profile-email">E-Mail-Adresse</label>
-            <input id="profile-email" type="email" class="form-control" @bind="UserEmail" @bind:event="oninput" />
+            <input id="profile-email" type="email" class="form-control" @bind="CurrentUser.Email" @bind:event="oninput" />
         </div>
 
         <div class="form-group">
@@ -26,14 +33,14 @@
             <div class="form-group">
                 <label>Klasse</label>
                 <div class="readonly-info-box">
-                    <strong>@UserClass</strong>
+                    <strong>@CurrentUser.Class.ClassName</strong>
                 </div>
             </div>
 
             <div class="form-group">
                 <label>Rolle</label>
                 <div class="readonly-info-box">
-                    <strong>@UserRole</strong>
+                    <strong>@CurrentUser.Group.ToString()</strong>
                 </div>
             </div>
         </div>
@@ -51,24 +58,18 @@
 </section>
 
 @code {
-    private UserModel CurrentUser => TestLoginData.CurrentUser;
+    private UserModel CurrentUser = new();
 
-    private string UserName = "";
-    private string UserEmail = "";
     private string UserPassword = "12345678";
-    private string UserClass = "";
-    private string UserRole = "";
 
     protected override void OnInitialized()
     {
-        UserName = $"{CurrentUser.Name} {CurrentUser.Lastname}".Trim();
-        UserEmail = CurrentUser.Email;
-        UserClass = CurrentUser.Class.ClassName;
-        UserRole = PermissionRules.GetGroupLabel(CurrentUser.Group);
+        CurrentUser = userStateService.GetUser();
     }
 
     private void SaveProfile()
     {
+        userService.UpdateUser(CurrentUser.Id, CurrentUser);
         NavigationManager.NavigateTo("/profile");
     }
 

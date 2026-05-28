@@ -2,7 +2,8 @@
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
 @inject NavigationManager NavManager
-@inject ApiService apiService
+@inject UserService userService
+
 
 <PageTitle>Benutzer registrieren - SchulFunk</PageTitle>
 
@@ -178,7 +179,7 @@ else
 
     protected async override Task OnInitializedAsync()
     {
-        AvailableClasses = await apiService.GetFromJsonAsync<List<ClassModel>>("/api/User/classes");
+        AvailableClasses = await userService.GetAllClasses();
     }
 
     private void Registrieren()

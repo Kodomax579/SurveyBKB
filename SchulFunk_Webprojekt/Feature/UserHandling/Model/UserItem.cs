@@ -1,4 +1,4 @@
-﻿using SchulFunk_Webprojekt.Model;
+﻿using SchulFunk_Webprojekt.Feature.UserHandling.Model;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
@@ -7,8 +7,8 @@ public class UserModel
     [JsonPropertyName("id")]
     public int Id { get; set; }
 
-    [JsonPropertyName("name")]
-    public string Name { get; set; } = string.Empty;
+    [JsonPropertyName("firstname")]
+    public string Firstname { get; set; } = string.Empty;
 
     [JsonPropertyName("lastname")]
     public string Lastname { get; set; } = string.Empty;

@@ -1,8 +1,11 @@
 @page "/home"
 @rendermode InteractiveServer
-@using SchulFunk_Webprojekt.Model
-@inject ApiService apiService
+@inject NewsService newsService
+@inject SurveyService surveyService
+@inject NewsStateService newsStateService
+@inject SurveyStateService surveyStateService
 @inject SignalRHub hub
+@implements IDisposable
 
 <PageTitle>SchulFunk</PageTitle>
 
@@ -57,14 +60,14 @@
                     </div>
 
                     <div class="home-result-list">
-                        @foreach (var answer in ersteFrage.Options)
+                        @foreach (var answer in ersteFrage.AnswerModels)
                         {
                             var percentage = BerechneProzent(ersteFrage, answer);
                             var isTopAnswer = percentage == HoechsterProzentwert(ersteFrage);
 
                             <div class="home-result-card @(isTopAnswer ? "active" : "")">
                                 <div class="home-result-line">
-                                    <span>@answer.options</span>
+                                    <span>@answer.Answers</span>
                                     <strong>@percentage%</strong>
                                 </div>
 
@@ -95,7 +98,7 @@
                         </button>
                     </div>
 
-                    <a href="/survey/results/@aktuelleUmfrage.GroupId" class="sf-button home-survey-link">
+                    <a href="/survey/results/@aktuelleUmfrage.Id" class="sf-button home-survey-link">
                         Ergebnisse ansehen
                     </a>
                 </div>
@@ -179,13 +182,20 @@
 @code {
     private int AktuelleUmfrageIndex = 0;
     private string SurveyAnimationClass = "slide-in";
-    private List<NewsItem> NewsItems = new();
-    private List<SurveyModel> surveyModels = new();
+    private IReadOnlyList<NewsItem> NewsItems => newsStateService.GetNewsItems();
+    private IReadOnlyList<SurveyModel> surveyModels => surveyStateService.GetAllSurveys();
 
     protected async override Task OnInitializedAsync()
     {
-        NewsItems = await apiService.GetFromJsonAsync<List<NewsItem>>("/api/News");
-        surveyModels = await apiService.GetFromJsonAsync<List<SurveyModel>>("/api/Survey");
+        newsStateService.OnChange += UpdateUI;
+        surveyStateService.OnChange += UpdateUI;
+
+        await hub.Connect();
+    }
+
+    private void UpdateUI()
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     private async Task NaechsteUmfrage()
@@ -230,7 +240,7 @@
 
     private int BerechneProzent(QuestionModel question, AnswerModel answer)
     {
-        var gesamtStimmen = question.Options.Sum(option => option.NumberOfSelectedAnswer);
+        var gesamtStimmen = question.AnswerModels.Sum(option => option.NumberOfSelectedAnswer);
 
         if (gesamtStimmen == 0)
         {
@@ -242,13 +252,18 @@
 
     private int HoechsterProzentwert(QuestionModel question)
     {
-        if (!question.Options.Any())
+        if (!question.AnswerModels.Any())
         {
             return 0;
         }
 
-        return question.Options
+        return question.AnswerModels
             .Select(answer => BerechneProzent(question, answer))
             .Max();
+    }
+    public void Dispose()
+    {
+        newsStateService.OnChange -= StateHasChanged;
+        surveyStateService.OnChange -= StateHasChanged;
     }
 }

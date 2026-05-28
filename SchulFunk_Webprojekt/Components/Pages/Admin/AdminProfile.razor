@@ -1,8 +1,8 @@
 ﻿@page "/admin/users"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
+@inject UserStateService userStateService
 @inject UserService userService
-@inject ApiService apiService
 
 <PageTitle>Benutzer bearbeiten</PageTitle>
 
@@ -156,13 +156,15 @@ else
     private string SelectedClass = "";
     private string SelectedGroup = "";
     private bool FilterPanelVisible = false;
-    private UserModel CurrentUser = new();
-    private List<UserModel> AllUser = new();
+    private UserModel? CurrentUser = new();
+    private List<UserModel>? AllUser = new();
+    private List<ClassModel>? AvailableClasses = new();
 
     protected async override Task OnInitializedAsync()
     {
-        CurrentUser = userService.CurrentUser;
-        AllUser = await apiService.GetFromJsonAsync<List<UserModel>>("/api/users");
+        CurrentUser = userStateService.GetUser();
+        AllUser = await userService.GetAllUsers();
+        AvailableClasses = await userService.GetAllClasses();
     }
 
 
@@ -173,7 +175,6 @@ else
     private bool CanDeleteUsers =>
         PermissionRules.HasPermission(CurrentUser, Permission.DeleteUsers);
 
-    private List<ClassModel> AvailableClasses => SurveyData.AvailableClasses;
 
     private List<Groups> AvailableGroupFilters =>
         CurrentUser.Group == Groups.Admin
@@ -296,6 +297,6 @@ else
 
     private static string GetFullName(UserModel user)
     {
-        return $"{user.Name} {user.Lastname}".Trim();
+        return $"{user.Lastname} {user.Firstname}".Trim();
     }
 }

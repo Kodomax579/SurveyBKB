@@ -36,7 +36,7 @@
         IsExpired ? "Ergebnisse ansehen" : "Jetzt abstimmen";
 
     private string ActionLink =>
-        IsExpired ? $"/survey/results/{Item.GroupId}" : $"/survey/{Item.GroupId}";
+        IsExpired ? $"/survey/results/{Item.Id}" : $"/survey/{Item.Id}";
 
     private int TeilnehmerAnzahl
     {
@@ -48,7 +48,7 @@
             }
 
             return Item.Questions
-                .Select(question => question.Options.Sum(option => option.NumberOfSelectedAnswer))
+                .Select(question => question.AnswerModels.Sum(option => option.NumberOfSelectedAnswer))
                 .DefaultIfEmpty(0)
                 .Max();
         }
