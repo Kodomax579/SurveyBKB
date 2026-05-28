@@ -18,7 +18,7 @@ namespace SchulFunk_Webprojekt.Feature.NewsHandling
 
         public List<NewsItem> GetNewsItems() 
         { 
-            return newsItems; 
+            return newsItems;
         }
 
         public void SetNews(List<NewsItem?> newsItems)
