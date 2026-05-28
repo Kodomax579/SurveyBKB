@@ -3,6 +3,7 @@
 @inject NavigationManager NavManager
 @inject UserStateService userStateService
 @inject IJSRuntime JS
+@implements IDisposable
 
 <header class="sf-header">
     <NavLink class="sf-brand" href="/home" Match="NavLinkMatch.All">
@@ -80,14 +81,14 @@
     private bool SettingsMenuOpen = false;
     private bool IsDarkMode = true;
 
-    private UserModel CurrentUser = new();
+    private UserModel CurrentUser => userStateService.GetUser();
 
     private bool CanOpenAdminPanel =>
         PermissionRules.HasPermission(CurrentUser, Permission.OpenAdminPanel);
 
     protected override void OnInitialized()
     {
-        userStateService.GetUser();
+        userStateService.OnChange += StateHasChanged;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -127,5 +128,10 @@
     {
         SettingsMenuOpen = false;
         NavManager.NavigateTo("/", forceLoad: true);
+    }
+
+    public void Dispose()
+    {
+        userStateService.OnChange -= StateHasChanged;
     }
 }

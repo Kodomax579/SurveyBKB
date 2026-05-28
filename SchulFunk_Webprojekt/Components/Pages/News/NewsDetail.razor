@@ -1,5 +1,6 @@
 @page "/news/{Id:int}"
 @inject NewsStateService newsStateService
+@implements IDisposable
 
 <PageTitle>@(News?.Title ?? "Nachricht")</PageTitle>
 
@@ -45,10 +46,15 @@ else
     [Parameter]
     public int Id { get; set; }
 
-    private NewsItem? News;
+    private NewsItem? News => newsStateService.GetNewsItems().FirstOrDefault(n => n.Id == Id);
 
-    protected override void OnParametersSet()
+    protected override void OnInitialized()
     {
-        News = newsStateService.GetNewsItems().FirstOrDefault(n => n.Id == Id);
+        newsStateService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        newsStateService.OnChange -= StateHasChanged;
     }
 }

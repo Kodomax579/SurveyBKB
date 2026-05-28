@@ -187,7 +187,7 @@
 
     protected async override Task OnInitializedAsync()
     {
-        newsStateService.OnChange += UpdateUI;
+        newsStateService.OnChange +=  UpdateUI;
         surveyStateService.OnChange += UpdateUI;
 
         await hub.Connect();

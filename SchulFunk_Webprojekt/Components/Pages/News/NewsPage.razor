@@ -4,6 +4,7 @@
 @using SchulFunk_Webprojekt.Model
 @inject NewsStateService newsStateService
 @inject NewsService newsService
+@implements IDisposable
 
 <PageTitle>Aktuelle Nachrichten</PageTitle>
 
@@ -43,7 +44,7 @@ else
 
 @code {
     private string Suchtext = "";
-    private List<NewsItem> NewsListe = new();
+    private List<NewsItem> NewsListe => newsStateService.GetNewsItems();
     private bool IsLoading = true;
     private string Fehlermeldung = "";
 
@@ -56,15 +57,7 @@ else
 
     protected override async Task OnInitializedAsync()
     {
-        await LadeNachrichten();
-    }
-
-    private async Task LadeNachrichten()
-    {
-        IsLoading = true;
-        Fehlermeldung = "";
-
-        NewsListe = newsStateService.GetNewsItems();
+        newsStateService.OnChange += StateHasChanged;
     }
 
     private static List<NewsItem> ParseNewsJson(string json)
@@ -144,5 +137,10 @@ else
         return property.TryGetDateTime(out var date)
             ? date
             : default;
+    }
+
+    public void Dispose()
+    {
+        newsStateService.OnChange -= StateHasChanged;
     }
 }

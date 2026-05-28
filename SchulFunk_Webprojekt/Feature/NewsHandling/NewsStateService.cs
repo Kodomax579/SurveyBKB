@@ -1,4 +1,5 @@
 ﻿using SchulFunk_Webprojekt.Feature.NewsHandling.Model;
+using SchulFunk_Webprojekt.SignalRHub;
 
 namespace SchulFunk_Webprojekt.Feature.NewsHandling
 {
@@ -7,6 +8,13 @@ namespace SchulFunk_Webprojekt.Feature.NewsHandling
         private List<NewsItem> newsItems = new();
 
         public event Action OnChange;
+
+        public NewsStateService(SignalRHub.SignalRHub signalRHub)
+        {
+            signalRHub.OnNewsItemDeleted += DeleteNewsItem;
+            signalRHub.OnNewsItemsUpdated += UpdateNewsItem;
+            signalRHub.OnNewsItemCreated += AddNewsItem;
+        }
 
         public List<NewsItem> GetNewsItems() 
         { 
@@ -23,32 +31,30 @@ namespace SchulFunk_Webprojekt.Feature.NewsHandling
             NotifyStateChanged();
         }
 
-        public bool UpdateNewsItem(NewsItem updatedNews)
+        public void UpdateNewsItem(NewsItem updatedNews)
         {
             var i = newsItems.FindIndex(n  => n.Id == updatedNews.Id);
 
             if(i == -1)
             {
-                return false;
+                return ;
             }
 
             newsItems[i] = updatedNews;
             NotifyStateChanged();
-            return true;
         }
 
-        public bool DeleteNewsItem(int id)
+        public void DeleteNewsItem(int id)
         {
             var news = newsItems.FirstOrDefault(n => n.Id == id);
 
             if (news == null)
             {
-                return false;
+                return;
             }
 
             newsItems.Remove(news);
             NotifyStateChanged();
-            return true;
         }
 
         public void AddNewsItem(NewsItem newsItem)

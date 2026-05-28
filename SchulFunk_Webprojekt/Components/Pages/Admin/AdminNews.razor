@@ -1,6 +1,9 @@
 ﻿@page "/admin/news"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
+@inject NewsStateService newsStateService
+@inject UserStateService userStateService
+
 
 <PageTitle>Nachrichten verwalten</PageTitle>
 
@@ -111,9 +114,9 @@ else
 @code {
     private string Suchtext = "";
 
-    private UserModel CurrentUser => TestLoginData.CurrentUser;
+    private UserModel CurrentUser => userStateService.GetUser();
 
-    private List<NewsItem> NewsListe = new();
+    private List<NewsItem> NewsListe => newsStateService.GetNewsItems();
 
     private NewsItem? NewsInBearbeitung;
 
@@ -138,6 +141,11 @@ else
             .Where(news =>
                 string.IsNullOrWhiteSpace(Suchtext) ||
                 news.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
+
+    protected override void OnInitialized()
+    {
+        newsStateService.OnChange += StateHasChanged;
+    }
 
     private bool CanSeeNews(NewsItem news)
     {
@@ -215,5 +223,10 @@ else
         {
             CancelNewsEdit();
         }
+    }
+
+    public void Dispose()
+    {
+        newsStateService.OnChange -= StateHasChanged;
     }
 }

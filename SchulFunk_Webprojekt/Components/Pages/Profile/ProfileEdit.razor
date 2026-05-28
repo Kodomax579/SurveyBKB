@@ -4,6 +4,7 @@
 @inject UserStateService userStateService
 @inject UserService userService
 @inject NavigationManager NavigationManager
+@implements IDisposable
 
 <PageTitle>Profil bearbeiten</PageTitle>
 
@@ -58,13 +59,13 @@
 </section>
 
 @code {
-    private UserModel CurrentUser = new();
+    private UserModel CurrentUser => userStateService.GetUser();
 
     private string UserPassword = "12345678";
 
     protected override void OnInitialized()
     {
-        CurrentUser = userStateService.GetUser();
+        userStateService.OnChange += StateHasChanged;
     }
 
     private void SaveProfile()
@@ -76,5 +77,10 @@
     private void CancelEdit()
     {
         NavigationManager.NavigateTo("/profile");
+    }
+
+    public void Dispose()
+    {
+        userStateService.OnChange -= StateHasChanged;
     }
 }

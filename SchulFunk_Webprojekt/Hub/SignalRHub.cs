@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.AspNetCore.SignalR.Client;
 using SchulFunk_Webprojekt.Feature.NewsHandling.Model;
+using SchulFunk_Webprojekt.Feature.SurveyHandling.Model;
 using SchulFunk_Webprojekt.Feature.UserHandling;
 
 namespace SchulFunk_Webprojekt.SignalRHub
@@ -10,6 +11,11 @@ namespace SchulFunk_Webprojekt.SignalRHub
         private HubConnection? _hubConnection;
 
         public event Action<NewsItem>? OnNewsItemsUpdated;
+        public event Action<NewsItem>? OnNewsItemCreated;
+        public event Action<int>? OnNewsItemDeleted;
+        public event Action<SurveyModel>? OnSurveyCreated;
+        public event Action<int>? OnSurveyDeleted;
+        public event Action<int>? OnSurveyVoteUpdate;
 
         public async Task Connect()
         {
@@ -31,9 +37,29 @@ namespace SchulFunk_Webprojekt.SignalRHub
                 .WithAutomaticReconnect()
                 .Build();
 
-            _hubConnection.On<NewsItem>("ReceiveNewNews", newsItems =>
+            _hubConnection.On<NewsItem>("NewsUpdated", newsItems =>
             {
                 OnNewsItemsUpdated?.Invoke(newsItems);
+            });
+            _hubConnection.On<NewsItem>("NewsCreated", newsItems =>
+            {
+                OnNewsItemCreated?.Invoke(newsItems);
+            });
+            _hubConnection.On<int>("NewsDeleted", newsId =>
+            {
+                OnNewsItemDeleted?.Invoke(newsId);
+            });
+            _hubConnection.On<SurveyModel>("ReceiveNewSurvey", newSurvey =>
+            {
+                OnSurveyCreated?.Invoke(newSurvey);
+            });
+            _hubConnection.On<int>("SurveyVoteUpdated", answerId =>
+            {
+                OnSurveyVoteUpdate?.Invoke(answerId);
+            });
+            _hubConnection.On<int>("SurveyDeleted", surveyId =>
+            {
+                OnSurveyDeleted?.Invoke(surveyId);
             });
             try
             {

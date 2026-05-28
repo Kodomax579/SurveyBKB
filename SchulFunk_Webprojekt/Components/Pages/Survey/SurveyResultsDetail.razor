@@ -1,6 +1,7 @@
 @page "/survey/results/{SurveyId:int}"
 @using SchulFunk_Webprojekt.Model
 @inject SurveyStateService surveyStateService
+@implements IDisposable
 
 <PageTitle>@(Survey?.Title ?? "Umfrage-Ergebnisse")</PageTitle>
 
@@ -79,10 +80,15 @@ else
     [Parameter]
     public int SurveyId { get; set; }
 
-    private SurveyModel? Survey;
+    private SurveyModel? Survey => surveyStateService.GetAllSurveys().FirstOrDefault(s => s.Id == SurveyId);
 
-    protected override async Task OnParametersSetAsync()
+    protected override void OnInitialized()
     {
-        Survey = surveyStateService.GetAllSurveys().FirstOrDefault(s => s.Id == SurveyId);
+        surveyStateService.OnChange += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        surveyStateService.OnChange -= StateHasChanged;
     }
 }

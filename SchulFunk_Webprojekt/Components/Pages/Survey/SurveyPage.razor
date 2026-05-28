@@ -2,6 +2,7 @@
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
 @inject SurveyStateService surveyStateService
+@implements IDisposable
 
 <PageTitle>Umfragen</PageTitle>
 
@@ -66,7 +67,7 @@ else
     private string Suchtext = "";
     private string StatusFilter = "all";
 
-    private List<SurveyModel> SurveyListe = new();
+    private List<SurveyModel> SurveyListe => surveyStateService.GetAllSurveys();
 
     private IEnumerable<SurveyModel> GefilterteSurveyListe =>
         SurveyListe
@@ -76,9 +77,9 @@ else
             .ThenByDescending(survey => survey.CreatedAt);
 
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
-        SurveyListe = surveyStateService.GetAllSurveys();
+        surveyStateService.OnChange += StateHasChanged;
     }
 
     private bool MatchesSearch(SurveyModel survey)
@@ -129,5 +130,9 @@ else
     {
         StatusFilter = filter;
         FilterDropdownOpen = false;
+    }
+    public void Dispose()
+    {
+        surveyStateService.OnChange -= StateHasChanged;
     }
 }
