@@ -1,4 +1,5 @@
-﻿using SchulFunk_Webprojekt.Feature.NewsHandling.Model;
+﻿using Microsoft.AspNetCore.Components.Forms;
+using SchulFunk_Webprojekt.Feature.NewsHandling.Model;
 using SchulFunk_Webprojekt.Feature.UserHandling;
 using System.Net.Http.Headers;
 using System.Net.Http.Json; 
@@ -44,16 +45,52 @@ namespace SchulFunk_Webprojekt.Feature.NewsHandling
             return await result.Content.ReadFromJsonAsync<NewsItem>();
         }
 
-        public async Task<bool> CreateNews(NewsItem newNews)
+        public async Task<bool> CreateNews(NewsItem newNews, IBrowserFile? imageFile = null)
         {
             AddToken();
-            var result = await httpClient.PostAsJsonAsync($"{BaseURL}/api/News", newNews);
 
-            if (!result.IsSuccessStatusCode) return false;
-            
-            var content = await result.Content.ReadFromJsonAsync<NewsItem>();
+            using var content = new MultipartFormDataContent();
 
-            newsStateService.AddNewsItem(content);
+            content.Add(new StringContent(newNews.Id.ToString()), "Id");
+            content.Add(new StringContent(newNews.Title ?? ""), "Titel");
+            content.Add(new StringContent(newNews.Tag ?? ""), "Tag");
+            content.Add(new StringContent(newNews.PreviewText ?? ""), "PreviewText");
+            content.Add(new StringContent(newNews.MainText ?? ""), "MainText");
+
+            content.Add(new StringContent(newNews.CreatedAt.ToString("yyyy-MM-dd")), "CreatedAt");
+            content.Add(new StringContent(newNews.ExpiredDate.ToString("yyyy-MM-dd")), "ExpiredDate");
+            content.Add(new StringContent(newNews.NumberOfMembers.ToString()), "NumberOfMembers");
+
+            if (newNews.UserModel != null)
+            {
+                content.Add(new StringContent(newNews.UserModel.Id.ToString()), "User.Id");
+            }
+            var rawContent = await content.ReadAsStringAsync();
+            if (imageFile != null)
+            {
+                var fileStream = imageFile.OpenReadStream(maxAllowedSize: 10485760);
+                var streamContent = new StreamContent(fileStream);
+
+                streamContent.Headers.ContentType = new MediaTypeHeaderValue(imageFile.ContentType);
+
+                content.Add(streamContent, "image", imageFile.Name);
+            }
+
+            var result = await httpClient.PostAsync($"{BaseURL}/api/News", content);
+
+            if (!result.IsSuccessStatusCode)
+            {
+                var errorResponse = await result.Content.ReadAsStringAsync();
+                Console.WriteLine($"Fehler beim Speichern: {errorResponse}");
+                return false;
+            }
+
+            var createdNews = await result.Content.ReadFromJsonAsync<NewsItem>();
+
+            if (createdNews != null)
+            {
+                newsStateService.AddNewsItem(createdNews);
+            }
 
             return true;
         }

@@ -146,6 +146,7 @@ else
 
     private async Task ArtikelVeroeffentlichen()
     {
+        newsItem.UserModel = CurrentUser;
         await newsService.CreateNews(newsItem);
     }
 }

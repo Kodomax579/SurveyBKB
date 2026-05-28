@@ -50,11 +50,16 @@ else
 
     protected override void OnInitialized()
     {
-        newsStateService.OnChange += StateHasChanged;
+        newsStateService.OnChange += HandleStateChanged;
+    }
+
+    private void HandleStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     public void Dispose()
     {
-        newsStateService.OnChange -= StateHasChanged;
+        newsStateService.OnChange -= HandleStateChanged;
     }
 }

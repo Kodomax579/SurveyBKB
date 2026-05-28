@@ -263,7 +263,7 @@
     }
     public void Dispose()
     {
-        newsStateService.OnChange -= StateHasChanged;
-        surveyStateService.OnChange -= StateHasChanged;
+        newsStateService.OnChange -= UpdateUI;
+        surveyStateService.OnChange -= UpdateUI;
     }
 }

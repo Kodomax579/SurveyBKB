@@ -115,7 +115,11 @@ else
 
     protected override void OnInitialized()
     {
-        surveyStateService.OnChange += StateHasChanged;
+        surveyStateService.OnChange += HandleStateChanged;
+    }
+    private void HandleStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     private bool CanSeeSurvey(SurveyModel survey)
@@ -176,6 +180,6 @@ else
 
     public void Dispose()
     {
-        surveyStateService.OnChange -= StateHasChanged;
+        surveyStateService.OnChange -= HandleStateChanged;
     }
 }

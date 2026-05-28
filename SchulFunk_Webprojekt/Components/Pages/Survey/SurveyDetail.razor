@@ -132,7 +132,12 @@ else
 
     protected override void OnInitialized()
     {
-        userStateService.OnChange += StateHasChanged;
+        userStateService.OnChange += HandleStateChanged;
+    }
+
+    private void HandleStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     private string GetSurveyStatusText()
@@ -152,6 +157,6 @@ else
 
     public void Dispose()
     {
-        userStateService.OnChange -= StateHasChanged;
+        userStateService.OnChange -= HandleStateChanged;
     }
 }

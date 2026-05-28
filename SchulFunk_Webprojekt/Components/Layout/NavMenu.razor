@@ -88,7 +88,12 @@
 
     protected override void OnInitialized()
     {
-        userStateService.OnChange += StateHasChanged;
+        userStateService.OnChange += HandleStateChanged;
+    }
+
+    private void HandleStateChanged()
+    {
+        InvokeAsync(StateHasChanged);
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -132,6 +137,6 @@
 
     public void Dispose()
     {
-        userStateService.OnChange -= StateHasChanged;
+        userStateService.OnChange -= HandleStateChanged;
     }
 }
