@@ -45,7 +45,7 @@ else
 @code {
     private string Suchtext = "";
     private List<NewsItem> NewsListe => newsStateService.GetNewsItems();
-    private bool IsLoading = true;
+    private bool IsLoading => NewsListe.Count == 0;
     private string Fehlermeldung = "";
 
     private IEnumerable<NewsItem> GefilterteNewsListe =>
@@ -55,9 +55,11 @@ else
             news.PreviewText.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
             news.Tag.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         newsStateService.OnChange += StateHasChanged;
+
+    
     }
 
     private static List<NewsItem> ParseNewsJson(string json)
