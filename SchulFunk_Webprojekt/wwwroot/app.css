@@ -1084,3 +1084,206 @@ select.sf-input {
     border-color: var(--sf-border-strong);
     background: var(--sf-card-bg-hover);
 }
+
+/* =========================================================
+   Globales Responsive-Fundament
+   Muss ganz unten in app.css stehen.
+   ========================================================= */
+
+img,
+svg,
+video {
+    max-width: 100%;
+}
+
+table {
+    width: 100%;
+    max-width: 100%;
+}
+
+@media (max-width: 900px) {
+    .sf-page-header {
+        margin-bottom: var(--sf-space-md);
+    }
+
+        .sf-page-header h1,
+        .sf-page-header h2 {
+            font-size: clamp(1.45rem, 7vw, 2rem);
+        }
+
+        .sf-page-header p {
+            font-size: var(--sf-font-size-sm);
+        }
+
+    .sf-filter-bar {
+        align-items: stretch;
+        flex-direction: column;
+        gap: var(--sf-space-sm);
+        padding: var(--sf-space-sm);
+    }
+
+    .sf-filter-search,
+    .sf-filter-action,
+    .sf-filter-action .sf-button {
+        width: 100%;
+        flex: 1 1 auto;
+    }
+
+    .sf-grid-2,
+    .sf-grid-3,
+    .admin-dashboard-grid,
+    .admin-user-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sf-auto-grid {
+        grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+        gap: var(--sf-space-md);
+    }
+
+    .admin-list-card {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .admin-list-actions {
+        width: 100%;
+        justify-content: flex-start;
+    }
+}
+
+@media (max-width: 680px) {
+    html,
+    body {
+        overflow-x: hidden;
+    }
+
+    .sf-panel,
+    .sf-card,
+    .sf-flat-card,
+    .sf-detail-page,
+    .sf-auth-card {
+        border-radius: var(--sf-radius);
+    }
+
+    .sf-page-header h1,
+    .sf-page-header h2 {
+        font-size: 1.55rem;
+        line-height: 1.15;
+    }
+
+    .sf-button {
+        min-height: 42px;
+        padding: 10px 14px;
+        font-size: 0.9rem;
+    }
+
+    .form-row {
+        grid-template-columns: 1fr;
+        gap: var(--sf-space-sm);
+    }
+
+    .form-actions {
+        flex-direction: column;
+        gap: var(--sf-space-sm);
+    }
+
+        .form-actions .sf-button,
+        .admin-list-actions .sf-button,
+        .admin-user-card .sf-button {
+            width: 100%;
+        }
+
+    .form-control,
+    .sf-input,
+    .admin-search-input {
+        min-height: 42px;
+        padding: 10px 12px;
+        font-size: 0.95rem;
+    }
+
+    textarea.form-control {
+        min-height: 110px;
+    }
+
+    .sf-flat-card-body,
+    .sf-detail-page,
+    .sf-auth-card,
+    .admin-header,
+    .admin-dashboard-card,
+    .admin-toolbar,
+    .admin-list-card,
+    .admin-empty,
+    .admin-edit-panel,
+    .admin-user-card {
+        padding: var(--sf-space-md);
+    }
+
+    .sf-auto-grid {
+        grid-template-columns: 1fr;
+        gap: var(--sf-space-md);
+    }
+
+    .admin-title,
+    .admin-list-card-main,
+    .admin-user-head,
+    .sf-detail-header {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+        .admin-title img,
+        .admin-list-card-main img,
+        .admin-user-head img,
+        .sf-detail-header img {
+            width: 52px;
+            height: 52px;
+        }
+
+    .sf-card-icon img {
+        width: 58px;
+        height: 58px;
+    }
+
+    .sf-card-icon {
+        margin-bottom: var(--sf-space-sm);
+    }
+
+    .sf-auth-wrapper {
+        min-height: calc(100vh - 90px);
+        padding: var(--sf-space-lg) 0;
+    }
+
+    .sf-auth-logo {
+        width: 58px;
+        height: 58px;
+    }
+
+    .sf-auth-header h1,
+    .sf-auth-header h2 {
+        font-size: 1.35rem;
+    }
+}
+
+@media (max-width: 420px) {
+    .sf-page-header h1,
+    .sf-page-header h2 {
+        font-size: 1.35rem;
+    }
+
+    .sf-button {
+        width: 100%;
+    }
+
+    .sf-flat-card h3,
+    .admin-list-card-main h3,
+    .admin-user-head h3 {
+        font-size: 1.05rem;
+    }
+
+    .sf-flat-card p,
+    .admin-list-card-main p,
+    .admin-user-head p {
+        font-size: 0.88rem;
+    }
+}

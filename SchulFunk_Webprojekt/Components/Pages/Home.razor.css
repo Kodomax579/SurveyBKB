@@ -1,3 +1,7 @@
+/* =========================================================
+   Home Layout
+   ========================================================= */
+
 .home-overview {
     display: grid;
     grid-template-columns: minmax(0, 1.1fr) minmax(340px, 0.9fr);
@@ -5,7 +9,9 @@
     align-items: start;
 }
 
-/* Allgemeine Panel-Köpfe */
+/* =========================================================
+   Allgemeine Panel-Köpfe
+   ========================================================= */
 
 .home-panel-head {
     position: relative;
@@ -23,8 +29,7 @@
         flex: 0 0 auto;
     }
 
-    .home-panel-head span,
-    .home-impressum > div > span {
+    .home-panel-head span {
         display: inline-flex;
         width: fit-content;
         padding: 6px 12px;
@@ -44,7 +49,9 @@
         letter-spacing: -0.04em;
     }
 
-/* Nachrichten */
+/* =========================================================
+   Nachrichten
+   ========================================================= */
 
 .home-news-panel {
     padding: 26px;
@@ -132,7 +139,9 @@
     transform: translateX(3px);
 }
 
-/* Umfragen */
+/* =========================================================
+   Umfragen
+   ========================================================= */
 
 .home-survey-panel {
     padding: 26px;
@@ -313,16 +322,20 @@
         color: var(--sf-text-muted);
     }
 
-/* Nützliche Links */
+/* =========================================================
+   Nützliche Links
+   ========================================================= */
 
 .home-useful-links {
-    margin-top: 28px;
+    margin-top: 34px;
+    margin-bottom: 42px;
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 20px;
 }
 
 .home-link-card {
+    min-width: 0;
     min-height: 116px;
     padding: 22px 24px;
     background: var(--sf-card-bg);
@@ -336,6 +349,7 @@
     grid-template-columns: 64px minmax(0, 1fr);
     gap: 18px;
     align-items: center;
+    overflow: hidden;
     transition: var(--sf-transition);
 }
 
@@ -365,20 +379,26 @@
     }
 
 .home-link-card h3 {
+    min-width: 0;
     margin: 0 0 4px;
     color: var(--sf-text-strong);
     font-size: 1.35rem;
     line-height: 1.2;
+    overflow-wrap: break-word;
 }
 
 .home-link-card p {
+    min-width: 0;
     margin: 0;
     color: var(--sf-text-muted);
     line-height: 1.4;
     font-size: 0.95rem;
+    overflow-wrap: break-word;
 }
 
-/* Footer / Impressum */
+/* =========================================================
+   Footer / Impressum
+   ========================================================= */
 
 .home-impressum {
     width: 100vw;
@@ -442,7 +462,9 @@
     font-size: 0.85rem;
 }
 
-/* Animationen */
+/* =========================================================
+   Animationen
+   ========================================================= */
 
 .home-survey-slide.slide-out-up {
     animation: home-survey-slide-out-up 0.14s ease both;
@@ -492,31 +514,62 @@
     }
 }
 
-/* Responsive */
+/* =========================================================
+   Tablet
+   ========================================================= */
 
-@media (max-width: 1050px) {
-    .home-overview,
-    .home-impressum {
+@media (max-width: 1100px) {
+    .home-overview {
         grid-template-columns: 1fr;
+        gap: 34px;
     }
 
-    .home-links-row,
-    .home-impressum-grid {
+    .home-useful-links {
         grid-template-columns: 1fr;
+        gap: 16px;
     }
+
+    .home-link-card {
+        width: 100%;
+        min-height: auto;
+        padding: 20px;
+        grid-template-columns: 64px minmax(0, 1fr);
+    }
+
+        .home-link-card h3 {
+            font-size: 1.25rem;
+        }
+
+        .home-link-card p {
+            font-size: 0.95rem;
+            line-height: 1.45;
+        }
 }
 
-@media (max-width: 680px) {
+/* =========================================================
+   Smartphone
+   ========================================================= */
+
+@media (max-width: 760px) {
+    .home-overview {
+        display: flex;
+        flex-direction: column;
+        gap: 42px;
+        margin-bottom: 42px;
+    }
+
     .home-news-panel,
-    .home-survey-panel,
-    .home-link-card,
-    .home-impressum {
-        margin-bottom: -24px;
-        padding: 42px 18px 28px;
+    .home-survey-panel {
+        width: 100%;
+        padding: 24px;
+        border-radius: var(--sf-radius);
+        margin: 0;
     }
 
     .home-panel-head {
-        align-items: flex-start;
+        align-items: center;
+        gap: 14px;
+        margin-bottom: 22px;
     }
 
         .home-panel-head img {
@@ -524,8 +577,20 @@
             height: 58px;
         }
 
+        .home-panel-head h2 {
+            font-size: 1.45rem;
+            line-height: 1.15;
+        }
+
+    .home-news-list {
+        gap: 18px;
+    }
+
     .home-news-card {
+        min-height: auto;
+        padding: 20px;
         grid-template-columns: 1fr;
+        gap: 12px;
     }
 
     .home-news-date {
@@ -536,20 +601,155 @@
         display: none;
     }
 
+    .home-news-content h3 {
+        font-size: 1.15rem;
+        line-height: 1.3;
+    }
+
+    .home-news-content p {
+        font-size: 0.95rem;
+        line-height: 1.5;
+    }
+
+    .home-survey-slide {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .home-survey-description {
+        margin: 0;
+        line-height: 1.6;
+    }
+
+    .home-question-box {
+        margin-bottom: 0;
+        padding: 18px;
+    }
+
+    .home-result-list {
+        gap: 16px;
+    }
+
+    .home-result-card {
+        padding: 18px;
+    }
+
     .home-survey-bottom {
+        margin-top: 6px;
         grid-template-columns: 1fr;
+        gap: 16px;
+    }
+
+    .home-survey-actions {
+        justify-content: flex-start;
     }
 
     .home-survey-link {
         width: 100%;
+        min-height: 54px;
+    }
+
+    .home-useful-links {
+        margin-top: 0;
+        margin-bottom: 42px;
+        grid-template-columns: 1fr;
+        gap: 18px;
     }
 
     .home-link-card {
-        grid-template-columns: 54px minmax(0, 1fr) 30px;
+        min-height: auto;
+        padding: 22px;
+        border-radius: var(--sf-radius);
+        grid-template-columns: 58px minmax(0, 1fr);
+        gap: 18px;
+        align-items: center;
     }
 
-        .home-link-card img {
+    .home-link-icon {
+        width: 58px;
+        height: 58px;
+    }
+
+        .home-link-icon img {
             width: 54px;
             height: 54px;
         }
+
+    .home-link-card h3 {
+        margin: 0 0 5px;
+        font-size: 1.2rem;
+        line-height: 1.2;
+    }
+
+    .home-link-card p {
+        margin: 0;
+        font-size: 0.92rem;
+        line-height: 1.45;
+    }
+
+    .home-impressum {
+        margin-top: 38px;
+        margin-bottom: -24px;
+        padding: 42px 18px 28px;
+    }
+
+    .home-footer-links {
+        gap: 16px;
+    }
+}
+
+/* =========================================================
+   Sehr kleine Smartphones
+   ========================================================= */
+
+@media (max-width: 420px) {
+    .home-overview {
+        gap: 36px;
+        margin-bottom: 36px;
+    }
+
+    .home-news-panel,
+    .home-survey-panel {
+        padding: 20px;
+    }
+
+    .home-panel-head {
+        gap: 12px;
+    }
+
+        .home-panel-head img {
+            width: 52px;
+            height: 52px;
+        }
+
+        .home-panel-head h2 {
+            font-size: 1.28rem;
+        }
+
+    .home-news-card,
+    .home-result-card,
+    .home-question-box {
+        padding: 16px;
+    }
+
+    .home-link-card {
+        padding: 18px;
+        grid-template-columns: 52px minmax(0, 1fr);
+        gap: 14px;
+    }
+
+    .home-link-icon,
+    .home-link-icon img {
+        width: 50px;
+        height: 50px;
+    }
+
+    .home-link-card h3 {
+        font-size: 1.05rem;
+    }
+
+    .home-link-card p {
+        font-size: 0.85rem;
+    }
 }
