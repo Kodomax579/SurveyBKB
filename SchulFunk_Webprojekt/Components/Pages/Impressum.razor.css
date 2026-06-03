@@ -1,0 +1,85 @@
+﻿.impressum-page {
+    display: grid;
+    gap: var(--sf-space-md);
+}
+
+.impressum-section {
+    padding: var(--sf-space-lg);
+    background: var(--sf-card-bg);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius);
+    box-shadow: var(--sf-shadow-sm);
+}
+
+    .impressum-section h2 {
+        margin: 0 0 var(--sf-space-sm);
+        color: var(--sf-text-strong);
+        font-size: 1.35rem;
+        line-height: 1.25;
+    }
+
+    .impressum-section h3 {
+        margin: var(--sf-space-sm) 0 8px;
+        color: var(--sf-text-strong);
+        font-size: 1.1rem;
+    }
+
+    .impressum-section p,
+    .impressum-section address {
+        margin: 0 0 var(--sf-space-sm);
+        color: var(--sf-text-muted);
+        font-style: normal;
+        line-height: 1.65;
+    }
+
+        .impressum-section p:last-child,
+        .impressum-section address:last-child {
+            margin-bottom: 0;
+        }
+
+.impressum-subtitle {
+    display: inline-flex;
+    width: fit-content;
+    padding: 6px 12px;
+    border-radius: var(--sf-radius-pill);
+    background: var(--sf-accent-soft);
+    color: var(--sf-accent);
+    font-size: var(--sf-font-size-xs);
+    font-weight: var(--sf-font-weight-black);
+}
+
+.impressum-contact-list {
+    display: grid;
+    gap: 8px;
+    margin: var(--sf-space-sm) 0;
+}
+
+    .impressum-contact-list p {
+        margin: 0;
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .impressum-contact-list strong {
+        color: var(--sf-text-strong);
+    }
+
+    .impressum-contact-list span {
+        color: var(--sf-text-muted);
+    }
+
+@media (max-width: 680px) {
+    .impressum-section {
+        padding: var(--sf-space-md);
+    }
+
+        .impressum-section h2 {
+            font-size: 1.18rem;
+        }
+
+    .impressum-contact-list p {
+        flex-direction: column;
+        gap: 2px;
+    }
+}
