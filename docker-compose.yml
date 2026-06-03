@@ -3,7 +3,7 @@ services:
   frontend:
     build: 
       context: . # Baut vom Hauptverzeichnis aus
-      dockerfile: SchulFunk_Webproject/Dockerfile # Pfad zum neuen Frontend-Dockerfile
+      dockerfile: SchulFunk_Webprojekt/Dockerfile # Pfad zum neuen Frontend-Dockerfile
     ports:
       - "8080:8080"
     environment:
