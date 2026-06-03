@@ -16,13 +16,30 @@
     padding-bottom: 34px;
 }
 
-@media (max-width: 680px) {
+@media (max-width: 900px) {
     .sf-container {
-        padding: 0 16px;
+        padding: 0 20px;
     }
 
     .sf-main {
-        padding-top: 24px;
+        padding-top: 26px;
+        padding-bottom: 30px;
+    }
+}
+
+@media (max-width: 680px) {
+    .sf-container {
+        padding: 0 14px;
+    }
+
+    .sf-main {
+        padding-top: 20px;
         padding-bottom: 24px;
+    }
+}
+
+@media (max-width: 420px) {
+    .sf-container {
+        padding: 0 10px;
     }
 }

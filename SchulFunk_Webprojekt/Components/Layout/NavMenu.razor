@@ -6,79 +6,91 @@
 @implements IDisposable
 
 <header class="sf-header">
-    <NavLink class="sf-brand" href="/home" Match="NavLinkMatch.All">
-        <img class="sf-logo" src="/lib/images/SchulFunk-Logo.png" alt="SchulFunk Logo" />
+    <div class="sf-header-inner">
+        <NavLink class="sf-brand" href="/home" Match="NavLinkMatch.All" @onclick="CloseAllMenus">
+            <img class="sf-logo" src="/lib/images/SchulFunk-Logo.png" alt="SchulFunk Logo" />
 
-        <div class="sf-brand-text">
-            <h1>Schul<span>Funk</span></h1>
-        </div>
-    </NavLink>
-
-    <nav class="sf-navbar">
-        <NavLink class="sf-nav-button" href="/home" Match="NavLinkMatch.All">
-            Startseite
+            <div class="sf-brand-text">
+                <h1>Schul<span>Funk</span></h1>
+            </div>
         </NavLink>
 
-        <NavLink class="sf-nav-button" href="/survey">
-            Umfragen
-        </NavLink>
+        <button type="button"
+                class="sf-mobile-menu-button @(MobileMenuOpen ? "open" : "")"
+                @onclick="ToggleMobileMenu"
+                aria-label="Menü öffnen oder schließen">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
 
-        <NavLink class="sf-nav-button" href="/news">
-            Nachrichten
-        </NavLink>
-
-        @if (CanOpenAdminPanel)
-        {
-            <NavLink class="sf-nav-button sf-admin-button" href="/admin">
-                Admin Panel
+        <nav class="sf-navbar @(MobileMenuOpen ? "open" : "")">
+            <NavLink class="sf-nav-button" href="/home" Match="NavLinkMatch.All" @onclick="CloseAllMenus">
+                Startseite
             </NavLink>
-        }
 
-        <div class="sf-settings-dropdown">
-            <button type="button"
-                    class="sf-settings-button"
-                    @onclick="ToggleSettingsMenu"
-                    aria-label="Profil öffnen">
-                <span>Profil</span>
-            </button>
+            <NavLink class="sf-nav-button" href="/survey" @onclick="CloseAllMenus">
+                Umfragen
+            </NavLink>
 
-            @if (SettingsMenuOpen)
+            <NavLink class="sf-nav-button" href="/news" @onclick="CloseAllMenus">
+                Nachrichten
+            </NavLink>
+
+            @if (CanOpenAdminPanel)
             {
-                <div class="sf-settings-menu">
-                    <div class="sf-settings-user">
-                        <strong>@CurrentUser.Lastname @CurrentUser.Firstname</strong>
-                        <span>@PermissionRules.GetGroupLabel(CurrentUser.Group)</span>
-                    </div>
-
-                    <NavLink class="sf-settings-menu-item" href="/profile" @onclick="CloseSettingsMenu">
-                        Mein Profil
-                    </NavLink>
-
-                    <button type="button"
-                            class="sf-settings-menu-item sf-theme-toggle"
-                            @onclick="ToggleTheme">
-                        <span class="sf-theme-toggle-icon">
-                            @(IsDarkMode ? "☀" : "🌙")
-                        </span>
-
-                        <span>
-                            @(IsDarkMode ? "White Mode aktivieren" : "Dark Mode aktivieren")
-                        </span>
-                    </button>
-
-                    <button type="button"
-                            class="sf-settings-menu-item sf-settings-logout"
-                            @onclick="Logout">
-                        Abmelden
-                    </button>
-                </div>
+                <NavLink class="sf-nav-button sf-admin-button" href="/admin" @onclick="CloseAllMenus">
+                    Admin Panel
+                </NavLink>
             }
-        </div>
-    </nav>
+
+            <div class="sf-settings-dropdown">
+                <button type="button"
+                        class="sf-settings-button"
+                        @onclick="ToggleSettingsMenu"
+                        aria-label="Profil öffnen">
+                    <span>Profil</span>
+                </button>
+
+                @if (SettingsMenuOpen)
+                {
+                    <div class="sf-settings-menu">
+                        <div class="sf-settings-user">
+                            <strong>@CurrentUser.Lastname @CurrentUser.Firstname</strong>
+                            <span>@PermissionRules.GetGroupLabel(CurrentUser.Group)</span>
+                        </div>
+
+                        <NavLink class="sf-settings-menu-item" href="/profile" @onclick="CloseAllMenus">
+                            Mein Profil
+                        </NavLink>
+
+                        <button type="button"
+                                class="sf-settings-menu-item sf-theme-toggle"
+                                @onclick="ToggleTheme">
+                            <span class="sf-theme-toggle-icon">
+                                @(IsDarkMode ? "☀" : "🌙")
+                            </span>
+
+                            <span>
+                                @(IsDarkMode ? "White Mode aktivieren" : "Dark Mode aktivieren")
+                            </span>
+                        </button>
+
+                        <button type="button"
+                                class="sf-settings-menu-item sf-settings-logout"
+                                @onclick="Logout">
+                            Abmelden
+                        </button>
+                    </div>
+                }
+            </div>
+        </nav>
+    </div>
 </header>
 
 @code {
     private bool SettingsMenuOpen = false;
+    private bool MobileMenuOpen = false;
     private bool IsDarkMode = true;
 
     private UserModel CurrentUser => userStateService.GetUser();
@@ -110,14 +122,25 @@
         }
     }
 
+    private void ToggleMobileMenu()
+    {
+        MobileMenuOpen = !MobileMenuOpen;
+
+        if (!MobileMenuOpen)
+        {
+            SettingsMenuOpen = false;
+        }
+    }
+
     private void ToggleSettingsMenu()
     {
         SettingsMenuOpen = !SettingsMenuOpen;
     }
 
-    private void CloseSettingsMenu()
+    private void CloseAllMenus()
     {
         SettingsMenuOpen = false;
+        MobileMenuOpen = false;
     }
 
     private async Task ToggleTheme()
@@ -132,6 +155,7 @@
     private void Logout()
     {
         SettingsMenuOpen = false;
+        MobileMenuOpen = false;
         NavManager.NavigateTo("/", forceLoad: true);
     }
 
