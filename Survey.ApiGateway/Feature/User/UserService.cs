@@ -40,6 +40,11 @@ namespace Survey.ApiGateway.Feature.User
             {
                 return null;
             }
+            if(string.IsNullOrWhiteSpace(user.Password))
+            {
+                user.Password = $"{user.Lastname}11!";
+            }
+
             user.Password = _passwordHasher.HashPassword(user, user.Password);
 
             user.Class = classExists;
