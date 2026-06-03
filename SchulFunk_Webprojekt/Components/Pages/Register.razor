@@ -1,9 +1,10 @@
 @page "/admin/register"
 @rendermode InteractiveServer
+@using SchulFunk_Webprojekt.Feature.UserHandling.Model
 @using SchulFunk_Webprojekt.Model
 @inject NavigationManager NavManager
 @inject UserService userService
-
+@inject UserStateService userStateService
 
 <PageTitle>Benutzer registrieren - SchulFunk</PageTitle>
 
@@ -47,7 +48,7 @@ else
                         <input type="text"
                                class="sf-input"
                                placeholder="Max"
-                               @bind="Vorname"
+                               @bind="newUser.Firstname"
                                @bind:event="oninput" />
                     </div>
 
@@ -56,15 +57,14 @@ else
                         <input type="text"
                                class="sf-input"
                                placeholder="Mustermann"
-                               @bind="Nachname"
+                               @bind="newUser.Lastname"
                                @bind:event="oninput" />
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Benutzerrolle</label>
-
-                    <select class="sf-input" @bind="SelectedGroup">
+                    <select class="sf-input" @bind="newUser.Group">
                         @foreach (var group in RegisterableGroups)
                         {
                             <option value="@group">@PermissionRules.GetGroupLabel(group)</option>
@@ -72,11 +72,10 @@ else
                     </select>
                 </div>
 
-                @if (SelectedGroup == Groups.Teacher)
+                @if (newUser.Group == Groups.Teacher)
                 {
                     <div class="form-group">
                         <label>Klasse / Bereich</label>
-
                         <div class="readonly-info-box">
                             <strong>Lehrer</strong>
                         </div>
@@ -86,8 +85,7 @@ else
                 {
                     <div class="form-group">
                         <label>Klasse</label>
-
-                        <select class="sf-input" @bind="SelectedClassName">
+                        <select class="sf-input" @bind="newUser.Class!.ClassName">
                             @foreach (var klasse in AvailableClasses)
                             {
                                 <option value="@klasse.ClassName">@klasse.ClassName</option>
@@ -101,16 +99,7 @@ else
                     <input type="email"
                            class="sf-input"
                            placeholder="max.mustermann@schule.de"
-                           @bind="Email"
-                           @bind:event="oninput" />
-                </div>
-
-                <div class="form-group">
-                    <label>Passwort wählen</label>
-                    <input type="password"
-                           class="sf-input"
-                           placeholder="••••••••"
-                           @bind="Password"
+                           @bind="newUser.Email"
                            @bind:event="oninput" />
                 </div>
 
@@ -129,23 +118,19 @@ else
 }
 
 @code {
-    private UserModel CurrentUser => TestLoginData.CurrentUser;
+    // TODO: Ersetze dies durch deinen echten angemeldeten Benutzer (z.B. über AuthenticationState)
+    private UserModel CurrentUser => userStateService.GetUser();
 
-    private string Vorname = "";
-    private string Nachname = "";
-    private string Email = "";
-    private string Password = "";
+    // Unser direktes Bindungs-Modell (Class muss initialisiert werden, damit es bei der Klassenauswahl nicht kracht)
+    private UserModel newUser = new UserModel { Class = new ClassModel() };
+
     private List<ClassModel> AvailableClasses = new();
-    private string SelectedClassName = string.Empty;
     private string Erfolgsmeldung = "";
     private string Fehlermeldung = "";
-
-    private Groups SelectedGroup = Groups.Student;
 
     private bool CanRegisterUsers =>
         PermissionRules.HasPermission(CurrentUser, Permission.RegisterStudentUsers) ||
         PermissionRules.HasPermission(CurrentUser, Permission.RegisterTeacherUsers);
-
 
     private List<Groups> RegisterableGroups
     {
@@ -167,22 +152,23 @@ else
         }
     }
 
-    protected override void OnInitialized()
-    {
-        SelectedGroup = RegisterableGroups.FirstOrDefault();
-
-        if (string.IsNullOrWhiteSpace(SelectedClassName) && AvailableClasses.Count > 0)
-        {
-            SelectedClassName = AvailableClasses[0].ClassName;
-        }
-    }
-
     protected async override Task OnInitializedAsync()
     {
         AvailableClasses = await userService.GetAllClasses();
+
+        // Standardwerte setzen, wenn Daten geladen wurden
+        if (RegisterableGroups.Any())
+        {
+            newUser.Group = RegisterableGroups.First();
+        }
+
+        if (AvailableClasses.Any())
+        {
+            newUser.Class!.ClassName = AvailableClasses.First().ClassName;
+        }
     }
 
-    private void Registrieren()
+    private async Task Registrieren()
     {
         Erfolgsmeldung = "";
         Fehlermeldung = "";
@@ -193,41 +179,54 @@ else
             return;
         }
 
-        if (!RegisterableGroups.Contains(SelectedGroup))
+        if (!RegisterableGroups.Contains(newUser.Group))
         {
             Fehlermeldung = "Du darfst diese Benutzerrolle nicht registrieren.";
             return;
         }
 
-        if (string.IsNullOrWhiteSpace(Vorname) ||
-            string.IsNullOrWhiteSpace(Nachname) ||
-            string.IsNullOrWhiteSpace(Email) ||
-            string.IsNullOrWhiteSpace(Password))
+        if (string.IsNullOrWhiteSpace(newUser.Firstname) ||
+            string.IsNullOrWhiteSpace(newUser.Lastname) ||
+            string.IsNullOrWhiteSpace(newUser.Email))
         {
             Fehlermeldung = "Bitte fülle alle Pflichtfelder aus.";
             return;
         }
 
-        var className = SelectedGroup == Groups.Teacher
-            ? "Lehrer"
-            : SelectedClassName;
+        // Leerzeichen entfernen
+        newUser.Firstname = newUser.Firstname.Trim();
+        newUser.Lastname = newUser.Lastname.Trim();
+        newUser.Email = newUser.Email.Trim();
 
-
-        Erfolgsmeldung = $"Benutzer {Vorname.Trim()} {Nachname.Trim()} wurde erfolgreich registriert.";
-
-        Vorname = "";
-        Nachname = "";
-        Email = "";
-        Password = "";
-
-        if (RegisterableGroups.Count > 0)
+        // Lehrer bekommen eine feste Klasse zugeordnet
+        if (newUser.Group == Groups.Teacher)
         {
-            SelectedGroup = RegisterableGroups[0];
+            newUser.Class = new ClassModel { ClassName = "Lehrer" };
         }
 
-        if (AvailableClasses.Count > 0)
+        // Wir rufen den Service jetzt direkt mit dem UserModel auf
+        var success = await userService.CreateUser(newUser);
+
+        if (success)
         {
-            SelectedClassName = AvailableClasses[0].ClassName;
+            Erfolgsmeldung = $"Benutzer {newUser.Firstname} {newUser.Lastname} erfolgreich angelegt (Standardpasswort gesetzt).";
+
+            // Formular zurücksetzen
+            newUser = new UserModel { Class = new ClassModel() };
+
+            if (RegisterableGroups.Any())
+            {
+                newUser.Group = RegisterableGroups.First();
+            }
+
+            if (AvailableClasses.Any())
+            {
+                newUser.Class.ClassName = AvailableClasses.First().ClassName;
+            }
+        }
+        else
+        {
+            Fehlermeldung = "Die Registrierung ist fehlgeschlagen. Möglicherweise existiert die E-Mail bereits.";
         }
     }
 }
