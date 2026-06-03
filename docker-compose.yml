@@ -1,6 +1,23 @@
 services:
+  # DEIN NEUES BLAZOR FRONTEND
+  frontend:
+    build: 
+      context: . # Baut vom Hauptverzeichnis aus
+      dockerfile: SchulFunk_Webproject/Dockerfile # Pfad zum neuen Frontend-Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - ASPNETCORE_URLS=http://+:8080
+      # Falls dein Frontend die API-URL kennen muss:
+      - ApiBaseUrl=http://api:7224 
+    depends_on:
+      - api
+
+  # DEIN BESTEHENDES BACKEND (API)
   api:
-    build: .
+    build: 
+      context: .
+      dockerfile: Survey.ApiGateway/Dockerfile # Pfad zu dem Dockerfile, das du mir geschickt hast
     ports:
       - "7224:7224"
     environment:
@@ -11,6 +28,7 @@ services:
     volumes:
       - ./uploads:/app/wwwroot/uploads
 
+  # DEINE DATENBANK
   db:
     image: postgres:16
     environment:
