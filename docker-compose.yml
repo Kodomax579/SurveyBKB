@@ -5,11 +5,10 @@ services:
       context: . # Baut vom Hauptverzeichnis aus
       dockerfile: SchulFunk_Webprojekt/Dockerfile # Pfad zum neuen Frontend-Dockerfile
     ports:
-      - "8080:8080"
+      - "7189:7189"
     environment:
-      - ASPNETCORE_URLS=http://+:8080
-      # Falls dein Frontend die API-URL kennen muss:
-      - ApiBaseUrl=http://api:7224 
+      - ASPNETCORE_URLS=http://+:7189
+      - ApiBaseUrl=http://api:7224
     depends_on:
       - api
 
