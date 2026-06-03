@@ -1,7 +1,7 @@
 FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
 WORKDIR /src
 
-COPY ["SchulFunk_Webprojekt/SchulFunk_Webprojekt.csproj", "SchulFunk_Webprojekt/SchulFunk_Webprojekt/"]
+COPY ["SchulFunk_Webprojekt/SchulFunk_Webprojekt.csproj", "SchulFunk_Webprojekt/"]
 RUN dotnet restore "SchulFunk_Webprojekt.csproj"
 
 COPY . .
