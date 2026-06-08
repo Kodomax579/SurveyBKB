@@ -7,17 +7,18 @@
        1. Grundpalette
        ========================================================= */
 
-    --sf-color-black: #000000;
-    --sf-color-ink: #0C1821;
-    --sf-color-primary: #1B2A41;
-    --sf-color-secondary: #324A5F;
-    --sf-color-accent: #CCC9DC;
+    /* Neue Bento-Farbpalette */
+    --sf-color-black: #0B1320;
+    --sf-color-ink: #0F1722;
+    --sf-color-primary: #264653; /* tiefes Teal */
+    --sf-color-secondary: #2A9D8F; /* helles Teal */
+    --sf-color-accent: #E76F51; /* warmes Koralle */
     --sf-color-white: #FFFFFF;
-    --sf-color-black-rgb: 0, 0, 0;
-    --sf-color-ink-rgb: 12, 24, 33;
-    --sf-color-primary-rgb: 27, 42, 65;
-    --sf-color-secondary-rgb: 50, 74, 95;
-    --sf-color-accent-rgb: 204, 201, 220;
+    --sf-color-black-rgb: 11, 19, 32;
+    --sf-color-ink-rgb: 15, 23, 34;
+    --sf-color-primary-rgb: 38, 70, 83;
+    --sf-color-secondary-rgb: 42, 157, 143;
+    --sf-color-accent-rgb: 231, 111, 81;
     --sf-color-white-rgb: 255, 255, 255;
     /* =========================================================
        2. Abstände
@@ -70,37 +71,37 @@
     --sf-hover-lift-md: translateY(-2px);
     --sf-hover-lift-lg: translateY(-3px);
     /* =========================================================
-       6. DARK MODE
+       DARK MODE (Standardwerte in :root)
        ========================================================= */
 
-    --sf-page-bg: #0F172A;
-    --sf-page-bg-secondary: #111827;
-    --sf-panel-bg: #172033;
-    --sf-panel-bg-strong: #111827;
-    --sf-panel-bg-soft: #1E293B;
-    --sf-card-bg: #1E293B;
-    --sf-card-bg-hover: #263449;
-    --sf-toolbar-bg: #172033;
-    --sf-text: #E5E7EB;
+    --sf-page-bg: #071022;
+    --sf-page-bg-secondary: #0B1724;
+    --sf-panel-bg: #0F1722;
+    --sf-panel-bg-strong: #071020;
+    --sf-panel-bg-soft: #11202A;
+    --sf-card-bg: #0F1A24;
+    --sf-card-bg-hover: #11262E;
+    --sf-toolbar-bg: #071022;
+    --sf-text: #E6EEF0;
     --sf-text-strong: #FFFFFF;
-    --sf-text-muted: #A8B3C5;
-    --sf-text-subtle: #7C8798;
-    --sf-text-inverted: #111827;
-    --sf-accent: #CCC9DC;
+    --sf-text-muted: #A8BDC0;
+    --sf-text-subtle: #88A0A4;
+    --sf-text-inverted: #071022;
+    --sf-accent: var(--sf-color-accent);
     --sf-accent-hover: #FFFFFF;
-    --sf-accent-soft: rgba(var(--sf-color-accent-rgb), 0.14);
-    --sf-accent-softer: rgba(var(--sf-color-accent-rgb), 0.08);
-    --sf-border: rgba(var(--sf-color-accent-rgb), 0.16);
-    --sf-border-strong: rgba(var(--sf-color-accent-rgb), 0.30);
-    --sf-focus: rgba(var(--sf-color-accent-rgb), 0.28);
-    --sf-shadow-sm: 0 2px 8px rgba(var(--sf-color-black-rgb), 0.18);
-    --sf-shadow-md: 0 6px 18px rgba(var(--sf-color-black-rgb), 0.22);
-    --sf-shadow-lg: 0 10px 28px rgba(var(--sf-color-black-rgb), 0.26);
-    --sf-shadow-hover: 0 12px 32px rgba(var(--sf-color-black-rgb), 0.32);
-    --sf-shadow: var(--sf-shadow-md);
-    --sf-input-bg: #111827;
-    --sf-input-bg-hover: #151F31;
-    --sf-input-bg-focus: #172033;
+    --sf-accent-soft: rgba(var(--sf-color-accent-rgb), 0.12);
+    --sf-accent-softer: rgba(var(--sf-color-accent-rgb), 0.06);
+    --sf-border: rgba(var(--sf-color-accent-rgb), 0.14);
+    --sf-border-strong: rgba(var(--sf-color-accent-rgb), 0.26);
+    --sf-focus: rgba(var(--sf-color-accent-rgb), 0.20);
+    --sf-shadow-sm: 0 6px 18px rgba(var(--sf-color-black-rgb), 0.06);
+    --sf-shadow-md: 0 10px 28px rgba(var(--sf-color-black-rgb), 0.08);
+    --sf-shadow-lg: 0 14px 36px rgba(var(--sf-color-black-rgb), 0.10);
+    --sf-shadow-hover: 0 18px 44px rgba(var(--sf-color-black-rgb), 0.12);
+    --sf-shadow: var(--sf-shadow-sm);
+    --sf-input-bg: #07101a;
+    --sf-input-bg-hover: #0b1b25;
+    --sf-input-bg-focus: #0f2a33;
     --sf-input-text: var(--sf-text-strong);
     --sf-input-placeholder: #8B95A7;
     --sf-button-bg: var(--sf-color-accent);
@@ -109,19 +110,19 @@
     --sf-button-hover-bg: var(--sf-color-white);
     --sf-button-hover-text: var(--sf-color-ink);
     --sf-button-hover-border: var(--sf-color-white);
-    --sf-button-dark-bg: #1B2A41;
+    --sf-button-dark-bg: var(--sf-color-primary);
     --sf-button-dark-text: var(--sf-color-white);
-    --sf-button-dark-border: rgba(var(--sf-color-accent-rgb), 0.18);
-    --sf-button-dark-hover-bg: #324A5F;
+    --sf-button-dark-border: rgba(var(--sf-color-primary-rgb), 0.12);
+    --sf-button-dark-hover-bg: var(--sf-color-secondary);
     --sf-button-dark-hover-text: var(--sf-color-white);
-    --sf-button-dark-hover-border: #324A5F;
+    --sf-button-dark-hover-border: var(--sf-color-secondary);
     --sf-danger-bg: #7F1D1D;
     --sf-danger-text: #FFFFFF;
     --sf-danger-hover-bg: #991B1B;
-    --sf-success-bg: rgba(16, 185, 129, 0.14);
-    --sf-success-text: #6EE7B7;
-    --sf-success-border: rgba(16, 185, 129, 0.28);
-    --sf-selection-bg: rgba(var(--sf-color-accent-rgb), 0.34);
+    --sf-success-bg: rgba(42, 157, 143, 0.12);
+    --sf-success-text: #2A9D8F;
+    --sf-success-border: rgba(42, 157, 143, 0.22);
+    --sf-selection-bg: rgba(var(--sf-color-accent-rgb), 0.24);
     --sf-selection-text: var(--sf-color-white);
     /* =========================================================
        7. Bereichsfarben

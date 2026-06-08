@@ -20,15 +20,49 @@
             </div>
         </div>
 
-        <div class="home-news-list">
-            @foreach (var news in NewsItems)
-            {
-                <a href="/news/@news.Id" class="home-news-item home-news-link">
-                    <span>@news.CreatedAt</span>
-                    <h3>@news.Title</h3>
-                    <p>@news.PreviewText</p>
-                </a>
-            }
+        <div class="home-news-carousel">
+            <div class="home-news-stage">
+                <div class="home-news-list">
+                    @if (NewsItems.Any())
+                    {
+                        var aktuelleNews = NewsItems[AktuelleNewsIndex];
+
+                        <div class="home-news-slide @NewsAnimationClass" @key="AktuelleNewsIndex">
+                            <a href="/news/@aktuelleNews.Id" class="home-news-card home-news-link">
+                                <span class="home-news-date">@aktuelleNews.CreatedAt</span>
+                                <h3>@aktuelleNews.Title</h3>
+                                <p>@aktuelleNews.PreviewText</p>
+                            </a>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="home-empty-state">
+                            <img src="/lib/images/Icon-News.png" alt="News Icon" />
+                            <h2>Keine Neuigkeiten</h2>
+                            <p>Derzeit sind keine Nachrichten verfügbar.</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="home-news-controls">
+                <button type="button"
+                        class="home-news-arrow left"
+                        @onclick="VorherigeNews"
+                        disabled="@(NewsItems.Count <= 1)"
+                        aria-label="Vorherige Nachricht">
+                    ←
+                </button>
+
+                <button type="button"
+                        class="home-news-arrow right"
+                        @onclick="NaechsteNews"
+                        disabled="@(NewsItems.Count <= 1)"
+                        aria-label="Nächste Nachricht">
+                    →
+                </button>
+            </div>
         </div>
     </section>
 
@@ -183,6 +217,8 @@
     private string SurveyAnimationClass = "slide-in";
     private IReadOnlyList<NewsItem> NewsItems => newsStateService.GetNewsItems();
     private IReadOnlyList<SurveyModel> surveyModels => surveyStateService.GetAllSurveys();
+    private int AktuelleNewsIndex = 0;
+    private string NewsAnimationClass = "slide-in";
 
     protected async override Task OnInitializedAsync()
     {
@@ -215,6 +251,46 @@
         }
 
         SurveyAnimationClass = "slide-in";
+    }
+
+    private async Task NaechsteNews()
+    {
+        if (NewsItems.Count == 0)
+        {
+            return;
+        }
+
+        NewsAnimationClass = "slide-out-left";
+        await Task.Delay(140);
+
+        AktuelleNewsIndex++;
+
+        if (AktuelleNewsIndex >= NewsItems.Count)
+        {
+            AktuelleNewsIndex = 0;
+        }
+
+        NewsAnimationClass = "slide-in";
+    }
+
+    private async Task VorherigeNews()
+    {
+        if (NewsItems.Count == 0)
+        {
+            return;
+        }
+
+        NewsAnimationClass = "slide-out-right";
+        await Task.Delay(140);
+
+        AktuelleNewsIndex--;
+
+        if (AktuelleNewsIndex < 0)
+        {
+            AktuelleNewsIndex = NewsItems.Count - 1;
+        }
+
+        NewsAnimationClass = "slide-in";
     }
 
     private async Task VorherigeUmfrage()
