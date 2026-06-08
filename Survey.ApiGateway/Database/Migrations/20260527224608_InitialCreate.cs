@@ -36,6 +36,7 @@ namespace Survey.ApiGateway.Database.Migrations
                     Lastname = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
                     Password = table.Column<string>(type: "text", nullable: false),
+                    ImageLink = table.Column<string>(type: "text", nullable: true),
                     ClassId = table.Column<int>(type: "integer", nullable: false),
                     Group = table.Column<int>(type: "integer", nullable: false)
                 },

@@ -70,6 +70,8 @@ namespace Survey.ApiGateway.Feature.User
                     Class = u.Class,
                     Group = u.Group,
                     Password = ""
+                    ,
+                    ImageLink = u.ImageLink
                 })
                 .ToListAsync();
         }
@@ -86,6 +88,23 @@ namespace Survey.ApiGateway.Feature.User
             }
 
             return user;
+        }
+
+        public async Task<string?> UploadProfileImage(int userId, string fileName)
+        {
+            var user = await dbContext.Users.FindAsync(userId);
+            if (user == null) return null;
+
+            user.ImageLink = fileName;
+            try
+            {
+                await dbContext.SaveChangesAsync();
+                return fileName;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
         }
 
         public async Task<UserModel?> UpdateUser(int id, UserModel userUpdate)

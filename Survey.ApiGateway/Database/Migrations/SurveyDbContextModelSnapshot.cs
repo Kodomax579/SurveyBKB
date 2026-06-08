@@ -188,6 +188,9 @@ namespace Survey.ApiGateway.Database.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<string>("ImageLink")
+                        .HasColumnType("text");
+
                     b.Property<string>("Firstname")
                         .IsRequired()
                         .HasColumnType("text");

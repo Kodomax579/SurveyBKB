@@ -10,5 +10,6 @@
         public int ClassId { get; set; }
         public ClassModel? Class { get; set; }
         public Groups Group{ get; set; }
+        public string ImageLink { get; set; } = string.Empty;
     }
 }

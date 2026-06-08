@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Survey.ApiGateway.Database;
 using Survey.ApiGateway.Feature.News.DTO;
+using Markdig;
 using Survey.ApiGateway.Feature.News.Models;
 using Survey.ApiGateway.Models.DTO; // Stelle sicher, dass die DTO-Namespaces passen
 using System.Formats.Asn1;
@@ -110,6 +111,7 @@ namespace Survey.ApiGateway.Feature.News
                 Tag = news.Tag,
                 PreviewText = news.PreviewText,
                 MainText = news.MainText,
+                MainTextHtml = Markdown.ToHtml(news.MainText ?? string.Empty),
                 ImageLink = news.ImageLink,
                 CreatedAt = news.CreatedAt,
                 ExpiredDate = news.ExpiredDate,
