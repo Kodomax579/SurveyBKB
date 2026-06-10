@@ -186,7 +186,7 @@ else
         foreach (var kvp in selectedAnswers)
         {
             var answerId = kvp.Value;
-            var ok = await surveyService.VoteForAnswer(answerId);
+            var ok = await surveyService.VoteForAnswer(answerId, CurrentUser.Id);
             if (!ok)
             {
                 // On failure, stop and keep voting enabled
