@@ -3,6 +3,7 @@
 @using SchulFunk_Webprojekt.Model
 @inject UserStateService userStateService
 @inject SurveyStateService surveyStateService
+@inject SchulFunk_Webprojekt.Feature.SurveyHandling.SurveyService surveyService
 @implements IDisposable
 
 <PageTitle>@(Survey?.Title ?? "Umfrage")</PageTitle>
@@ -15,6 +16,8 @@
         <a href="/survey" class="sf-button sf-button-dark">Zurück zu den Umfragen</a>
     </section>
 }
+
+
 else
 {
     <section class="survey-detail-page sf-panel">
@@ -75,11 +78,13 @@ else
                         {
                             var answer = question.AnswerModels[answerIndex];
 
-                            <label class="survey-answer-option @(!CanVote ? "survey-answer-option-disabled" : "")">
+                            <label class="survey-answer-option @(!CanVote || hasSubmitted ? "survey-answer-option-disabled" : "")">
                                 <input type="radio"
                                        name="question-@questionIndex"
-                                       value="@answerIndex"
-                                       disabled="@(!CanVote)" />
+                                       value="@answer.Id"
+                                       @onchange="@(e => OnAnswerSelected(questionIndex, answer.Id))"
+                                       checked="@((selectedAnswers.ContainsKey(questionIndex) && selectedAnswers[questionIndex] == answer.Id))"
+                                       disabled="@(!CanVote || hasSubmitted)" />
                                 <span>@answer.Answers</span>
                             </label>
                         }
@@ -91,8 +96,8 @@ else
         <div class="survey-detail-actions">
             @if (CanVote)
             {
-                <button type="button" class="sf-button sf-button-dark">
-                    Antworten absenden
+                <button type="button" class="sf-button sf-button-dark" @onclick="SubmitAnswers" disabled="@hasSubmitted">
+                    @((hasSubmitted) ? "Antworten gesendet" : "Antworten absenden")
                 </button>
 
                 <a href="/survey" class="sf-button">
@@ -158,5 +163,43 @@ else
     public void Dispose()
     {
         userStateService.OnChange -= HandleStateChanged;
+    }
+
+    private Dictionary<int,int> selectedAnswers = new(); // questionIndex -> answerId
+    private bool hasSubmitted = false;
+
+    private async Task SubmitAnswers()
+    {
+        if (Survey == null) return;
+
+        // Ensure we have a selected answer for each question
+        for (var i = 0; i < Survey.Questions.Count; i++)
+        {
+            if (!selectedAnswers.ContainsKey(i))
+            {
+                // If any question is unanswered, do nothing (could show validation)
+                return;
+            }
+        }
+
+        // Send each selected answer to the backend
+        foreach (var kvp in selectedAnswers)
+        {
+            var answerId = kvp.Value;
+            var ok = await surveyService.VoteForAnswer(answerId);
+            if (!ok)
+            {
+                // On failure, stop and keep voting enabled
+                return;
+            }
+        }
+
+        hasSubmitted = true;
+        StateHasChanged();
+    }
+
+    private void OnAnswerSelected(int questionIndex, int answerId)
+    {
+        selectedAnswers[questionIndex] = answerId;
     }
 }

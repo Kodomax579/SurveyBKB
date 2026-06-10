@@ -67,10 +67,11 @@ namespace SchulFunk_Webprojekt.Feature.SurveyHandling
             return false;
         }
 
-        public async Task<bool> VoteForAnswer(int answerId)
+        public async Task<bool> VoteForAnswer(int answerId, int userId)
         {
             AddToken();
-            var result = await httpClient.PutAsync($"{BaseURL}/api/Survey/vote/{answerId}", null);
+            
+            var result = await httpClient.PutAsync($"{BaseURL}/api/Survey/vote/{answerId}?userId={userId}", null);
 
             if (result.IsSuccessStatusCode)
             {
