@@ -16,8 +16,7 @@ namespace SchulFunk_Webprojekt.Feature.SurveyHandling.Model
         [JsonPropertyName("creatorName")]
         public string CreatorName { get; set; } = string.Empty;
 
-        [JsonPropertyName("createdUserID")]
-        public int CreatedUserID { get; set; }
+        public UserModel User { get; set; }
 
         [JsonPropertyName("groupId")]
         public int GroupId { get; set; }

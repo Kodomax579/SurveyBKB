@@ -16,12 +16,12 @@ namespace SchulFunk_Webprojekt
             builder.Services.AddRazorComponents()
                 .AddInteractiveServerComponents();
 
-            builder.Services.AddSingleton<AuthTokenService>();
-            builder.Services.AddSingleton<SignalRHub.SignalRHub>();
+            builder.Services.AddScoped<AuthTokenService>();
+            builder.Services.AddScoped<SignalRHub.SignalRHub>();
 
-            builder.Services.AddSingleton<NewsStateService>();
-            builder.Services.AddSingleton<UserStateService>();
-            builder.Services.AddSingleton<SurveyStateService>();
+            builder.Services.AddScoped<NewsStateService>();
+            builder.Services.AddScoped<UserStateService>();
+            builder.Services.AddScoped<SurveyStateService>();
             // Configure typed HttpClients with the API base URL from configuration
             var apiBase = builder.Configuration.GetValue<string>("ApiSettings:BaseUrl");
             if (!string.IsNullOrWhiteSpace(apiBase))
