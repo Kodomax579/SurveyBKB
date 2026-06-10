@@ -1,7 +1,8 @@
 @using SchulFunk_Webprojekt.Model
+@inject IConfiguration configuration
 
 <a href="/news/@Item.Id" class="news-card">
-    <img src="@ImageSource"
+    <img src="@imageUrl"
          alt="@Item.Title"
          class="news-card-image @(HasImage ? "" : "news-card-image-default")" />
 
@@ -24,7 +25,7 @@
 @code {
     [Parameter]
     public NewsItem Item { get; set; } = new();
-
+    string imageUrl => $"{configuration.GetValue<string>("ApiSettings:BaseUrl")!}{Item.ImageLink}";
     private bool HasImage =>
         Item.ImageLink is not null && Item.ImageLink.Length > 0;
 

@@ -65,15 +65,19 @@ namespace SchulFunk_Webprojekt.Feature.NewsHandling
             {
                 content.Add(new StringContent(newNews.UserModel.Id.ToString()), "User.Id");
             }
-            var rawContent = await content.ReadAsStringAsync();
+            // Stelle sicher, dass die Datei in ein Byte-Array gelesen wird, bevor sie dem Multipart-Content hinzugefügt wird.
+            // Das vermeidet Probleme mit nicht-seekbaren Streams in Blazor-Umgebungen.
             if (imageFile != null)
             {
-                var fileStream = imageFile.OpenReadStream(maxAllowedSize: 10485760);
-                var streamContent = new StreamContent(fileStream);
+                using var fileStream = imageFile.OpenReadStream(maxAllowedSize: 10 * 1024 * 1024);
+                using var memoryStream = new MemoryStream();
+                await fileStream.CopyToAsync(memoryStream);
+                var fileBytes = memoryStream.ToArray();
 
-                streamContent.Headers.ContentType = new MediaTypeHeaderValue(imageFile.ContentType);
+                var byteContent = new ByteArrayContent(fileBytes);
+                byteContent.Headers.ContentType = new MediaTypeHeaderValue(imageFile.ContentType);
 
-                content.Add(streamContent, "image", imageFile.Name);
+                content.Add(byteContent, "image", imageFile.Name);
             }
 
             var result = await httpClient.PostAsync($"{BaseURL}/api/News", content);

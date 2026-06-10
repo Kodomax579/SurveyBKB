@@ -15,7 +15,7 @@ namespace SchulFunk_Webprojekt.SignalRHub
         public event Action<int>? OnNewsItemDeleted;
         public event Action<SurveyModel>? OnSurveyCreated;
         public event Action<int>? OnSurveyDeleted;
-        public event Action<int>? OnSurveyVoteUpdate;
+        public event Action<SurveyModel>? OnSurveyVoteUpdate;
 
         public async Task Connect()
         {
@@ -53,9 +53,9 @@ namespace SchulFunk_Webprojekt.SignalRHub
             {
                 OnSurveyCreated?.Invoke(newSurvey);
             });
-            _hubConnection.On<int>("SurveyVoteUpdated", answerId =>
+            _hubConnection.On<SurveyModel>("SurveyVoteUpdated", survey =>
             {
-                OnSurveyVoteUpdate?.Invoke(answerId);
+                OnSurveyVoteUpdate?.Invoke(survey);
             });
             _hubConnection.On<int>("SurveyDeleted", surveyId =>
             {

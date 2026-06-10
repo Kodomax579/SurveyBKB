@@ -96,7 +96,7 @@
     private UserModel CurrentUser => userStateService.GetUser();
 
     private bool CanOpenAdminPanel =>
-        PermissionRules.HasPermission(CurrentUser, Permission.OpenAdminPanel);
+        CurrentUser != null && PermissionRules.HasPermission(CurrentUser, Permission.OpenAdminPanel);
 
     protected override void OnInitialized()
     {

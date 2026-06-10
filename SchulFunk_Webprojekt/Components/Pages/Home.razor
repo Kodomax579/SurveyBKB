@@ -215,8 +215,8 @@
 @code {
     private int AktuelleUmfrageIndex = 0;
     private string SurveyAnimationClass = "slide-in";
-    private IReadOnlyList<NewsItem> NewsItems => newsStateService.GetNewsItems();
-    private IReadOnlyList<SurveyModel> surveyModels => surveyStateService.GetAllSurveys();
+    private List<NewsItem> NewsItems => newsStateService.GetNewsItems().Take(3).ToList();
+    private List<SurveyModel> surveyModels => surveyStateService.GetAllSurveys().Take(3).ToList();
     private int AktuelleNewsIndex = 0;
     private string NewsAnimationClass = "slide-in";
 

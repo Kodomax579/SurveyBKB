@@ -118,6 +118,7 @@ else
 
     private string BildVorschauUrl = "";
     private byte[] BildBytes = Array.Empty<byte>();
+    private IBrowserFile? AusgewaehlteBildDatei;
 
     private UserModel CurrentUser => userStateService.GetUser();
 
@@ -133,6 +134,8 @@ else
             return;
         }
 
+        AusgewaehlteBildDatei = datei;
+
         using var stream = datei.OpenReadStream(maxAllowedSize: 5 * 1024 * 1024);
         using var memoryStream = new MemoryStream();
 
@@ -147,6 +150,6 @@ else
     private async Task ArtikelVeroeffentlichen()
     {
         newsItem.UserModel = CurrentUser;
-        await newsService.CreateNews(newsItem);
+        await newsService.CreateNews(newsItem, AusgewaehlteBildDatei);
     }
 }

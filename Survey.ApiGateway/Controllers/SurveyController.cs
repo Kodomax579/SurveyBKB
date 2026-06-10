@@ -51,14 +51,29 @@ namespace Survey.ApiGateway.Controllers
         [Authorize]
         public async Task<IActionResult> UpdateAnswerSelection(int answerId, [FromQuery] int userId)
         {
-            var success = await surveyService.IncrementAnswerCount(answerId);
+            if (userId <= 0)
+            {
+                return BadRequest("Ungültige Benutzer-ID.");
+            }
+
+            var success = await surveyService.IncrementAnswerCount(answerId, userId);
 
             if (!success)
             {
-                return BadRequest("Fehler beim Speichern der Abstimmung.");
+                // Could be because the answer was not found or the user already voted
+                return Conflict("Benutzer hat bereits abgestimmt oder Fehler beim Speichern der Abstimmung.");
             }
 
-            await hubContext.Clients.All.SendAsync("SurveyVoteUpdated", answerId);
+            // Find the survey that contains the answer and send the full survey to clients
+            var surveyContaining = (await surveyService.GetAllSurveys()).FirstOrDefault(s => s.Questions.SelectMany(q => q.Options).Any(o => o.Id == answerId));
+            if (surveyContaining != null)
+            {
+                var updatedSurvey = await surveyService.GetSurveyById(surveyContaining.Id);
+                if (updatedSurvey != null)
+                {
+                    await hubContext.Clients.All.SendAsync("SurveyVoteUpdated", updatedSurvey);
+                }
+            }
 
             return Ok(true);
         }

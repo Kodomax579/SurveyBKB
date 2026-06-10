@@ -75,7 +75,8 @@ namespace SchulFunk_Webprojekt.Feature.SurveyHandling
 
             if (result.IsSuccessStatusCode)
             {
-                surveyStateService.UpdateAnswerVote(answerId);
+                // Server will broadcast updated survey via SignalR, but also refresh surveys to ensure immediate consistency
+                await GetAllSurveys();
                 return true;
             }
             return false;

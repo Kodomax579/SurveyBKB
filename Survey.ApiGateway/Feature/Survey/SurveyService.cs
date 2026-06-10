@@ -112,7 +112,7 @@ namespace Survey.ApiGateway.Feature.Survey
             }
         }
 
-        public async Task<bool> IncrementAnswerCount(int answerId)
+        public async Task<bool> IncrementAnswerCount(int answerId, int userId)
         {
             var answer = await surveyDbContext.Answers.FindAsync(answerId);
 
@@ -121,7 +121,35 @@ namespace Survey.ApiGateway.Feature.Survey
                 return false;
             }
 
+            // Find the related question
+            var question = await surveyDbContext.Questions.FirstOrDefaultAsync(q => q.Id == answer.QuestionModelId);
+            if (question == null)
+            {
+                return false;
+            }
+
+            // Find the related survey
+            var survey = await surveyDbContext.Surveys.FirstOrDefaultAsync(s => s.Id == question.SurveyModelId);
+            if (survey == null)
+            {
+                return false;
+            }
+
+            // Initialize list if null
+            survey.UserIDs ??= new List<int>();
+
+            // If user already voted for this survey, do not increment again
+            if (userId > 0 && survey.UserIDs.Contains(userId))
+            {
+                return false;
+            }
+
+            // Increment answer count and record participant
             answer.NumberOfSelectedAnswer++;
+            if (userId > 0)
+            {
+                survey.UserIDs.Add(userId);
+            }
 
             try
             {

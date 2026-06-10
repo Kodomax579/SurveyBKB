@@ -9,7 +9,7 @@ namespace SchulFunk_Webprojekt.Feature.SurveyHandling
         {
             signalRHub.OnSurveyCreated += AddSurveyItem;
             signalRHub.OnSurveyDeleted += DeleteSurveyItem;
-            signalRHub.OnSurveyVoteUpdate += UpdateAnswerVote;
+            signalRHub.OnSurveyVoteUpdate += UpdateSurveyFromHub;
         }
 
         private List<SurveyModel> surveyItems = new();
@@ -64,19 +64,25 @@ namespace SchulFunk_Webprojekt.Feature.SurveyHandling
             NotifyStateChanged();
         }
 
-        public void UpdateAnswerVote(int answerId)
+        public void UpdateSurveyFromHub(SurveyModel updatedSurvey)
         {
-            var answer = surveyItems
-                .SelectMany(s => s.Questions)
-                .SelectMany(s => s.AnswerModels)
-                .FirstOrDefault(answer => answer.Id == answerId);
-
-            if (answer == null)
+            if (updatedSurvey == null)
             {
                 return;
             }
 
-            answer.NumberOfSelectedAnswer++;
+            var i = surveyItems.FindIndex(n => n.Id == updatedSurvey.Id);
+
+            if (i == -1)
+            {
+                // If survey not present, add it
+                surveyItems.Add(updatedSurvey);
+            }
+            else
+            {
+                surveyItems[i] = updatedSurvey;
+            }
+
             NotifyStateChanged();
         }
 

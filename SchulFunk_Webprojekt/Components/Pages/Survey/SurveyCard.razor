@@ -1,4 +1,5 @@
 @using SchulFunk_Webprojekt.Model
+@inject SchulFunk_Webprojekt.Feature.UserHandling.UserStateService userStateService
 
 <article class="survey-card @(IsExpired ? "is-ended" : "is-active")">
     <div class="survey-card-meta">
@@ -19,9 +20,14 @@
     </p>
 
     <div class="survey-card-footer">
-        <a href="@ActionLink" class="survey-card-action">
-            @ActionText
-        </a>
+        @if (CanClick)
+        {
+            <a href="@ActionLink" class="survey-card-action">@ActionText</a>
+        }
+        else
+        {
+            <span class="survey-card-action survey-card-action-disabled">@ActionText</span>
+        }
     </div>
 </article>
 
@@ -32,8 +38,14 @@
     private bool IsExpired =>
         Item.OnlineUntil < DateOnly.FromDateTime(DateTime.Today);
 
+    private int? CurrentUserId => userStateService?.GetUser()?.Id;
+
+    private bool HasParticipated => CurrentUserId.HasValue && Item.UserIDs != null && Item.UserIDs.Contains(CurrentUserId.Value);
+
+    private bool CanClick => !IsExpired && !HasParticipated;
+
     private string ActionText =>
-        IsExpired ? "Ergebnisse ansehen" : "Jetzt abstimmen";
+        IsExpired ? "Ergebnisse ansehen" : (HasParticipated ? "Bereits teilgenommen" : "Jetzt abstimmen");
 
     private string ActionLink =>
         IsExpired ? $"/survey/results/{Item.Id}" : $"/survey/{Item.Id}";

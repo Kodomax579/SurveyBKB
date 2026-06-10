@@ -1,6 +1,7 @@
 @page "/news/{Id:int}"
 @inject NewsStateService newsStateService
 @implements IDisposable
+@inject IConfiguration configuration
 
 <PageTitle>@(News?.Title ?? "Nachricht")</PageTitle>
 
@@ -19,7 +20,7 @@ else
 {
     <section class="news-detail-page sf-panel">
         <div class="news-detail-header">
-            <img src="/lib/images/Icon-News.png" alt="News Icon" />
+            <img src="@imageUrl" alt="News Icon" />
 
             <div>
                 <span>@News.Tag</span>
@@ -45,8 +46,9 @@ else
 @code {
     [Parameter]
     public int Id { get; set; }
-
+    
     private NewsItem? News => newsStateService.GetNewsItems().FirstOrDefault(n => n.Id == Id);
+    string imageUrl => $"{configuration.GetValue<string>("ApiSettings:BaseUrl")!}{News.ImageLink}";
 
     protected override void OnInitialized()
     {

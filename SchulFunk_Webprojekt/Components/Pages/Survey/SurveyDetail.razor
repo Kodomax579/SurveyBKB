@@ -128,10 +128,15 @@ else
         Survey is not null &&
         Survey.OnlineUntil < DateOnly.FromDateTime(DateTime.Today);
 
+    private int? CurrentUserId => userStateService?.GetUser()?.Id;
+
+    private bool HasParticipated => Survey is not null && CurrentUserId.HasValue && Survey.UserIDs != null && Survey.UserIDs.Contains(CurrentUserId.Value);
+
     private bool CanVote =>
         Survey is not null &&
         !IsExpired &&
-        PermissionRules.HasPermission(CurrentUser, Permission.VoteInSurveys);
+        PermissionRules.HasPermission(CurrentUser, Permission.VoteInSurveys) &&
+        !HasParticipated;
 
     // Hier wurde das Layout der Variablen korrigiert:
     private Dictionary<int, int> selectedAnswers = new(); // Key: questionIndex, Value: answerId
@@ -140,6 +145,11 @@ else
     protected override void OnInitialized()
     {
         userStateService.OnChange += HandleStateChanged;
+        // mark as submitted if user already participated
+        if (HasParticipated)
+        {
+            hasSubmitted = true;
+        }
     }
 
     private void HandleStateChanged()
