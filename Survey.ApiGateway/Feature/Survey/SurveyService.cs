@@ -12,6 +12,25 @@ namespace Survey.ApiGateway.Feature.Survey
         {
             try
             {
+                // Ensure the user exists in the database and attach the tracked entity
+                var userExists = await surveyDbContext.Users
+                    .Include(u => u.Class)
+                    .FirstOrDefaultAsync(u => u.Id == survey.User.Id);
+
+                if (userExists == null)
+                {
+                    // If the provided user does not exist, fail gracefully
+                    return null;
+                }
+
+                survey.User = userExists;
+
+                // Ensure CreatedAt is set
+                if (survey.CreatedAt == default)
+                {
+                    survey.CreatedAt = DateOnly.FromDateTime(DateTime.UtcNow);
+                }
+
                 await surveyDbContext.Surveys.AddAsync(survey);
                 await surveyDbContext.SaveChangesAsync();
 

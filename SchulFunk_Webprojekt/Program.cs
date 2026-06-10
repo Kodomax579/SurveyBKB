@@ -22,9 +22,21 @@ namespace SchulFunk_Webprojekt
             builder.Services.AddSingleton<NewsStateService>();
             builder.Services.AddSingleton<UserStateService>();
             builder.Services.AddSingleton<SurveyStateService>();
-            builder.Services.AddHttpClient<NewsService>();
-            builder.Services.AddHttpClient<SurveyService>();
-            builder.Services.AddHttpClient<UserService>();
+            // Configure typed HttpClients with the API base URL from configuration
+            var apiBase = builder.Configuration.GetValue<string>("ApiSettings:BaseUrl");
+            if (!string.IsNullOrWhiteSpace(apiBase))
+            {
+                builder.Services.AddHttpClient<NewsService>(client => client.BaseAddress = new Uri(apiBase));
+                builder.Services.AddHttpClient<SurveyService>(client => client.BaseAddress = new Uri(apiBase));
+                builder.Services.AddHttpClient<UserService>(client => client.BaseAddress = new Uri(apiBase));
+            }
+            else
+            {
+                // Fallback to default registration if no base URL is configured
+                builder.Services.AddHttpClient<NewsService>();
+                builder.Services.AddHttpClient<SurveyService>();
+                builder.Services.AddHttpClient<UserService>();
+            }
 
             var app = builder.Build();
 

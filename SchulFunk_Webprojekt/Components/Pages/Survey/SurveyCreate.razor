@@ -367,6 +367,10 @@ else
             return;
         }
 
+        surveyModel.CreatedAt = DateOnly.FromDateTime(CreatedAt);
+        surveyModel.CreatedUserID = userStateService.GetUser().Id;
+        surveyModel.OnlineUntil = DateOnly.FromDateTime(OnlineUntil);
+        surveyModel.Classes = SelectedClasses.Select(klasse => klasse.ClassName).ToList();
         await surveyService.CreateSurvey(surveyModel);
     }
 }
