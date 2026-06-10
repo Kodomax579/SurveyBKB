@@ -20,7 +20,6 @@ namespace Survey.ApiGateway.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> CreateUser([FromBody] UserModel model)
         {
             if (model == null)

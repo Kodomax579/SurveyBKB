@@ -3,21 +3,18 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using Survey.ApiGateway.Database;
 
 #nullable disable
 
-namespace Survey.ApiGateway.Database.Migrations
+namespace Survey.ApiGateway.Database.migration
 {
     [DbContext(typeof(SurveyDbContext))]
-    [Migration("20260527224608_InitialCreate")]
-    partial class InitialCreate
+    partial class SurveyDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -197,6 +194,10 @@ namespace Survey.ApiGateway.Database.Migrations
 
                     b.Property<int>("Group")
                         .HasColumnType("integer");
+
+                    b.Property<string>("ImageLink")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.Property<string>("Lastname")
                         .IsRequired()
