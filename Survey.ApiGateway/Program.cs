@@ -42,7 +42,7 @@ namespace Survey.ApiGateway
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.WithOrigins("http://212.227.82.199")
+                    policy.SetIsOriginAllowed(isOriginAllowed => true)
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .WithExposedHeaders("Authorization")
