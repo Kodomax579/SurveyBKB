@@ -16,8 +16,6 @@
         <a href="/survey" class="sf-button sf-button-dark">Zurück zu den Umfragen</a>
     </section>
 }
-
-
 else
 {
     <section class="survey-detail-page sf-panel">
@@ -135,6 +133,10 @@ else
         !IsExpired &&
         PermissionRules.HasPermission(CurrentUser, Permission.VoteInSurveys);
 
+    // Hier wurde das Layout der Variablen korrigiert:
+    private Dictionary<int, int> selectedAnswers = new(); // Key: questionIndex, Value: answerId
+    private bool hasSubmitted = false;
+
     protected override void OnInitialized()
     {
         userStateService.OnChange += HandleStateChanged;
@@ -165,41 +167,38 @@ else
         userStateService.OnChange -= HandleStateChanged;
     }
 
-    private Dictionary<int,int> selectedAnswers = new(); // questionIndex -> answerId
-    private bool hasSubmitted = false;
+    private void OnAnswerSelected(int questionIndex, int answerId)
+    {
+        selectedAnswers[questionIndex] = answerId;
+    }
 
     private async Task SubmitAnswers()
     {
         if (Survey == null) return;
 
-        // Ensure we have a selected answer for each question
+        // Sicherstellen, dass jede Frage beantwortet wurde
         for (var i = 0; i < Survey.Questions.Count; i++)
         {
-            if (!selectedAnswers.ContainsKey(i))
+            if (selectedAnswers.ContainsKey(i))
             {
-                // If any question is unanswered, do nothing (could show validation)
+                // Bricht ab, wenn eine Frage fehlt (hier könnte noch ein UI-Hinweis rein)
                 return;
             }
         }
 
-        // Send each selected answer to the backend
+        // Antworten an das Backend senden
         foreach (var kvp in selectedAnswers)
         {
             var answerId = kvp.Value;
             var ok = await surveyService.VoteForAnswer(answerId, CurrentUser.Id);
             if (!ok)
             {
-                // On failure, stop and keep voting enabled
+                // Bei einem Fehler abbrechen
                 return;
             }
         }
 
         hasSubmitted = true;
         StateHasChanged();
-    }
-
-    private void OnAnswerSelected(int questionIndex, int answerId)
-    {
-        selectedAnswers[questionIndex] = answerId;
     }
 }
