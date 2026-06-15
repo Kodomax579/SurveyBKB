@@ -25,11 +25,6 @@
             <input id="profile-email" type="email" class="form-control" @bind="CurrentUser.Email" @bind:event="oninput" />
         </div>
 
-        <div class="form-group">
-            <label for="profile-password">Passwort</label>
-            <input id="profile-password" type="password" class="form-control" @bind="UserPassword" @bind:event="oninput" />
-        </div>
-
         <div class="form-row">
             <div class="form-group">
                 <label>Klasse</label>
@@ -46,6 +41,17 @@
             </div>
         </div>
 
+        <div>
+
+            <button @onclick="OpenPasswordModal">
+                Change Password
+            </button>
+            @if(!string.IsNullOrEmpty(ErrorMessage))
+            {
+                <p>@ErrorMessage</p>
+            }
+        </div>
+
         <div class="form-actions">
             <button type="button" class="sf-button sf-button-dark" @onclick="SaveProfile">
                 Speichern
@@ -57,12 +63,14 @@
         </div>
     </div>
 </section>
+<ChangePasswordModal IsVisible="ShowPasswordModal"
+                     OnClose="ClosePasswordModal"
+                     OnPasswordChanged="HandlePasswordChange" />
 
 @code {
     private UserModel CurrentUser => userStateService.GetUser();
-
-    private string UserPassword = "12345678";
-
+    private bool ShowPasswordModal = false;
+    private string ErrorMessage = string.Empty;
     private string UserRole =>
         PermissionRules.GetGroupLabel(CurrentUser.Group);
 
@@ -75,6 +83,38 @@
     {
         InvokeAsync(StateHasChanged);
     }
+
+
+    private void OpenPasswordModal()
+    {
+        ShowPasswordModal = true;
+    }
+
+    private void ClosePasswordModal()
+    {
+        ShowPasswordModal = false;
+    }
+
+    private async Task HandlePasswordChange((string oldPw, string newPw) data)
+    {
+        var (oldPw, newPw) = data;
+
+        // Beispiel: Service aufrufen
+        var result = await userService.ChangePassword(CurrentUser.Id, oldPw, newPw);
+
+        ShowPasswordModal = false;
+
+        if(!result)
+        {
+            ErrorMessage = "Neues Passwort wurde nicht gesetzt (Falsches passwort eingegeben)";
+            StateHasChanged();
+        }
+        else
+        {
+            ErrorMessage = string.Empty;
+        }
+    }
+
 
     private void SaveProfile()
     {

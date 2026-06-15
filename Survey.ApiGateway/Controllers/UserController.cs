@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Survey.ApiGateway.Feature.User; 
-using Survey.ApiGateway.Feature.User.Models; 
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using System.IO;
+using Survey.ApiGateway.Feature.User;
+using Survey.ApiGateway.Feature.User.DTO;
+using Survey.ApiGateway.Feature.User.Models;
 
 namespace Survey.ApiGateway.Controllers
 {
@@ -23,7 +21,7 @@ namespace Survey.ApiGateway.Controllers
         public async Task<IActionResult> CreateUser([FromBody] UserModel model)
         {
             if (model == null)
-            { 
+            {
                 return BadRequest();
             }
 
@@ -97,6 +95,17 @@ namespace Survey.ApiGateway.Controllers
             return Ok(true);
         }
 
+        [HttpPut("ChangePassword/{id}")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword(int id, [FromBody] ChangePasswordDTO changePasswordDTO)
+        {
+            if (changePasswordDTO == null) { return BadRequest("body is empty"); }
+
+            var success = await userService.ChangePassword(id, changePasswordDTO.CurrentPassword, changePasswordDTO.NewPassword);
+            if (!success) return BadRequest("wrong currentPassword or exception");
+
+            return Ok(true);
+        }
 
         [HttpGet("classes")]
         [Authorize]

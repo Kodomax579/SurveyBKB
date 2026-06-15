@@ -40,7 +40,7 @@ namespace Survey.ApiGateway.Feature.User
             {
                 return null;
             }
-            if(string.IsNullOrWhiteSpace(user.Password))
+            if (string.IsNullOrWhiteSpace(user.Password))
             {
                 user.Password = $"{user.Lastname}11!";
             }
@@ -59,7 +59,7 @@ namespace Survey.ApiGateway.Feature.User
         public async Task<List<UserModel>> GetAllUsers()
         {
             return await dbContext.Users
-                .Include(u => u.Class) 
+                .Include(u => u.Class)
                 .Select(u => new UserModel
                 {
                     Id = u.Id,
@@ -111,8 +111,8 @@ namespace Survey.ApiGateway.Feature.User
         {
             var existingUser = await dbContext.Users.FindAsync(id);
             if (existingUser == null)
-            { 
-                return null; 
+            {
+                return null;
             }
 
             existingUser.Firstname = userUpdate.Firstname;
@@ -126,11 +126,6 @@ namespace Survey.ApiGateway.Feature.User
                 {
                     existingUser.ClassId = userUpdate.ClassId;
                 }
-            }
-
-            if (!string.IsNullOrWhiteSpace(userUpdate.Password))
-            {
-                existingUser.Password = _passwordHasher.HashPassword(existingUser, userUpdate.Password);
             }
 
             try
@@ -183,7 +178,7 @@ namespace Survey.ApiGateway.Feature.User
         public async Task<bool> AdminResetPassword(int userId, string newPassword)
         {
             var user = await dbContext.Users.FindAsync(userId);
-            if (user == null) return false; 
+            if (user == null) return false;
 
             user.Password = _passwordHasher.HashPassword(user, newPassword);
 

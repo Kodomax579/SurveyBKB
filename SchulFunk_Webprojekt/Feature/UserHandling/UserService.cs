@@ -1,10 +1,9 @@
 ﻿using SchulFunk_Webprojekt.Feature.UserHandling.Model;
 using System.Net.Http.Headers;
-using System.Net.Http.Json;
 
 namespace SchulFunk_Webprojekt.Feature.UserHandling
 {
-    public class UserService (HttpClient httpClient, AuthTokenService authTokenService, UserStateService userStateService , IConfiguration configuration)
+    public class UserService(HttpClient httpClient, AuthTokenService authTokenService, UserStateService userStateService, IConfiguration configuration)
     {
         private readonly string? BaseURL = configuration.GetValue<string>("ApiSettings:BaseUrl");
 
@@ -100,6 +99,29 @@ namespace SchulFunk_Webprojekt.Feature.UserHandling
             AddToken();
             var response = await httpClient.PostAsJsonAsync($"{BaseURL}/api/User/classes", newClass);
             return response.IsSuccessStatusCode;
+        }
+
+        public async Task<bool> ChangePassword(int userId, string oldPassword, string newPassword)
+        {
+            AddToken();
+
+            ChangePasswordDTO dto = new ChangePasswordDTO()
+            {
+                NewPassword = newPassword,
+                CurrentPassword = oldPassword,
+            };
+
+            var response = await httpClient.PutAsJsonAsync($"{BaseURL}/api/User/ChangePassword/{userId}", dto);
+
+            var content = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"Status: {response.StatusCode}");
+            Console.WriteLine(content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return false;
+            }
+            return true;
         }
     }
 }
