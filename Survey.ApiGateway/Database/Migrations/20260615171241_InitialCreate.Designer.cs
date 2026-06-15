@@ -10,10 +10,10 @@ using Survey.ApiGateway.Database;
 
 #nullable disable
 
-namespace Survey.ApiGateway.Database.migration
+namespace Survey.ApiGateway.Database.Migrations
 {
     [DbContext(typeof(SurveyDbContext))]
-    [Migration("20260610080604_InitialCreate")]
+    [Migration("20260615171241_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -52,6 +52,10 @@ namespace Survey.ApiGateway.Database.migration
                         .HasColumnType("integer");
 
                     b.Property<string>("PreviewText")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Prioritaet")
                         .IsRequired()
                         .HasColumnType("text");
 

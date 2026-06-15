@@ -5,7 +5,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace Survey.ApiGateway.Database.migration
+namespace Survey.ApiGateway.Database.Migrations
 {
     /// <inheritdoc />
     public partial class InitialCreate : Migration
@@ -59,6 +59,7 @@ namespace Survey.ApiGateway.Database.migration
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
                     Titel = table.Column<string>(type: "text", nullable: false),
                     Tag = table.Column<string>(type: "text", nullable: false),
+                    Prioritaet = table.Column<string>(type: "text", nullable: false),
                     PreviewText = table.Column<string>(type: "text", nullable: false),
                     MainText = table.Column<string>(type: "text", nullable: false),
                     ImageLink = table.Column<string>(type: "text", nullable: false),

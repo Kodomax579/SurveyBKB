@@ -77,7 +77,7 @@ namespace Survey.ApiGateway.Feature.News
             existingNews.ExpiredDate = newsUpdate.ExpiredDate;
             existingNews.Tag = newsUpdate.Tag;
             existingNews.NumberOfMembers = newsUpdate.NumberOfMembers;
-
+            existingNews.Prioritaet = newsUpdate.Prioritaet;
             try
             {
                 await surveyDbContext.SaveChangesAsync();
@@ -116,6 +116,7 @@ namespace Survey.ApiGateway.Feature.News
                 CreatedAt = news.CreatedAt,
                 ExpiredDate = news.ExpiredDate,
                 NumberOfMembers = news.NumberOfMembers,
+                Prioritaet = news.Prioritaet,
 
                 User = new UserDTO()
                 {

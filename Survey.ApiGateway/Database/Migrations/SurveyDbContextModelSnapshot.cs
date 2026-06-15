@@ -9,7 +9,7 @@ using Survey.ApiGateway.Database;
 
 #nullable disable
 
-namespace Survey.ApiGateway.Database.migration
+namespace Survey.ApiGateway.Database.Migrations
 {
     [DbContext(typeof(SurveyDbContext))]
     partial class SurveyDbContextModelSnapshot : ModelSnapshot
@@ -49,6 +49,10 @@ namespace Survey.ApiGateway.Database.migration
                         .HasColumnType("integer");
 
                     b.Property<string>("PreviewText")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Prioritaet")
                         .IsRequired()
                         .HasColumnType("text");
 

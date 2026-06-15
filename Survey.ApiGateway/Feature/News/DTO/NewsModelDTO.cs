@@ -10,6 +10,7 @@ namespace Survey.ApiGateway.Feature.News.DTO
         public string Tag { get; set; } = string.Empty;
         public string PreviewText { get; set; } = string.Empty;
         public string MainText { get; set; } = string.Empty;
+        public string Prioritaet { get; set; } = string.Empty;
         // Gerendertes HTML aus MainText (Markdown)
         public string MainTextHtml { get; set; } = string.Empty;
         public string ImageLink { get; set; } = string.Empty;

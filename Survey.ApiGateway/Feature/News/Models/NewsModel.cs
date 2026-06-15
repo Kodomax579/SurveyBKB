@@ -8,6 +8,7 @@ namespace Survey.ApiGateway.Feature.News.Models
         public int Id { get; set; }
         public string Titel { get; set; } = string.Empty;
         public string Tag { get; set; } = string.Empty;
+        public string Prioritaet { get; set; } = string.Empty;
         public string PreviewText { get; set; } = string.Empty;
         public string MainText { get; set; } = string.Empty;
         public string ImageLink { get; set; } = string.Empty;
