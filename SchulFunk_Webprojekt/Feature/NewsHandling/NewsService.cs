@@ -57,8 +57,8 @@ namespace SchulFunk_Webprojekt.Feature.NewsHandling
             content.Add(new StringContent(newNews.PreviewText ?? ""), "PreviewText");
             content.Add(new StringContent(newNews.MainText ?? ""), "MainText");
             content.Add(new StringContent(newNews.Prioritaet ?? ""), "Prioritaet");
-            content.Add(new StringContent(newNews.CreatedAt.ToString("yyyy-MM-dd")), "CreatedAt");
-            content.Add(new StringContent(newNews.ExpiredDate.ToString("yyyy-MM-dd")), "ExpiredDate");
+            content.Add(new StringContent(newNews.CreatedAt.ToString("o")), "CreatedAt");
+            content.Add(new StringContent(newNews.ExpiredDate.ToString("o")), "ExpiredDate");
             content.Add(new StringContent(newNews.NumberOfMembers.ToString()), "NumberOfMembers");
 
             if (newNews.User != null)

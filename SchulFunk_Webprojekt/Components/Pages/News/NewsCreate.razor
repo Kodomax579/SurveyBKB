@@ -4,6 +4,7 @@
 @using SchulFunk_Webprojekt.Model
 @inject UserStateService userStateService
 @inject NewsService newsService
+@inject NavigationManager navigationManager
 
 <PageTitle>Nachricht erstellen</PageTitle>
 
@@ -133,6 +134,7 @@ else
     private NewsItem newsItem = new()
     {
         // Standardwert setzen, damit beim Absenden ohne Änderung etwas eingetragen ist
+        CreatedAt = DateTime.Now,
         Prioritaet = "standard"
     };
 
@@ -170,6 +172,11 @@ else
     private async Task ArtikelVeroeffentlichen()
     {
         newsItem.User = CurrentUser;
-        await newsService.CreateNews(newsItem, AusgewaehlteBildDatei);
+        var result = await newsService.CreateNews(newsItem, AusgewaehlteBildDatei);
+
+        if(result)
+        {
+            navigationManager.NavigateTo("/home");
+        }
     }
 }
