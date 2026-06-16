@@ -56,7 +56,7 @@ namespace SchulFunk_Webprojekt.Feature.NewsHandling
             content.Add(new StringContent(newNews.Tag ?? ""), "Tag");
             content.Add(new StringContent(newNews.PreviewText ?? ""), "PreviewText");
             content.Add(new StringContent(newNews.MainText ?? ""), "MainText");
-
+            content.Add(new StringContent(newNews.Prioritaet ?? ""), "Prioritaet");
             content.Add(new StringContent(newNews.CreatedAt.ToString("yyyy-MM-dd")), "CreatedAt");
             content.Add(new StringContent(newNews.ExpiredDate.ToString("yyyy-MM-dd")), "ExpiredDate");
             content.Add(new StringContent(newNews.NumberOfMembers.ToString()), "NumberOfMembers");
@@ -91,9 +91,9 @@ namespace SchulFunk_Webprojekt.Feature.NewsHandling
 
             var createdNews = await result.Content.ReadFromJsonAsync<NewsItem>();
 
-            if (createdNews != null)
+            if (createdNews == null)
             {
-                newsStateService.AddNewsItem(createdNews);
+                return false;
             }
 
             return true;
