@@ -1,882 +1,215 @@
 /* =========================================================
-   Home Layout
+   1. Das Bento-Grid Fundament
    ========================================================= */
-
-.home-overview {
+.bento-container {
     display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-    gap: 28px;
-    align-items: start;
-    padding: 28px;
-    background: linear-gradient(180deg, var(--sf-page-bg-secondary), var(--sf-page-bg));
-    border-radius: 18px;
-    box-shadow: 0 10px 40px rgba(11,19,32,0.06);
-}
-
-/* =========================================================
-   Allgemeine Panel-Köpfe
-   ========================================================= */
-
-.home-panel-head {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    align-items: center;
-    gap: var(--sf-space-sm);
-    margin-bottom: var(--sf-space-md);
-}
-
-    .home-panel-head img {
-        width: 68px;
-        height: 68px;
-        object-fit: contain;
-        flex: 0 0 auto;
-    }
-
-    .home-panel-head span {
-        display: inline-flex;
-        width: fit-content;
-        padding: 6px 12px;
-        border-radius: var(--sf-radius-pill);
-        background: var(--sf-accent-soft);
-        border: 1px solid var(--sf-border);
-        color: var(--sf-accent);
-        font-size: var(--sf-font-size-xs);
-        font-weight: var(--sf-font-weight-black);
-    }
-
-    .home-panel-head h2 {
-        margin: 6px 0 0;
-        color: var(--sf-text-strong);
-        font-size: clamp(1.45rem, 2.4vw, 2.2rem);
-        line-height: 1.06;
-        letter-spacing: -0.04em;
-    }
-
-/* =========================================================
-   Nachrichten
-   ========================================================= */
-
-.home-news-panel {
-    padding: 18px;
-    background: transparent;
-    grid-column: span 2;
-}
-
-    .home-news-panel::before,
-    .home-news-panel::after {
-        content: none !important;
-        display: none !important;
-    }
-
-
-.home-news-carousel {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    align-items: center;
-}
-
-.home-news-stage {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-}
-
-.home-news-list {
-    position: relative;
-    z-index: 1;
-    width: 760px; /* feste Bühne-Breite für News */
-    max-width: calc(100% - 40px);
-    min-height: 220px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-auto-rows: minmax(180px, auto);
+    gap: var(--sf-space-md);
+    max-width: var(--sf-container-width);
     margin: 0 auto;
-}
-
-/* Stabile Bühne: feste Höhe damit Layout nicht springt */
-.home-news-stage {
-    height: 320px; /* konstante Höhe der Bühne - etwas höher */
-}
-
-.home-news-list,
-.home-news-slide,
-.home-news-card {
-    height: 100%;
-}
-
-.home-news-card {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-/* Inhalt intern scrollen, Text nicht die Box vergrößern lassen */
-.home-news-card h3 {
-    margin: 0;
-    flex: 0 0 auto;
-}
-
-.home-news-card p {
-    margin: 0;
-    color: var(--sf-text-muted);
-    font-size: var(--sf-font-size-sm);
-    line-height: 1.4;
-    overflow: auto;
-}
-
-.home-news-slide {
-    max-width: 100%;
-    transition: transform 220ms ease, opacity 180ms ease;
-}
-
-.home-news-slide.slide-out-left {
-    animation: news-slide-out-left 0.14s ease both;
-}
-
-.home-news-slide.slide-out-right {
-    animation: news-slide-out-right 0.14s ease both;
-}
-
-.home-news-slide.slide-in {
-    animation: news-slide-in 0.22s ease both;
-}
-
-.home-news-card {
-    min-height: 240px;
-    padding: 22px;
-    border-radius: 16px;
-    background: var(--sf-card-bg);
-    color: var(--sf-text-strong);
-    display: block;
-    text-decoration: none;
-    transition: transform 220ms ease, box-shadow 220ms ease;
-    border: 1px solid var(--sf-border-strong);
-    box-shadow: 0 8px 30px rgba(11,19,32,0.06);
-    width: 100%;
-}
-
-.home-news-card:hover {
-        transform: translateY(-6px);
-        box-shadow: var(--sf-shadow-hover);
-    }
-
-.home-news-date {
-    padding: 6px 10px;
-    border-radius: var(--sf-radius-pill);
-    background: rgba(var(--sf-color-primary-rgb), 0.06);
-    color: var(--sf-color-primary);
-    font-size: 0.82rem;
-    font-weight: var(--sf-font-weight-bold);
-    text-align: center;
-}
-
-.home-news-controls {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-}
-
-.home-news-arrow {
-    width: 56px;
-    height: 44px;
-    border-radius: 12px;
-    border: 1px solid var(--sf-border-strong);
-    background: var(--sf-card-bg);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    transition: var(--sf-transition);
-    font-size: 1.1rem;
-    color: var(--sf-color-primary);
-    box-shadow: 0 2px 6px rgba(var(--sf-color-black-rgb), 0.04);
-}
-
-.home-news-arrow.left { margin-right: 6px; }
-.home-news-arrow.right { margin-left: 6px; }
-
-.home-news-arrow:hover {
-    background: var(--sf-button-bg);
-    color: var(--sf-button-text);
-}
-
-.home-news-arrow:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-.home-news-arrow:focus-visible {
-    outline: 3px solid var(--sf-focus);
-    outline-offset: 3px;
-}
-
-@keyframes news-slide-in {
-    from { opacity: 0; transform: translateX(8px); }
-    to { opacity: 1; transform: translateX(0); }
-}
-
-@keyframes news-slide-out-left {
-    from { opacity: 1; transform: translateX(0); }
-    to { opacity: 0; transform: translateX(-12px); }
-}
-
-@keyframes news-slide-out-right {
-    from { opacity: 1; transform: translateX(0); }
-    to { opacity: 0; transform: translateX(12px); }
-}
-
-.home-news-content h3 {
-    margin: 0 0 5px;
-    color: var(--sf-text-strong);
-    font-size: 1.05rem;
-    line-height: 1.22;
-}
-
-.home-news-content p {
-    margin: 0;
-    color: var(--sf-text-muted);
-    font-size: var(--sf-font-size-sm);
-    line-height: 1.42;
-}
-
-.home-news-card > strong {
-    width: 34px;
-    height: 34px;
-    border-radius: var(--sf-radius-pill);
-    background: var(--sf-card-bg);
-    color: var(--sf-accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: var(--sf-font-weight-black);
-    transition: var(--sf-transition);
-}
-
-.home-news-card:hover > strong {
-    background: var(--sf-button-bg);
-    color: var(--sf-button-text);
-    transform: translateX(3px);
+    padding: var(--sf-page-padding);
+    grid-auto-flow: dense;
+    box-sizing: border-box;
 }
 
 /* =========================================================
-   Umfragen
+   2. Die Kacheln (Nutzen jetzt nativ deine SchulFunk-Tokens)
    ========================================================= */
-
-.home-survey-panel {
-    padding: 18px;
-    background: transparent;
-    grid-column: span 2;
-}
-
-    .home-survey-panel::before,
-    .home-survey-panel::after {
-        content: none !important;
-        display: none !important;
-    }
-
-.home-survey-description {
+.card {
     position: relative;
-    z-index: 1;
-    margin: 0 0 var(--sf-space-md);
-    color: var(--sf-text-muted);
-    font-size: var(--sf-font-size-sm);
-    line-height: 1.45;
-}
-
-/* Stabile Höhe für Umfragen, gleiche Höhe wie News-Bühne */
-.home-survey-panel .home-survey-slide {
-    min-height: 260px;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-}
-
-.home-result-list {
-    overflow: auto;
-    max-height: 130px;
-}
-
-.home-question-box {
-    position: relative;
-    z-index: 1;
-    margin-bottom: var(--sf-space-sm);
-    padding: 12px;
-    border-radius: 12px;
-    background: linear-gradient(180deg, rgba(var(--sf-color-secondary-rgb),0.03), rgba(var(--sf-color-primary-rgb),0.02));
-}
-
-    .home-question-box span {
-        color: var(--sf-accent);
-        font-size: var(--sf-font-size-xs);
-        font-weight: var(--sf-font-weight-black);
-    }
-
-    .home-question-box h3 {
-        margin: 6px 0 0;
-        color: var(--sf-text-strong);
-        font-size: 1.15rem;
-        line-height: 1.28;
-    }
-
-.home-result-list {
-    position: relative;
-    z-index: 1;
-    display: grid;
-    gap: var(--sf-space-xs);
-}
-
-.home-result-card {
-    padding: 10px 12px;
-    border-radius: 10px;
-    background: rgba(255,255,255,0.6);
-}
-
-.home-result-card.active {
-        background: linear-gradient(90deg, rgba(var(--sf-color-accent-rgb),0.12), rgba(var(--sf-color-secondary-rgb),0.06));
-        border-color: rgba(var(--sf-color-accent-rgb),0.18);
-    }
-
-.home-result-line {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--sf-space-sm);
-    margin-bottom: 9px;
-}
-
-.home-result-line span {
-        color: var(--sf-text-strong);
-        font-size: var(--sf-font-size-sm);
-        font-weight: var(--sf-font-weight-bold);
-    }
-
-.home-result-line strong {
-        min-width: 60px;
-        padding: 6px 10px;
-        border-radius: var(--sf-radius-pill);
-        background: var(--sf-button-bg);
-        color: var(--sf-button-text);
-        text-align: center;
-        font-size: 0.9rem;
-        font-weight: 800;
-    }
-
-.home-result-bar {
-    height: 8px;
-    overflow: hidden;
-    border-radius: var(--sf-radius-pill);
-    background: var(--sf-accent-softer);
-}
-
-    .home-result-bar div {
-        height: 100%;
-        border-radius: inherit;
-        background: var(--sf-accent);
-        transition: width var(--sf-transition-slow);
-    }
-
-.home-survey-bottom {
-    position: relative;
-    z-index: 1;
-    margin-top: 14px;
-    display: flex;
-    gap: 12px;
-    align-items: center;
-}
-
-.home-survey-actions {
-    display: flex;
-    gap: 8px;
-}
-
-.home-survey-arrow {
-    width: 42px;
-    height: 42px;
-    border: 1px solid var(--sf-border);
-    border-radius: var(--sf-radius-pill);
     background: var(--sf-card-bg);
     color: var(--sf-text);
-    font-size: 1.12rem;
-    font-weight: var(--sf-font-weight-black);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    transition: var(--sf-transition);
-}
-
-    .home-survey-arrow:hover {
-        background: var(--sf-button-bg);
-        color: var(--sf-button-text);
-        border-color: var(--sf-button-border);
-        transform: var(--sf-hover-lift-sm);
-    }
-
-    .home-survey-arrow:disabled {
-        opacity: 0.45;
-        cursor: not-allowed;
-        transform: none;
-    }
-
-.home-survey-link {
-    width: 100%;
-    min-height: 42px;
-    padding: 10px 18px;
-    font-size: var(--sf-font-size-sm);
-}
-
-.home-empty-state {
-    position: relative;
-    z-index: 1;
-    min-height: 260px;
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius-lg);
+    padding: var(--sf-space-md);
+    overflow: hidden;
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-}
-
-    .home-empty-state img {
-        width: 72px;
-        height: 72px;
-        object-fit: contain;
-    }
-
-    .home-empty-state h2 {
-        margin: var(--sf-space-sm) 0 8px;
-        color: var(--sf-text-strong);
-        font-size: 1.6rem;
-    }
-
-    .home-empty-state p {
-        margin: 0;
-        color: var(--sf-text-muted);
-    }
-
-/* =========================================================
-   Nützliche Links
-   ========================================================= */
-
-.home-useful-links {
-    margin-top: 34px;
-    margin-bottom: 42px;
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 20px;
-}
-
-.home-link-card {
-    min-width: 0;
-    min-height: 120px;
-    padding: 18px;
-    background: linear-gradient(180deg, rgba(var(--sf-color-primary-rgb),0.03), rgba(255,255,255,0.02));
-    border-radius: 12px;
+    transition: background var(--sf-transition), border-color var(--sf-transition), transform var(--sf-transition), box-shadow var(--sf-transition);
     box-shadow: var(--sf-shadow-sm);
-    color: inherit;
-    text-decoration: none;
-    cursor: pointer;
-    display: grid;
-    grid-template-columns: 64px minmax(0, 1fr);
-    gap: 12px;
-    align-items: center;
-    overflow: hidden;
-    transition: transform 220ms ease, box-shadow 220ms ease;
 }
 
-    .home-link-card:hover {
-        transform: translateY(-6px);
+    .card:hover {
+        border-color: var(--sf-border-strong);
+        background: var(--sf-card-bg-hover);
+        transform: var(--sf-hover-lift-md);
         box-shadow: var(--sf-shadow-hover);
     }
 
-.home-link-icon {
-    width: 64px;
-    height: 64px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-    .home-link-icon img {
-        width: 58px;
-        height: 58px;
-        object-fit: contain;
-        opacity: 1 !important;
-        filter: none !important;
-        mix-blend-mode: normal !important;
+    /* Titel-Farben für Light- und Darkmode gesichert */
+    .card h2, .card h3 {
+        color: var(--sf-text-strong);
+        margin-top: 0;
+        margin-bottom: var(--sf-space-xs);
+        font-weight: var(--sf-font-weight-bold);
     }
 
-.home-link-card h3 {
-    min-width: 0;
-    margin: 0 0 4px;
-    color: var(--sf-text-strong);
-    font-size: 1.35rem;
-    line-height: 1.2;
-    overflow-wrap: break-word;
-}
+    .card h2 {
+        font-size: var(--sf-font-size-xl);
+    }
 
-.home-link-card p {
-    min-width: 0;
-    margin: 0;
+    .card h3 {
+        font-size: var(--sf-font-size-lg);
+    }
+
+/* Vorschautext-Farbe */
+.preview-text {
+    font-size: var(--sf-font-size-sm);
     color: var(--sf-text-muted);
+    margin-top: var(--sf-space-2xs);
+    margin-bottom: var(--sf-space-sm);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
     line-height: 1.4;
-    font-size: 0.95rem;
-    overflow-wrap: break-word;
 }
 
 /* =========================================================
-   Footer / Impressum
+   3. Autoren-Informationen & Avatare mit automatischer Trennlinie
    ========================================================= */
-
-.home-impressum {
-    width: 100vw;
-    margin-left: calc(50% - 50vw);
-    margin-right: calc(50% - 50vw);
-    margin-top: 54px;
-    margin-bottom: -34px;
-    padding: 56px 28px 36px;
-    background: var(--sf-panel-bg-strong);
-    border-top: 4px solid var(--sf-accent);
-    color: var(--sf-text-muted);
+.author-info {
+    margin-top: auto;
+    width: 100%;
+    padding-top: var(--sf-space-sm);
+    display: flex;
+    align-items: center;
+    gap: var(--sf-space-xs);
+    border-top: 1px solid var(--sf-border);
 }
 
-.home-footer-content {
-    max-width: 1180px;
-    margin: 0 auto;
+.author-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--sf-radius-pill);
+    object-fit: cover;
+    border: 1px solid var(--sf-border);
+    flex-shrink: 0;
+}
+
+.author-details {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 18px;
-    text-align: center;
 }
 
-.home-impressum h2 {
-    margin: 0;
+.author-name {
+    font-size: var(--sf-font-size-sm);
+    font-weight: var(--sf-font-weight-medium);
     color: var(--sf-text-strong);
-    font-size: 1.55rem;
-    line-height: 1;
-    font-weight: var(--sf-font-weight-bold);
 }
 
-.home-impressum p {
-    max-width: 760px;
-    margin: 0;
-    color: var(--sf-text-muted);
-    line-height: 1.6;
-}
-
-.home-footer-links {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 24px;
-}
-
-    .home-footer-links a {
-        color: var(--sf-text-muted);
-        font-size: 0.95rem;
-        font-weight: var(--sf-font-weight-bold);
-        text-decoration: none;
-        transition: var(--sf-transition);
-    }
-
-        .home-footer-links a:hover {
-            color: var(--sf-accent);
-        }
-
-.home-impressum small {
+.author-class {
+    font-size: var(--sf-font-size-xs);
     color: var(--sf-text-subtle);
-    font-size: 0.85rem;
 }
 
 /* =========================================================
-   Animationen
+   4. Intelligente Bild-Overlays (Textschutz)
    ========================================================= */
-
-.home-survey-slide.slide-out-up {
-    animation: home-survey-slide-out-up 0.14s ease both;
+.card.has-image {
+    background-size: cover;
+    background-position: center;
 }
 
-.home-survey-slide.slide-out-down {
-    animation: home-survey-slide-out-down 0.14s ease both;
-}
-
-.home-survey-slide.slide-in {
-    animation: home-survey-slide-in 0.24s ease both;
-}
-
-@keyframes home-survey-slide-in {
-    from {
-        opacity: 0;
-        transform: translateY(10px);
+    .card.has-image .image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient( to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.85) 100% );
+        z-index: 1;
+        pointer-events: none;
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-@keyframes home-survey-slide-out-up {
-    from {
-        opacity: 1;
-        transform: translateY(0);
+    /* Text-Erzwingung auf Bildern (Unabhängig von Light/Dark immer weiß!) */
+    .card.has-image h2,
+    .card.has-image h3,
+    .card.has-image .preview-text,
+    .card.has-image .author-name {
+        color: var(--sf-color-white) !important;
+        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
     }
 
-    to {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-}
-
-@keyframes home-survey-slide-out-down {
-    from {
-        opacity: 1;
-        transform: translateY(0);
+    .card.has-image .author-class {
+        color: rgba(255, 255, 255, 0.6) !important;
     }
 
-    to {
-        opacity: 0;
-        transform: translateY(10px);
+    .card.has-image .author-info {
+        border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
     }
+
+.card-content {
+    position: relative;
+    z-index: 2;
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
 /* =========================================================
-   Tablet
+   5. News-Tag
    ========================================================= */
-
-@media (max-width: 1100px) {
-    .home-overview {
-        grid-template-columns: 1fr;
-        gap: 34px;
-    }
-
-    .home-useful-links {
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-
-    .home-link-card {
-        width: 100%;
-        min-height: auto;
-        padding: 20px;
-        grid-template-columns: 64px minmax(0, 1fr);
-    }
-
-        .home-link-card h3 {
-            font-size: 1.25rem;
-        }
-
-        .home-link-card p {
-            font-size: 0.95rem;
-            line-height: 1.45;
-        }
+.tag {
+    align-self: flex-start;
+    background: var(--sf-button-bg); /* Nutzt dein definiertes Primary/Accent je nach Mode */
+    color: var(--sf-button-text);
+    font-size: var(--sf-font-size-xs);
+    font-weight: var(--sf-font-weight-medium);
+    padding: var(--sf-space-2xs) var(--sf-space-xs);
+    border-radius: var(--sf-radius-sm);
+    margin-bottom: var(--sf-space-sm);
 }
 
 /* =========================================================
-   Smartphone
+   6. Grid-Spannweiten (Bento-Logik)
    ========================================================= */
+.card.small {
+    grid-column: span 1;
+    grid-row: span 1;
+}
 
-@media (max-width: 760px) {
-    .home-overview {
-        display: flex;
-        flex-direction: column;
-        gap: 42px;
-        margin-bottom: 42px;
-    }
+.card.wide {
+    grid-column: span 2;
+    grid-row: span 1;
+}
 
-    .home-news-panel,
-    .home-survey-panel {
-        width: 100%;
-        padding: 24px;
-        border-radius: var(--sf-radius);
-        margin: 0;
-    }
+.card.tall {
+    grid-row: span 2;
+    grid-column: span 1;
+}
 
-    .home-panel-head {
-        align-items: center;
-        gap: 14px;
-        margin-bottom: 22px;
-    }
+.card.hero {
+    grid-column: span 2;
+    grid-row: span 2;
+}
 
-        .home-panel-head img {
-            width: 58px;
-            height: 58px;
-        }
-
-        .home-panel-head h2 {
-            font-size: 1.45rem;
-            line-height: 1.15;
-        }
-
-    .home-news-list {
-        gap: 18px;
-    }
-
-    .home-news-card {
-        min-height: auto;
-        padding: 20px;
-        grid-template-columns: 1fr;
-        gap: 12px;
-    }
-
-    .home-news-date {
-        width: fit-content;
-    }
-
-    .home-news-card > strong {
-        display: none;
-    }
-
-    .home-news-content h3 {
-        font-size: 1.15rem;
-        line-height: 1.3;
-    }
-
-    .home-news-content p {
-        font-size: 0.95rem;
-        line-height: 1.5;
-    }
-
-    .home-survey-slide {
-        display: flex;
-        flex-direction: column;
-        gap: 18px;
-    }
-
-    .home-survey-description {
-        margin: 0;
-        line-height: 1.6;
-    }
-
-    .home-question-box {
-        margin-bottom: 0;
-        padding: 18px;
-    }
-
-    .home-result-list {
-        gap: 16px;
-    }
-
-    .home-result-card {
-        padding: 18px;
-    }
-
-    .home-survey-bottom {
-        margin-top: 6px;
-        grid-template-columns: 1fr;
-        gap: 16px;
-    }
-
-    .home-survey-actions {
-        justify-content: flex-start;
-    }
-
-    .home-survey-link {
-        width: 100%;
-        min-height: 54px;
-    }
-
-    .home-useful-links {
-        margin-top: 0;
-        margin-bottom: 42px;
-        grid-template-columns: 1fr;
-        gap: 18px;
-    }
-
-    .home-link-card {
-        min-height: auto;
-        padding: 22px;
-        border-radius: var(--sf-radius);
-        grid-template-columns: 58px minmax(0, 1fr);
-        gap: 18px;
-        align-items: center;
-    }
-
-    .home-link-icon {
-        width: 58px;
-        height: 58px;
-    }
-
-        .home-link-icon img {
-            width: 54px;
-            height: 54px;
-        }
-
-    .home-link-card h3 {
-        margin: 0 0 5px;
-        font-size: 1.2rem;
-        line-height: 1.2;
-    }
-
-    .home-link-card p {
-        margin: 0;
-        font-size: 0.92rem;
-        line-height: 1.45;
-    }
-
-    .home-impressum {
-        margin-top: 38px;
-        margin-bottom: -24px;
-        padding: 42px 18px 28px;
-    }
-
-    .home-footer-links {
-        gap: 16px;
-    }
+.card.tall .card-content {
+    justify-content: flex-start;
 }
 
 /* =========================================================
-   Sehr kleine Smartphones
+   7. Responsive Breakpoints
    ========================================================= */
+@media (max-width: 900px) {
+    .bento-container {
+        grid-template-columns: repeat(3, 1fr);
+        padding: var(--sf-page-padding-mobile);
+    }
+}
 
-@media (max-width: 420px) {
-    .home-overview {
-        gap: 36px;
-        margin-bottom: 36px;
+@media (max-width: 600px) {
+    .bento-container {
+        grid-template-columns: 1fr;
+        grid-auto-rows: auto;
     }
 
-    .home-news-panel,
-    .home-survey-panel {
-        padding: 20px;
-    }
-
-    .home-panel-head {
-        gap: 12px;
-    }
-
-        .home-panel-head img {
-            width: 52px;
-            height: 52px;
-        }
-
-        .home-panel-head h2 {
-            font-size: 1.28rem;
-        }
-
-    .home-news-card,
-    .home-result-card,
-    .home-question-box {
-        padding: 16px;
-    }
-
-    .home-link-card {
-        padding: 18px;
-        grid-template-columns: 52px minmax(0, 1fr);
-        gap: 14px;
-    }
-
-    .home-link-icon,
-    .home-link-icon img {
-        width: 50px;
-        height: 50px;
-    }
-
-    .home-link-card h3 {
-        font-size: 1.05rem;
-    }
-
-    .home-link-card p {
-        font-size: 0.85rem;
+    .card.hero, .card.wide, .card.tall {
+        grid-column: span 1 !important;
+        grid-row: span 1 !important;
+        min-height: 180px;
     }
 }

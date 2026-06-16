@@ -13,6 +13,8 @@ namespace SchulFunk_Webprojekt.Feature.NewsHandling.Model
 
         [JsonPropertyName("tag")]
         public string Tag { get; set; } = string.Empty;
+        [JsonPropertyName("prioritaet")]
+        public string Prioritaet { get; set; } = string.Empty;
 
         [JsonPropertyName("previewText")]
         public string PreviewText { get; set; } = string.Empty;

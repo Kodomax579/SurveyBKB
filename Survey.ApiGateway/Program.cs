@@ -42,7 +42,8 @@ namespace Survey.ApiGateway
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.AllowAnyMethod()
+                    policy.WithOrigins("http://212.227.82.199:7224") // <-- DEIN ANGULAR PORT (hier explizit eintragen!)
+                          .AllowAnyMethod()
                           .AllowAnyHeader()
                           .WithExposedHeaders("Authorization")
                           .AllowCredentials();

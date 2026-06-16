@@ -1,151 +1,148 @@
-@page "/news"
-@rendermode InteractiveServer
-@using System.Text.Json
-@using SchulFunk_Webprojekt.Model
-@inject NewsStateService newsStateService
+﻿@rendermode InteractiveServer
 @inject NewsService newsService
-@implements IDisposable
+@inject SurveyService surveyService
+@inject NewsStateService newsStateService
+@inject SurveyStateService surveyStateService
+@inject SignalRHub hub
 
-<PageTitle>Aktuelle Nachrichten</PageTitle>
-
-<section class="news-page-header sf-panel">
-    <div class="news-search-box">
-        <input type="text"
-               class="news-search-input"
-               placeholder="Nach Artikel suchen..."
-               @bind="Suchtext"
-               @bind:event="oninput" />
-    </div>
-</section>
-
-@if (IsLoading)
-{
-    <section class="admin-empty sf-panel">
-        <h3>Nachrichten werden geladen...</h3>
-        <p>Bitte warten.</p>
-    </section>
-}
-else if (!string.IsNullOrWhiteSpace(Fehlermeldung))
-{
-    <section class="admin-empty sf-panel">
-        <h3>Fehler</h3>
-        <p>@Fehlermeldung</p>
-    </section>
-}
-else
-{
-    <section class="news-card-grid">
-        @foreach (var news in GefilterteNewsListe)
+<main class="bento-container">
+    @if (newsStateService.GetNewsItems() != null)
+    {
+        @* Sortiert die News so, dass die neuesten Einträge (neuestes Erstellungsdatum) zuerst kommen *@
+        @foreach (var item in newsStateService.GetNewsItems().OrderBy(item => item.CreatedAt))
         {
-            <NewsCard Item="@news" />
+            var cardSize = GetGridClass(item);
+            var hasImage = !string.IsNullOrEmpty(item.ImageLink);
+            var backgroundStyle = BackgroundStyle(item);
+
+            <article class="card @cardSize @(hasImage ? "has-image" : "")" style="@backgroundStyle">
+
+                @if (hasImage)
+                {
+                    <div class="image-overlay"></div>
+                }
+
+                <div class="card-content">
+                    <div class="tag">@item.Tag</div>
+
+                    @if (item.Prioritaet?.Equals("breaking", StringComparison.OrdinalIgnoreCase) == true)
+                    {
+                        <h2>@item.Title</h2>
+                    }
+                    else
+                    {
+                        <h3>@item.Title</h3>
+                    }
+
+                    @if (cardSize == "hero" || cardSize == "tall")
+                    {
+                        <p class="preview-text">@item.PreviewText</p>
+                    }
+
+                    @if (cardSize != "small" && item.UserModel != null)
+                    {
+                        <div class="author-info">
+                            <img src="@(string.IsNullOrEmpty(item.UserModel.ImageLink) ? "assets/default-avatar.png" : item.UserModel.ImageLink)"
+                                 alt="@item.UserModel.Firstname"
+                                 class="author-avatar" />
+
+                            <div class="author-details">
+                                <span class="author-name">@item.UserModel.Firstname @item.UserModel.Lastname</span>
+                                @if (!string.IsNullOrEmpty(item.UserModel.Class?.ClassName))
+                                {
+                                    <span class="author-class">@item.UserModel.Class.ClassName</span>
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            </article>
         }
-    </section>
-}
+    }
+</main>
 
 @code {
-    private string Suchtext = "";
-    private List<NewsItem> NewsListe => newsStateService.GetNewsItems();
-    private bool IsLoading => NewsListe.Count == 0;
-    private string Fehlermeldung = "";
+    private int AktuelleUmfrageIndex = 0;
+    private string SurveyAnimationClass = "slide-in";
+    private List<SurveyModel> surveyModels => surveyStateService.GetAllSurveys().Take(3).ToList();
 
-    private IEnumerable<NewsItem> GefilterteNewsListe =>
-        NewsListe.Where(news =>
-            string.IsNullOrWhiteSpace(Suchtext) ||
-            news.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
-            news.PreviewText.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
-            news.Tag.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
-
-    protected override void OnInitialized()
+    protected async override Task OnInitializedAsync()
     {
-        newsStateService.OnChange += HandleStateChanged;
+        newsStateService.OnChange += UpdateUI;
+        surveyStateService.OnChange += UpdateUI;
+        await hub.Connect();
     }
 
-    private void HandleStateChanged()
+    // Hilfsmethode zur Bestimmung der Kachelgröße basierend auf Priorität oder Bild
+    private string GetGridClass(NewsItem item)
     {
-        InvokeAsync(StateHasChanged);
-    }
-
-    private static List<NewsItem> ParseNewsJson(string json)
-    {
-        var result = new List<NewsItem>();
-
-        using var document = JsonDocument.Parse(json);
-
-        if (document.RootElement.ValueKind != JsonValueKind.Array)
+        if (item.Prioritaet?.Equals("breaking", StringComparison.OrdinalIgnoreCase) == true)
         {
-            return result;
+            return "hero";
         }
-
-        foreach (var element in document.RootElement.EnumerateArray())
+        if (!string.IsNullOrEmpty(item.ImageLink))
         {
-            var createdAt = GetDateTime(element, "createdAt");
-            var expiredDate = GetDateTime(element, "expiredDate");
+            return "tall";
+        }
+        if (item.Title?.Length > 60)
+        {
+            return "wide";
+        }
+        return "small";
+    }
 
-            result.Add(new NewsItem
+    private void UpdateUI() => InvokeAsync(StateHasChanged);
+
+    private async Task NaechsteUmfrage()
+    {
+        if (!surveyModels.Any()) return;
+        SurveyAnimationClass = "slide-out-up";
+        await Task.Delay(140);
+        AktuelleUmfrageIndex = (AktuelleUmfrageIndex + 1) % surveyModels.Count;
+        SurveyAnimationClass = "slide-in";
+    }
+
+    private async Task VorherigeUmfrage()
+    {
+        if (!surveyModels.Any()) return;
+        SurveyAnimationClass = "slide-out-down";
+        await Task.Delay(140);
+        AktuelleUmfrageIndex = (AktuelleUmfrageIndex - 1 + surveyModels.Count) % surveyModels.Count;
+        SurveyAnimationClass = "slide-in";
+    }
+
+    private int BerechneProzent(QuestionModel question, AnswerModel answer)
+    {
+        var gesamtStimmen = question.AnswerModels.Sum(option => option.NumberOfSelectedAnswer);
+        if (gesamtStimmen == 0) return 0;
+        return (int)Math.Round((double)answer.NumberOfSelectedAnswer / gesamtStimmen * 100);
+    }
+
+    private int HoechsterProzentwert(QuestionModel question)
+    {
+        if (!question.AnswerModels.Any()) return 0;
+        return question.AnswerModels.Select(answer => BerechneProzent(question, answer)).Max();
+    }
+
+    private string? BackgroundStyle(NewsItem news)
+    {
+        var hasImage = !string.IsNullOrEmpty(news.ImageLink);
+
+        if(hasImage)
+        {
+            if (news.ImageLink.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             {
-                Id = GetInt(element, "id"),
-                Tag = GetString(element, "tag"),
-                Title = GetString(element, "titel"),
-                PreviewText = GetString(element, "previewText"),
-                MainText = GetString(element, "mainText"),
-                ImageLink = GetString(element, "image"),
-                CreatedAt = createdAt,
-                ExpiredDate = expiredDate,
-            });
+                return $"background-image: url('{news.ImageLink}');";
+            }
+            return $"background-image: url('http://212.227.82.199:7224{news.ImageLink}');";
         }
 
-        return result;
-    }
-
-    private static string GetString(JsonElement element, string propertyName)
-    {
-        if (!element.TryGetProperty(propertyName, out var property))
-        {
-            return "";
-        }
-
-        if (property.ValueKind == JsonValueKind.Null)
-        {
-            return "";
-        }
-
-        return property.GetString() ?? "";
-    }
-
-    private static int GetInt(JsonElement element, string propertyName)
-    {
-        if (!element.TryGetProperty(propertyName, out var property))
-        {
-            return 0;
-        }
-
-        if (property.ValueKind != JsonValueKind.Number)
-        {
-            return 0;
-        }
-
-        return property.GetInt32();
-    }
-
-    private static DateTime GetDateTime(JsonElement element, string propertyName)
-    {
-        if (!element.TryGetProperty(propertyName, out var property))
-        {
-            return default;
-        }
-
-        if (property.ValueKind == JsonValueKind.Null)
-        {
-            return default;
-        }
-
-        return property.TryGetDateTime(out var date)
-            ? date
-            : default;
+        return null;
     }
 
     public void Dispose()
     {
-        newsStateService.OnChange -= HandleStateChanged;
+        newsStateService.OnChange -= UpdateUI;
+        surveyStateService.OnChange -= UpdateUI;
     }
 }

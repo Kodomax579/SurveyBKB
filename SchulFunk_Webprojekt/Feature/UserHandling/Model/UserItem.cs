@@ -12,6 +12,8 @@ public class UserModel
 
     [JsonPropertyName("lastname")]
     public string Lastname { get; set; } = string.Empty;
+    [JsonPropertyName("imageLink")]
+    public string ImageLink { get; set; } = string.Empty;
 
     [JsonPropertyName("email")]
     public string Email { get; set; } = string.Empty;
