@@ -9,7 +9,7 @@
     @if (newsStateService.GetNewsItems() != null)
     {
         @* Sortiert die News so, dass die neuesten Einträge (neuestes Erstellungsdatum) zuerst kommen *@
-        @foreach (var item in newsStateService.GetNewsItems().OrderBy(item => item.CreatedAt))
+        @foreach (var item in newsStateService.GetNewsItems().OrderByDescending(item => item.CreatedAt))
         {
             var cardSize = GetGridClass(item);
             var hasImage = !string.IsNullOrEmpty(item.ImageLink);
