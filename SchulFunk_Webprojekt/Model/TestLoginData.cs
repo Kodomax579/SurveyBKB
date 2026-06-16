@@ -24,7 +24,7 @@ public static class TestLoginData
             Firstname = "Lina",
             Lastname = "Schülerin",
             Email = "lina.schuelerin@schule.de",
-            Class = new ClassModel { ClassName = "10A" },
+            Class = new ClassModel { Classname = "10A" },
             Group = Groups.Student
         },
 
@@ -33,7 +33,7 @@ public static class TestLoginData
             Firstname = "Tom",
             Lastname = "Klassensprecher",
             Email = "tom.klassensprecher@schule.de",
-            Class = new ClassModel { ClassName = "10A" },
+            Class = new ClassModel { Classname = "10A" },
             Group = Groups.ClassRepresentatives
         },
 
@@ -42,7 +42,7 @@ public static class TestLoginData
             Firstname = "Mia",
             Lastname = "Schülersprecherin",
             Email = "mia.schuelersprecherin@schule.de",
-            Class = new ClassModel { ClassName = "SV" },
+            Class = new ClassModel { Classname = "SV" },
             Group = Groups.StudentRepresentatives
         },
 
@@ -51,7 +51,7 @@ public static class TestLoginData
             Firstname = "Max",
             Lastname = "Mustermann",
             Email = "max.mustermann@schule.de",
-            Class = new ClassModel { ClassName = "Lehrer" },
+            Class = new ClassModel { Classname = "Lehrer" },
             Group = Groups.Teacher
         },
 
@@ -60,7 +60,7 @@ public static class TestLoginData
             Firstname = "Ada",
             Lastname = "Admin",
             Email = "admin@schule.de",
-            Class = new ClassModel { ClassName = "Verwaltung" },
+            Class = new ClassModel { Classname = "Verwaltung" },
             Group = Groups.Admin
         },
 
@@ -69,7 +69,7 @@ public static class TestLoginData
             Firstname = "Lina",
             Lastname = "Schülerin",
             Email = "lina.schuelerin@schule.de",
-            Class = new ClassModel { ClassName = "10A" },
+            Class = new ClassModel { Classname = "10A" },
             Group = Groups.Student
         }
     };

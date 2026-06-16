@@ -84,7 +84,7 @@ else
                                        checked="@IstKlasseAusgewaehlt(klasse)"
                                        @onchange="() => ToggleClass(klasse)" />
 
-                                <span>@klasse.ClassName</span>
+                                <span>@klasse.Classname</span>
                             </label>
                         }
                     </div>
@@ -215,7 +215,7 @@ else
                 }
                 else
                 {
-                    <span>@string.Join(", ", SelectedClasses.Select(klasse => klasse.ClassName))</span>
+                    <span>@string.Join(", ", SelectedClasses.Select(klasse => klasse.Classname))</span>
                 }
             </div>
 
@@ -270,7 +270,7 @@ else
         PermissionRules.GetGroupLabel(CurrentUser.Group);
 
     private string UserClass =>
-        CurrentUser.Class.ClassName;
+        CurrentUser.Class.Classname;
 
     private string ZielgruppenText =>
         CurrentUser.Group switch
@@ -291,7 +291,7 @@ else
         }
         else if (CurrentUser.Group == Groups.ClassRepresentatives)
         {
-            var eigeneKlasse = AvailableClasses.FirstOrDefault(klasse => klasse.ClassName == UserClass);
+            var eigeneKlasse = AvailableClasses.FirstOrDefault(klasse => klasse.Classname == UserClass);
 
             if (eigeneKlasse is not null)
             {
@@ -312,14 +312,14 @@ else
 
     private bool IstKlasseAusgewaehlt(ClassModel klasse)
     {
-        return SelectedClasses.Any(selected => selected.ClassName == klasse.ClassName);
+        return SelectedClasses.Any(selected => selected.Classname == klasse.Classname);
     }
 
     private void ToggleClass(ClassModel klasse)
     {
         if (IstKlasseAusgewaehlt(klasse))
         {
-            SelectedClasses.RemoveAll(selected => selected.ClassName == klasse.ClassName);
+            SelectedClasses.RemoveAll(selected => selected.Classname == klasse.Classname);
             return;
         }
 
@@ -370,7 +370,7 @@ else
         surveyModel.CreatedAt = DateOnly.FromDateTime(CreatedAt);
         surveyModel.User = userStateService.GetUser();
         surveyModel.OnlineUntil = DateOnly.FromDateTime(OnlineUntil);
-        surveyModel.Classes = SelectedClasses.Select(klasse => klasse.ClassName).ToList();
+        surveyModel.Classes = SelectedClasses.Select(klasse => klasse.Classname).ToList();
         await surveyService.CreateSurvey(surveyModel);
     }
 }

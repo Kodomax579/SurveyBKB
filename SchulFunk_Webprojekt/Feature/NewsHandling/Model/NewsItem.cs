@@ -9,7 +9,7 @@ namespace SchulFunk_Webprojekt.Feature.NewsHandling.Model
         public int Id { get; set; }
 
         [JsonPropertyName("titel")]
-        public string Title { get; set; } = string.Empty;
+        public string Titel { get; set; } = string.Empty;
 
         [JsonPropertyName("tag")]
         public string Tag { get; set; } = string.Empty;
@@ -38,6 +38,6 @@ namespace SchulFunk_Webprojekt.Feature.NewsHandling.Model
         public List<QuestionModel> QuestionModels { get; set; }
 
         [JsonPropertyName("user")]
-        public UserModel? UserModel { get; set; }
+        public UserModel? User { get; set; }
     }
 }

@@ -24,7 +24,7 @@ else
                        type="text"
                        class="form-control"
                        placeholder="Titel der Nachricht eingeben"
-                       @bind="newsItem.Title"
+                       @bind="newsItem.Titel"
                        @bind:event="oninput" />
             </div>
 
@@ -109,11 +109,11 @@ else
             @* Wenn die Priorität auf 'breaking' steht, wird der Titel wie im Grid als h2 gerendert *@
             @if (newsItem.Prioritaet?.Equals("breaking", StringComparison.OrdinalIgnoreCase) == true)
             {
-                <h2 class="preview-breaking-title">@(string.IsNullOrWhiteSpace(newsItem.Title) ? "Nachrichtentitel" : newsItem.Title)</h2>
+                <h2 class="preview-breaking-title">@(string.IsNullOrWhiteSpace(newsItem.Titel) ? "Nachrichtentitel" : newsItem.Titel)</h2>
             }
             else
             {
-                <h3>@(string.IsNullOrWhiteSpace(newsItem.Title) ? "Nachrichtentitel" : newsItem.Title)</h3>
+                <h3>@(string.IsNullOrWhiteSpace(newsItem.Titel) ? "Nachrichtentitel" : newsItem.Titel)</h3>
             }
 
             <span class="preview-tag">
@@ -169,7 +169,7 @@ else
 
     private async Task ArtikelVeroeffentlichen()
     {
-        newsItem.UserModel = CurrentUser;
+        newsItem.User = CurrentUser;
         await newsService.CreateNews(newsItem, AusgewaehlteBildDatei);
     }
 }

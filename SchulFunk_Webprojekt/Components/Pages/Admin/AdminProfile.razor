@@ -50,7 +50,7 @@ else
 
                             @foreach (var klasse in AvailableClasses)
                             {
-                                <option value="@klasse.ClassName">@klasse.ClassName</option>
+                                <option value="@klasse.Classname">@klasse.Classname</option>
                             }
 
                             @if (CurrentUser.Group == Groups.Admin)
@@ -94,7 +94,7 @@ else
                 <div class="sf-flat-card-body">
                     <div class="sf-card-meta">
                         <span>@PermissionRules.GetGroupLabel(user.Group)</span>
-                        <span>@user.Class.ClassName</span>
+                        <span>@user.Class.Classname</span>
                     </div>
 
                     <h3>@GetFullName(user)</h3>
@@ -111,10 +111,10 @@ else
                         }
                         else
                         {
-                            <select class="form-control" @bind="user.Class.ClassName">
+                            <select class="form-control" @bind="user.Class.Classname">
                                 @foreach (var klasse in AvailableClasses)
                                 {
-                                    <option value="@klasse.ClassName">@klasse.ClassName</option>
+                                    <option value="@klasse.Classname">@klasse.Classname</option>
                                 }
                             </select>
                         }
@@ -208,7 +208,7 @@ else
 
         return GetFullName(user).Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
                user.Email.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
-               user.Class.ClassName.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
+               user.Class.Classname.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
                PermissionRules.GetGroupLabel(user.Group).Contains(Suchtext, StringComparison.OrdinalIgnoreCase);
     }
 
@@ -219,7 +219,7 @@ else
             return true;
         }
 
-        return user.Class.ClassName == SelectedClass;
+        return user.Class.Classname == SelectedClass;
     }
 
     private bool MatchesGroupFilter(UserModel user)

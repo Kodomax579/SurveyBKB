@@ -53,7 +53,7 @@ namespace SchulFunk_Webprojekt
 
             app.UseAntiforgery();
 
-            app.MapHub<SignalRHub.SignalRHub>("/realtimehub");
+
 
             app.MapStaticAssets();
             app.MapRazorComponents<App>()

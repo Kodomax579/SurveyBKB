@@ -52,7 +52,7 @@ namespace SchulFunk_Webprojekt.Feature.NewsHandling
             using var content = new MultipartFormDataContent();
 
             content.Add(new StringContent(newNews.Id.ToString()), "Id");
-            content.Add(new StringContent(newNews.Title ?? ""), "Titel");
+            content.Add(new StringContent(newNews.Titel ?? ""), "Titel");
             content.Add(new StringContent(newNews.Tag ?? ""), "Tag");
             content.Add(new StringContent(newNews.PreviewText ?? ""), "PreviewText");
             content.Add(new StringContent(newNews.MainText ?? ""), "MainText");
@@ -61,9 +61,9 @@ namespace SchulFunk_Webprojekt.Feature.NewsHandling
             content.Add(new StringContent(newNews.ExpiredDate.ToString("yyyy-MM-dd")), "ExpiredDate");
             content.Add(new StringContent(newNews.NumberOfMembers.ToString()), "NumberOfMembers");
 
-            if (newNews.UserModel != null)
+            if (newNews.User != null)
             {
-                content.Add(new StringContent(newNews.UserModel.Id.ToString()), "User.Id");
+                content.Add(new StringContent(newNews.User.Id.ToString()), "User.Id");
             }
             // Stelle sicher, dass die Datei in ein Byte-Array gelesen wird, bevor sie dem Multipart-Content hinzugefügt wird.
             // Das vermeidet Probleme mit nicht-seekbaren Streams in Blazor-Umgebungen.

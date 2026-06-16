@@ -27,11 +27,11 @@
 
                     @if (item.Prioritaet?.Equals("breaking", StringComparison.OrdinalIgnoreCase) == true)
                     {
-                        <h2>@item.Title</h2>
+                        <h2>@item.Titel</h2>
                     }
                     else
                     {
-                        <h3>@item.Title</h3>
+                        <h3>@item.Titel</h3>
                     }
 
                     @if (cardSize == "hero" || cardSize == "tall")
@@ -39,18 +39,18 @@
                         <p class="preview-text">@item.PreviewText</p>
                     }
 
-                    @if (cardSize != "small" && item.UserModel != null)
+                    @if (cardSize != "small" && item.User != null)
                     {
                         <div class="author-info">
-                            <img src="@(string.IsNullOrEmpty(item.UserModel.ImageLink) ? "assets/default-avatar.png" : item.UserModel.ImageLink)"
-                                 alt="@item.UserModel.Firstname"
+                            <img src="@(string.IsNullOrEmpty(item.User.ImageLink) ? "assets/default-avatar.png" : item.User.ImageLink)"
+                                 alt="@item.User.Firstname"
                                  class="author-avatar" />
 
                             <div class="author-details">
-                                <span class="author-name">@item.UserModel.Firstname @item.UserModel.Lastname</span>
-                                @if (!string.IsNullOrEmpty(item.UserModel.Class?.ClassName))
+                                <span class="author-name">@item.User.Firstname @item.User.Lastname</span>
+                                @if (!string.IsNullOrEmpty(item.User.Class?.Classname))
                                 {
-                                    <span class="author-class">@item.UserModel.Class.ClassName</span>
+                                    <span class="author-class">@item.User.Class.Classname</span>
                                 }
                             </div>
                         </div>
@@ -84,7 +84,7 @@
         {
             return "tall";
         }
-        if (item.Title?.Length > 60)
+        if (item.Titel?.Length > 60)
         {
             return "wide";
         }

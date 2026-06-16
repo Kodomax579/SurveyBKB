@@ -85,10 +85,10 @@ else
                 {
                     <div class="form-group">
                         <label>Klasse</label>
-                        <select class="sf-input" @bind="newUser.Class!.ClassName">
+                        <select class="sf-input" @bind="newUser.Class!.Classname">
                             @foreach (var klasse in AvailableClasses)
                             {
-                                <option value="@klasse.ClassName">@klasse.ClassName</option>
+                                <option value="@klasse.Classname">@klasse.Classname</option>
                             }
                         </select>
                     </div>
@@ -164,7 +164,7 @@ else
 
         if (AvailableClasses.Any())
         {
-            newUser.Class!.ClassName = AvailableClasses.First().ClassName;
+            newUser.Class!.Classname = AvailableClasses.First().Classname;
         }
     }
 
@@ -201,7 +201,7 @@ else
         // Lehrer bekommen eine feste Klasse zugeordnet
         if (newUser.Group == Groups.Teacher)
         {
-            newUser.Class = new ClassModel { ClassName = "Lehrer" };
+            newUser.Class = new ClassModel { Classname = "Lehrer" };
         }
 
         // Wir rufen den Service jetzt direkt mit dem UserModel auf
@@ -221,7 +221,7 @@ else
 
             if (AvailableClasses.Any())
             {
-                newUser.Class.ClassName = AvailableClasses.First().ClassName;
+                newUser.Class.Classname = AvailableClasses.First().Classname;
             }
         }
         else

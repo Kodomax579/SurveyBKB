@@ -3,7 +3,7 @@
 @implements IDisposable
 @inject IConfiguration configuration
 
-<PageTitle>@(News?.Title ?? "Nachricht")</PageTitle>
+<PageTitle>@(News?.Titel ?? "Nachricht")</PageTitle>
 
 @if (News is null)
 {
@@ -24,7 +24,7 @@ else
 
             <div>
                 <span>@News.Tag</span>
-                <h2>@News.Title</h2>
+                <h2>@News.Titel</h2>
                 <p>@News.CreatedAt</p>
             </div>
         </div>

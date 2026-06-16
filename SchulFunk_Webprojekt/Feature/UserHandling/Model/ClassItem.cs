@@ -5,6 +5,6 @@ namespace SchulFunk_Webprojekt.Feature.UserHandling.Model
     public class ClassModel
     {
         [JsonPropertyName("classname")]
-        public string ClassName { get; set; } = string.Empty;
+        public string Classname { get; set; } = string.Empty;
     }
 }

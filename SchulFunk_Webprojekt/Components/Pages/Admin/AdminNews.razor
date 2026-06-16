@@ -73,11 +73,11 @@ else
                 <div class="admin-list-card-main">
                     <div>
                         <span class="sf-badge">@news.Tag</span>
-                        <h3>@news.Title</h3>
+                        <h3>@news.Titel</h3>
                         <p>@news.PreviewText</p>
 
                         <div class="admin-meta">
-                            <strong>Ersteller:</strong> @news.UserModel.Lastname @news.UserModel.Firstname ·
+                            <strong>Ersteller:</strong> @news.User.Lastname @news.User.Firstname ·
                             <strong>Datum:</strong> @news.ExpiredDate
                         </div>
                     </div>
@@ -140,7 +140,7 @@ else
             .Where(news => CanSeeNews(news))
             .Where(news =>
                 string.IsNullOrWhiteSpace(Suchtext) ||
-                news.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
+                news.Titel.Contains(Suchtext, StringComparison.OrdinalIgnoreCase));
 
     protected override void OnInitialized()
     {
@@ -161,7 +161,7 @@ else
 
         if (CanManageOwnNews)
         {
-            return news.UserModel.Email == CurrentUser.Email;
+            return news.User.Email == CurrentUser.Email;
         }
 
         return false;
@@ -185,7 +185,7 @@ else
         }
 
         NewsInBearbeitung = news;
-        EditTitle = news.Title;
+        EditTitle = news.Titel;
         EditTag = news.Tag;
         EditDescription = news.PreviewText;
         EditArtikel = news.MainText;
@@ -198,7 +198,7 @@ else
             return;
         }
 
-        NewsInBearbeitung.Title = EditTitle;
+        NewsInBearbeitung.Titel = EditTitle;
         NewsInBearbeitung.Tag = EditTag;
         NewsInBearbeitung.PreviewText = EditDescription;
         NewsInBearbeitung.MainText = EditArtikel;
