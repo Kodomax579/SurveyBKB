@@ -42,11 +42,13 @@ namespace Survey.ApiGateway
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.WithOrigins("http://212.227.82.199:7224") // <-- DEIN ANGULAR PORT (hier explizit eintragen!)
+                    policy.WithOrigins("http://212.227.82.199:7224",
+                                       "https://www.schulfunk-bkbeckum.de",
+                                       "https://schulfunk-bkbeckum.de")
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .WithExposedHeaders("Authorization")
-                          .AllowCredentials();
+                          .AllowCredentials(); // Zwingend erforderlich für SignalR Auth!
                 });
             });
 

@@ -29,46 +29,38 @@ namespace SchulFunk_Webprojekt.SignalRHub
                 return;
             }
 
+            // Nutze den relativen Pfad passend zur HTTPS-Domain!
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl("http://212.227.82.199:7189/realtimeHub", options =>
+                .WithUrl("/realtimehub", options =>
                 {
                     options.AccessTokenProvider = () => Task.FromResult(authTokenService.Token);
                 })
                 .WithAutomaticReconnect()
                 .Build();
 
-            _hubConnection.On<NewsItem>("NewsUpdated", newsItems =>
-            {
-                OnNewsItemsUpdated?.Invoke(newsItems);
-            });
-            _hubConnection.On<NewsItem>("NewsCreated", newsItems =>
-            {
-                OnNewsItemCreated?.Invoke(newsItems);
-            });
-            _hubConnection.On<int>("NewsDeleted", newsId =>
-            {
-                OnNewsItemDeleted?.Invoke(newsId);
-            });
-            _hubConnection.On<SurveyModel>("ReceiveNewSurvey", newSurvey =>
-            {
-                OnSurveyCreated?.Invoke(newSurvey);
-            });
-            _hubConnection.On<SurveyModel>("SurveyVoteUpdated", survey =>
-            {
-                OnSurveyVoteUpdate?.Invoke(survey);
-            });
-            _hubConnection.On<int>("SurveyDeleted", surveyId =>
-            {
-                OnSurveyDeleted?.Invoke(surveyId);
-            });
+            _hubConnection.On<NewsItem>("NewsUpdated", newsItems => OnNewsItemsUpdated?.Invoke(newsItems));
+            _hubConnection.On<NewsItem>("NewsCreated", newsItems => OnNewsItemCreated?.Invoke(newsItems));
+            _hubConnection.On<int>("NewsDeleted", newsId => OnNewsItemDeleted?.Invoke(newsId));
+            _hubConnection.On<SurveyModel>("ReceiveNewSurvey", newSurvey => OnSurveyCreated?.Invoke(newSurvey));
+            _hubConnection.On<SurveyModel>("SurveyVoteUpdated", survey => OnSurveyVoteUpdate?.Invoke(survey));
+            _hubConnection.On<int>("SurveyDeleted", surveyId => OnSurveyDeleted?.Invoke(surveyId));
+
             try
             {
                 await _hubConnection.StartAsync();
-                Console.WriteLine("SignalR connection established.");
+                Console.WriteLine("SignalR connection established safely over HTTPS Proxy.");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error connecting to SignalR hub: {ex.Message}");
+            }
+        }
+
+        public async void Dispose()
+        {
+            if (_hubConnection != null)
+            {
+                await _hubConnection.DisposeAsync();
             }
         }
     }
