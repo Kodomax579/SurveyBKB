@@ -30,7 +30,7 @@ namespace SchulFunk_Webprojekt.SignalRHub
             }
 
             _hubConnection = new HubConnectionBuilder()
-                .WithUrl("http://212.227.82.199:7224/realtimeHub", options =>
+                .WithUrl("http://212.227.82.199:7189/realtimeHub", options =>
                 {
                     options.AccessTokenProvider = () => Task.FromResult(authTokenService.Token);
                 })
