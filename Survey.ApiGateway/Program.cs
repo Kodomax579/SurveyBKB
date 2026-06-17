@@ -42,10 +42,8 @@ namespace Survey.ApiGateway
             {
                 options.AddPolicy("AllowAll", policy =>
                 {
-                    policy.WithOrigins("http://212.227.82.199:7224",
-                                       "https://www.schulfunk-bkbeckum.de",
-                                       "https://schulfunk-bkbeckum.de",
-                                       "https://localhost:7224")
+                    policy.WithOrigins("https://www.schulfunk-bkbeckum.de",
+                                       "https://schulfunk-bkbeckum.de")
                           .AllowAnyMethod()
                           .AllowAnyHeader()
                           .WithExposedHeaders("Authorization")

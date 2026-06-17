@@ -30,7 +30,7 @@ namespace SchulFunk_Webprojekt.SignalRHub
 
             _hubConnection = new HubConnectionBuilder()
 
-            .WithUrl("http://212.227.82.199:7224/realtimehub", options =>
+            .WithUrl("https://schulfunk-bkbeckum.de/api/realtimehub", options =>
             {
                 options.AccessTokenProvider = () => Task.FromResult(authTokenService.Token);
             })
