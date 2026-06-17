@@ -1,5 +1,7 @@
 ﻿using SchulFunk_Webprojekt.Feature.UserHandling.Model;
 using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Components.Forms;
+using System.Text.Json;
 
 namespace SchulFunk_Webprojekt.Feature.UserHandling
 {
@@ -16,6 +18,46 @@ namespace SchulFunk_Webprojekt.Feature.UserHandling
                 httpClient.DefaultRequestHeaders.Authorization =
                     new AuthenticationHeaderValue("Bearer", authTokenService.Token);
             }
+        }
+
+
+        public async Task<string?> UploadProfileImage(int userId, IBrowserFile file)
+        {
+            AddToken();
+
+            var content = new MultipartFormDataContent();
+
+            var stream = file.OpenReadStream(10 * 1024 * 1024); // 10 MB limit
+            var streamContent = new StreamContent(stream);
+            streamContent.Headers.ContentType = new MediaTypeHeaderValue(file.ContentType ?? "application/octet-stream");
+
+            content.Add(streamContent, "file", file.Name);
+
+            var response = await httpClient.PostAsync($"{BaseURL}/api/User/{userId}/upload-profile-image", content);
+            if (!response.IsSuccessStatusCode) return null;
+
+            try
+            {
+                var json = await response.Content.ReadFromJsonAsync<JsonElement>();
+                if (json.TryGetProperty("ImageLink", out var prop))
+                {
+                    var link = prop.GetString();
+                    // if the current user updated their own image, update state
+                    var current = userStateService.GetUser();
+                    if (current != null && current.Id == userId && !string.IsNullOrEmpty(link))
+                    {
+                        current.ImageLink = link;
+                        userStateService.UpdateUser(current);
+                    }
+                    return link;
+                }
+            }
+            catch
+            {
+                // ignore parse errors
+            }
+
+            return null;
         }
 
         public async Task<bool> Login(string email, string password)

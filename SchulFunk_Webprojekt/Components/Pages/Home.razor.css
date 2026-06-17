@@ -1,215 +1,199 @@
-/* =========================================================
-   1. Das Bento-Grid Fundament
-   ========================================================= */
-.bento-container {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    grid-auto-rows: minmax(180px, auto);
-    gap: var(--sf-space-md);
-    max-width: var(--sf-container-width);
-    margin: 0 auto;
-    padding: var(--sf-page-padding);
-    grid-auto-flow: dense;
-    box-sizing: border-box;
-}
-
-/* =========================================================
-   2. Die Kacheln (Nutzen jetzt nativ deine SchulFunk-Tokens)
-   ========================================================= */
-.card {
-    position: relative;
-    background: var(--sf-card-bg);
-    color: var(--sf-text);
-    border: 1px solid var(--sf-border);
-    border-radius: var(--sf-radius-lg);
-    padding: var(--sf-space-md);
-    overflow: hidden;
-    box-sizing: border-box;
+.tab-container {
     display: flex;
     flex-direction: column;
-    transition: background var(--sf-transition), border-color var(--sf-transition), transform var(--sf-transition), box-shadow var(--sf-transition);
-    box-shadow: var(--sf-shadow-sm);
-}
-
-    .card:hover {
-        border-color: var(--sf-border-strong);
-        background: var(--sf-card-bg-hover);
-        transform: var(--sf-hover-lift-md);
-        box-shadow: var(--sf-shadow-hover);
-    }
-
-    /* Titel-Farben für Light- und Darkmode gesichert */
-    .card h2, .card h3 {
-        color: var(--sf-text-strong);
-        margin-top: 0;
-        margin-bottom: var(--sf-space-xs);
-        font-weight: var(--sf-font-weight-bold);
-    }
-
-    .card h2 {
-        font-size: var(--sf-font-size-xl);
-    }
-
-    .card h3 {
-        font-size: var(--sf-font-size-lg);
-    }
-
-/* Vorschautext-Farbe */
-.preview-text {
-    font-size: var(--sf-font-size-sm);
-    color: var(--sf-text-muted);
-    margin-top: var(--sf-space-2xs);
-    margin-bottom: var(--sf-space-sm);
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    line-height: 1.4;
-}
-
-/* =========================================================
-   3. Autoren-Informationen & Avatare mit automatischer Trennlinie
-   ========================================================= */
-.author-info {
-    margin-top: auto;
-    width: 100%;
-    padding-top: var(--sf-space-sm);
-    display: flex;
     align-items: center;
-    gap: var(--sf-space-xs);
-    border-top: 1px solid var(--sf-border);
+    max-width: 80vw;
+    margin: 0 auto;
+    width: 100%;
 }
 
-.author-avatar {
-    width: 32px;
-    height: 32px;
-    border-radius: var(--sf-radius-pill);
-    object-fit: cover;
-    border: 1px solid var(--sf-border);
-    flex-shrink: 0;
-}
-
-.author-details {
+.page-tabs {
     display: flex;
-    flex-direction: column;
+    width: 100%;
+    max-width: 600px;
+    gap: var(--sf-space-2xl);
+    padding: var(--sf-space-md) var(--sf-space-xl);
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    border-bottom: 2px solid var(--sf-border-strong);
+    position: relative;
+    margin: 0 auto;
 }
 
-.author-name {
-    font-size: var(--sf-font-size-sm);
-    font-weight: var(--sf-font-weight-medium);
+.page-tabs .btn {
+    padding: var(--sf-space-md) var(--sf-space-2xl);
+    font-size: 1.1rem;
+    font-weight: var(--sf-font-weight-black);
+    letter-spacing: 0.8px;
+    border: none;
+    border-bottom: 3px solid transparent;
+    border-radius: 0;
+    cursor: pointer;
+    transition: all var(--sf-transition);
+    position: relative;
+    overflow: visible;
+    background: transparent;
+    color: var(--sf-text-muted);
+    margin-bottom: -2px;
+    text-transform: uppercase;
+}
+
+.page-tabs .btn:hover {
     color: var(--sf-text-strong);
 }
 
-.author-class {
-    font-size: var(--sf-font-size-xs);
-    color: var(--sf-text-subtle);
+/* Active Tab Button - nur Umrandung unten */
+.page-tabs .btn-primary {
+    color: var(--sf-button-bg);
+    background: transparent;
+    border-bottom-color: var(--sf-button-bg);
+    border-bottom-width: 3px;
+    font-weight: var(--sf-font-weight-black);
 }
 
-/* =========================================================
-   4. Intelligente Bild-Overlays (Textschutz)
-   ========================================================= */
-.card.has-image {
-    background-size: cover;
-    background-position: center;
+.page-tabs .btn-primary:hover {
+    transform: var(--sf-hover-lift-sm);
 }
 
-    .card.has-image .image-overlay {
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: linear-gradient( to bottom, rgba(0, 0, 0, 0.1) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.85) 100% );
-        z-index: 1;
-        pointer-events: none;
-    }
-
-    /* Text-Erzwingung auf Bildern (Unabhängig von Light/Dark immer weiß!) */
-    .card.has-image h2,
-    .card.has-image h3,
-    .card.has-image .preview-text,
-    .card.has-image .author-name {
-        color: var(--sf-color-white) !important;
-        text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
-    }
-
-    .card.has-image .author-class {
-        color: rgba(255, 255, 255, 0.6) !important;
-    }
-
-    .card.has-image .author-info {
-        border-top: 1px solid rgba(255, 255, 255, 0.15) !important;
-    }
-
-.card-content {
-    position: relative;
-    z-index: 2;
+/* Page Content Container */
+.page-content {
     width: 100%;
-    flex-grow: 1;
+    max-width: 80vw;
+    padding: var(--sf-space-lg);
+    min-height: 600px;
+    animation: fadeIn var(--sf-transition-slow) ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =========================================================
+   Search Box
+   ========================================================= */
+.search-box {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    margin-top: var(--sf-space-lg);
 }
 
-/* =========================================================
-   5. News-Tag
-   ========================================================= */
-.tag {
-    align-self: flex-start;
-    background: var(--sf-button-bg); /* Nutzt dein definiertes Primary/Accent je nach Mode */
-    color: var(--sf-button-text);
-    font-size: var(--sf-font-size-xs);
-    font-weight: var(--sf-font-weight-medium);
-    padding: var(--sf-space-2xs) var(--sf-space-xs);
-    border-radius: var(--sf-radius-sm);
-    margin-bottom: var(--sf-space-sm);
+.search-input {
+    width: 100%;
+    padding: var(--sf-space-md) var(--sf-space-lg) var(--sf-space-md) var(--sf-space-lg);
+    font-size: 1rem;
+    border: 2px solid var(--sf-border);
+    border-radius: var(--sf-radius-lg);
+    background: var(--sf-input-bg);
+    color: var(--sf-input-text);
+    transition: all var(--sf-transition);
+    font-family: var(--sf-font-family);
 }
 
-/* =========================================================
-   6. Grid-Spannweiten (Bento-Logik)
-   ========================================================= */
-.card.small {
-    grid-column: span 1;
-    grid-row: span 1;
+.search-input::placeholder {
+    color: var(--sf-input-placeholder);
 }
 
-.card.wide {
-    grid-column: span 2;
-    grid-row: span 1;
+.search-input:hover {
+    border-color: var(--sf-border-strong);
 }
 
-.card.tall {
-    grid-row: span 2;
-    grid-column: span 1;
+.search-input:focus {
+    outline: none;
+    border-color: var(--sf-button-bg);
+    background: var(--sf-input-bg-focus);
+    box-shadow: 0 0 0 3px var(--sf-focus);
 }
 
-.card.hero {
-    grid-column: span 2;
-    grid-row: span 2;
+.search-icon {
+    position: absolute;
+    right: var(--sf-space-lg);
+    color: var(--sf-text-muted);
+    pointer-events: none;
+    font-size: 1.2rem;
 }
 
-.card.tall .card-content {
-    justify-content: flex-start;
-}
+/* Responsive Search */
+@media (max-width: 768px) {
+    .tab-container {
+        gap: var(--sf-space-lg);
+    }
 
-/* =========================================================
-   7. Responsive Breakpoints
-   ========================================================= */
-@media (max-width: 900px) {
-    .bento-container {
-        grid-template-columns: repeat(3, 1fr);
-        padding: var(--sf-page-padding-mobile);
+    .page-tabs {
+        padding: var(--sf-space-sm);
+        gap: var(--sf-space-sm);
+    }
+
+    .page-tabs .btn {
+        padding: var(--sf-space-xs) var(--sf-space-md);
+        font-size: 0.95rem;
+    }
+
+    .search-input {
+        padding: var(--sf-space-sm) var(--sf-space-md) var(--sf-space-sm) var(--sf-space-md);
+        font-size: 0.95rem;
+    }
+
+    .search-icon {
+        right: var(--sf-space-md);
+    }
+
+    .page-content {
+        padding: var(--sf-space-md);
+        min-height: 500px;
     }
 }
 
-@media (max-width: 600px) {
-    .bento-container {
-        grid-template-columns: 1fr;
-        grid-auto-rows: auto;
+@media (max-width: 480px) {
+    .page-tabs {
+        padding: var(--sf-space-xs);
+        gap: var(--sf-space-xs);
     }
 
-    .card.hero, .card.wide, .card.tall {
-        grid-column: span 1 !important;
-        grid-row: span 1 !important;
-        min-height: 180px;
+    .page-tabs .btn {
+        padding: var(--sf-space-xs) var(--sf-space-sm);
+        font-size: 0.85rem;
+        flex: 1;
     }
+
+    .search-input {
+        padding: var(--sf-space-sm) var(--sf-space-md) var(--sf-space-sm) var(--sf-space-md);
+        font-size: 0.9rem;
+    }
+
+    .page-content {
+        padding: var(--sf-space-md);
+        min-height: 400px;
+    }
+}
+
+/* =========================================================
+   Clickable Cards (News)
+   ========================================================= */
+.bento-container .card {
+    cursor: pointer;
+    transition: transform var(--sf-transition), box-shadow var(--sf-transition), border-color var(--sf-transition);
+}
+
+.bento-container .card:hover {
+    transform: var(--sf-hover-lift-md);
+    box-shadow: var(--sf-shadow-hover);
+}
+
+.bento-container .card:focus {
+    outline: 2px solid var(--sf-button-bg);
+    outline-offset: 2px;
 }

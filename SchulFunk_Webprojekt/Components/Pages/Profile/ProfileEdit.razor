@@ -1,6 +1,7 @@
 @page "/profile/edit"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
+@using Microsoft.AspNetCore.Components.Forms
 @inject UserStateService userStateService
 @inject UserService userService
 @inject NavigationManager NavigationManager
@@ -40,6 +41,14 @@
                 </div>
             </div>
         </div>
+                <label class="sf-button" style="display:inline-block; cursor:pointer;">
+                    Bild auswählen
+                    <InputFile OnChange="OnFileSelected" style="display:none" />
+                </label>
+                @if (!string.IsNullOrEmpty(SelectedFileName))
+                {
+                    <div style="margin-top:6px;">Datei ausgewählt: @SelectedFileName</div>
+                }
 
         <div>
 
@@ -71,6 +80,7 @@
     private UserModel CurrentUser => userStateService.GetUser();
     private bool ShowPasswordModal = false;
     private string ErrorMessage = string.Empty;
+    private string SelectedFileName = string.Empty;
     private string UserRole =>
         PermissionRules.GetGroupLabel(CurrentUser.Group);
 
@@ -116,15 +126,28 @@
     }
 
 
-    private void SaveProfile()
+    private async Task SaveProfile()
     {
-        userService.UpdateUser(CurrentUser.Id, CurrentUser);
+        await userService.UpdateUser(CurrentUser.Id, CurrentUser);
         NavigationManager.NavigateTo("/profile");
     }
 
     private void CancelEdit()
     {
         NavigationManager.NavigateTo("/profile");
+    }
+
+    private async Task OnFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file == null) return;
+
+        var link = await userService.UploadProfileImage(CurrentUser.Id, file);
+        if (!string.IsNullOrWhiteSpace(link))
+        {
+            CurrentUser.ImageLink = link;
+            StateHasChanged();
+        }
     }
 
     public void Dispose()

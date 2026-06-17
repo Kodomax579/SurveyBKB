@@ -25,40 +25,54 @@
         </button>
 
         <nav class="sf-navbar @(MobileMenuOpen ? "open" : "")">
-            <NavLink class="sf-nav-button" href="/home" Match="NavLinkMatch.All" @onclick="CloseAllMenus">
-                Startseite
-            </NavLink>
-
-            <NavLink class="sf-nav-button" href="/survey" @onclick="CloseAllMenus">
-                Umfragen
-            </NavLink>
-
-            <NavLink class="sf-nav-button" href="/news" @onclick="CloseAllMenus">
-                Nachrichten
-            </NavLink>
-
-            @if (CanOpenAdminPanel)
-            {
-                <NavLink class="sf-nav-button sf-admin-button" href="/admin" @onclick="CloseAllMenus">
-                    Admin Panel
-                </NavLink>
-            }
-
             <div class="sf-settings-dropdown">
                 <button type="button"
                         class="sf-settings-button"
                         @onclick="ToggleSettingsMenu"
                         aria-label="Profil öffnen">
-                    <span>Profil</span>
+                    <span class="sf-avatar sf-avatar--small">
+                        @if (CurrentUser != null && !string.IsNullOrWhiteSpace(CurrentUser.ImageLink))
+                        {
+                            <img src="@CurrentUser.ImageLink" alt="Avatar" />
+                        }
+                        else
+                        {
+                            <span class="sf-avatar-initials">@GetInitials(CurrentUser)</span>
+                        }
+                    </span>
+
+                    <span class="sf-settings-name">@(CurrentUser != null ? $"{CurrentUser.Firstname} {CurrentUser.Lastname}" : "Profil")</span>
                 </button>
 
                 @if (SettingsMenuOpen)
                 {
                     <div class="sf-settings-menu">
                         <div class="sf-settings-user">
-                            <strong>@CurrentUser.Lastname @CurrentUser.Firstname</strong>
-                            <span>@PermissionRules.GetGroupLabel(CurrentUser.Group)</span>
+                            <div class="sf-settings-user-left">
+                                <span class="sf-avatar">
+                                    @if (CurrentUser != null && !string.IsNullOrWhiteSpace(CurrentUser.ImageLink))
+                                    {
+                                        <img src="@CurrentUser.ImageLink" alt="Avatar" />
+                                    }
+                                    else
+                                    {
+                                        <span class="sf-avatar-initials">@GetInitials(CurrentUser)</span>
+                                    }
+                                </span>
+                            </div>
+
+                            <div class="sf-settings-user-right">
+                                <strong>@(CurrentUser != null ? $"{CurrentUser.Firstname} {CurrentUser.Lastname}" : "Gast")</strong>
+                                <span>@(CurrentUser != null ? PermissionRules.GetGroupLabel(CurrentUser.Group) : string.Empty)</span>
+                            </div>
                         </div>
+
+                        @if (CanOpenAdminPanel)
+                        {
+                            <NavLink class="sf-settings-menu-item" href="/admin" @onclick="CloseAllMenus">
+                                Admin Panel
+                            </NavLink>
+                        }
 
                         <NavLink class="sf-settings-menu-item" href="/profile" @onclick="CloseAllMenus">
                             Mein Profil
@@ -72,7 +86,7 @@
                             </span>
 
                             <span>
-                                @(IsDarkMode ? "White Mode aktivieren" : "Dark Mode aktivieren")
+                            @(IsDarkMode ? "Weißmodus aktivieren" : "Dunkelmodus aktivieren")
                             </span>
                         </button>
 
@@ -157,6 +171,16 @@
         SettingsMenuOpen = false;
         MobileMenuOpen = false;
         NavManager.NavigateTo("/", forceLoad: true);
+    }
+
+    private string GetInitials(UserModel? user)
+    {
+        if (user == null) return string.Empty;
+
+        var first = !string.IsNullOrWhiteSpace(user.Firstname) ? user.Firstname.Trim()[0].ToString().ToUpper() : string.Empty;
+        var last = !string.IsNullOrWhiteSpace(user.Lastname) ? user.Lastname.Trim()[0].ToString().ToUpper() : string.Empty;
+
+        return (first + last).Trim();
     }
 
     public void Dispose()

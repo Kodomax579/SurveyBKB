@@ -6,42 +6,6 @@
 
 <PageTitle>Umfragen</PageTitle>
 
-<section class="survey-page-header sf-panel">
-    <div class="survey-search-box">
-        <input type="text"
-               class="survey-search-input"
-               placeholder="Umfragen durchsuchen..."
-               @bind="Suchtext"
-               @bind:event="oninput" />
-    </div>
-
-    <div class="survey-filter-box">
-        <button type="button"
-                class="survey-filter-button @(FilterDropdownOpen ? "open" : "")"
-                @onclick="ToggleFilterDropdown">
-            <span>@StatusFilterLabel</span>
-            <span class="survey-filter-arrow"></span>
-        </button>
-
-        @if (FilterDropdownOpen)
-        {
-            <div class="survey-filter-menu">
-                <button type="button" @onclick="@(() => SetStatusFilter("all"))">
-                    Alle Status
-                </button>
-
-                <button type="button" @onclick="@(() => SetStatusFilter("active"))">
-                    Nur Aktive
-                </button>
-
-                <button type="button" @onclick="@(() => SetStatusFilter("ended"))">
-                    Beendete
-                </button>
-            </div>
-        }
-    </div>
-</section>
-
 @{
     var sichtbareUmfragen = GefilterteSurveyListe.ToList();
 }
@@ -64,6 +28,8 @@ else
 }
 
 @code {
+    [Parameter] public string SearchQuery { get; set; } = string.Empty;
+
     private string Suchtext = "";
     private string StatusFilter = "all";
 
@@ -76,10 +42,17 @@ else
             .OrderBy(survey => IsExpired(survey) ? 1 : 0)
             .ThenByDescending(survey => survey.CreatedAt);
 
-
     protected override void OnInitialized()
     {
         surveyStateService.OnChange += HandleStateChanged;
+    }
+
+    protected override void OnParametersSet()
+    {
+        if (!string.IsNullOrEmpty(SearchQuery))
+        {
+            Suchtext = SearchQuery;
+        }
     }
 
     private void HandleStateChanged()
@@ -89,14 +62,16 @@ else
 
     private bool MatchesSearch(SurveyModel survey)
     {
-        if (string.IsNullOrWhiteSpace(Suchtext))
+        var searchText = string.IsNullOrWhiteSpace(Suchtext) ? SearchQuery : Suchtext;
+
+        if (string.IsNullOrWhiteSpace(searchText))
         {
             return true;
         }
 
-        return survey.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
-               survey.Description.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
-               survey.CreatorName.Contains(Suchtext, StringComparison.OrdinalIgnoreCase);
+        return survey.Title.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+               survey.Description.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
+               survey.CreatorName.Contains(searchText, StringComparison.OrdinalIgnoreCase);
     }
 
     private bool MatchesStatusFilter(SurveyModel survey)

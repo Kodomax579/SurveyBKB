@@ -1,6 +1,7 @@
 ﻿@page "/admin/users"
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
+@using Microsoft.AspNetCore.Components.Forms
 @inject UserStateService userStateService
 @inject UserService userService
 
@@ -131,8 +132,19 @@ else
                         </select>
                     </div>
 
+                    <div class="form-group">
+                        <label>Profilbild</label>
+                        <InputFile OnChange="async e => await OnFileSelected(e, user)" />
+                        @if (!string.IsNullOrWhiteSpace(user.ImageLink))
+                        {
+                            <div style="margin-top:8px;">
+                                <img src="@user.ImageLink" alt="Avatar" style="max-width:120px; max-height:120px;" />
+                            </div>
+                        }
+                    </div>
+
                     <div class="form-actions">
-                        <button type="button" class="sf-button sf-button-dark">
+                        <button type="button" class="sf-button sf-button-dark" @onclick="() => SaveUser(user)">
                             Änderungen speichern
                         </button>
 
@@ -281,6 +293,24 @@ else
         }
 
         AllUser.Remove(user);
+    }
+
+    private async Task OnFileSelected(InputFileChangeEventArgs e, UserModel user)
+    {
+        var file = e.File;
+        if (file == null) return;
+
+        var link = await userService.UploadProfileImage(user.Id, file);
+        if (!string.IsNullOrWhiteSpace(link))
+        {
+            user.ImageLink = link;
+            StateHasChanged();
+        }
+    }
+
+    private async Task SaveUser(UserModel user)
+    {
+        await userService.UpdateUser(user.Id, user);
     }
 
     private void ToggleFilterPanel()

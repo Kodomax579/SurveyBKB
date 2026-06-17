@@ -117,8 +117,8 @@
 
     ::deep .sf-nav-button:hover,
     .sf-settings-button:hover {
-        background: transparent;
-        color: var(--sf-accent);
+        background: var(--sf-accent-soft);
+        color: var(--sf-text-strong);
         text-decoration: none;
     }
 
@@ -222,7 +222,8 @@
     background: var(--sf-card-bg);
     border: 1px solid var(--sf-border);
     display: grid;
-    gap: 4px;
+    grid-template-columns: auto 1fr;
+    gap: 8px;
 }
 
     .sf-settings-user strong {
@@ -234,6 +235,41 @@
         color: var(--sf-text-muted);
         font-size: var(--sf-font-size-sm);
     }
+
+.sf-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 999px;
+    background: var(--sf-accent-soft);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    flex: 0 0 auto;
+}
+
+.sf-avatar--small {
+    width: 35px;
+    height: 35px;
+}
+
+.sf-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.sf-avatar-initials {
+    color: var(--sf-text-strong);
+    font-weight: var(--sf-font-weight-bold);
+    font-size: 0.9rem;
+}
+
+.sf-settings-name {
+    display: inline-block;
+    text-align: left;
+}
 
 ::deep .sf-settings-menu-item,
 .sf-settings-menu-item {
