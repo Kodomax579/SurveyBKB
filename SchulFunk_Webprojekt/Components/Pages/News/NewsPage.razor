@@ -161,7 +161,7 @@
 
         if(hasImage)
         {
-            if (news.ImageLink.StartsWith("http", StringComparison.OrdinalIgnoreCase))
+            if (news.ImageLink.StartsWith("https", StringComparison.OrdinalIgnoreCase))
             {
                 return $"background-image: url('{news.ImageLink}');";
             }
