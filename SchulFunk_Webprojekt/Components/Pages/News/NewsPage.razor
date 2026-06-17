@@ -14,7 +14,7 @@
         {
             var cardSize = GetGridClass(item);
             var hasImage = !string.IsNullOrEmpty(item.ImageLink);
-            var backgroundStyle = BackgroundStyle(item);
+            var backgroundStyle = GetBackgroundStyle(item);
 
             <article class="card @cardSize @(hasImage ? "has-image" : "")" 
                      style="@backgroundStyle"
