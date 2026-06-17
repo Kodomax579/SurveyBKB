@@ -1,0 +1,48 @@
+﻿/* =========================================================
+   Globale Search Bar Styles (Identisch für News & Survey)
+   ========================================================= */
+.search-box {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    width: 100%;
+    padding: var(--sf-space-md) var(--sf-space-lg) var(--sf-space-md) var(--sf-space-lg);
+    font-size: 1rem;
+    border: 2px solid var(--sf-border);
+    border-radius: var(--sf-radius-lg);
+    background: var(--sf-input-bg);
+    color: var(--sf-input-text);
+    transition: all var(--sf-transition);
+    font-family: var(--sf-font-family);
+    min-height: 52px; /* Setzt die feste Höhe für die Symmetrie */
+    box-sizing: border-box;
+}
+
+    .search-input::placeholder {
+        color: var(--sf-input-placeholder);
+    }
+
+    .search-input:hover {
+        border-color: var(--sf-border-strong);
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: var(--sf-button-bg);
+        background: var(--sf-input-bg-focus);
+        box-shadow: 0 0 0 3px var(--sf-focus);
+    }
+
+.search-icon {
+    position: absolute;
+    right: var(--sf-space-lg);
+    color: var(--sf-text-muted);
+    pointer-events: none;
+    font-size: 1.2rem;
+}

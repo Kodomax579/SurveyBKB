@@ -1,0 +1,25 @@
+﻿<div class="search-box">
+    <input type="text"
+           class="search-input"
+           placeholder="@Placeholder"
+           value="@Value"
+           @oninput="OnInputChanged" />
+    <span class="search-icon">🔍</span>
+</div>
+
+@code {
+    [Parameter]
+    public string Placeholder { get; set; } = "Suchen...";
+
+    [Parameter]
+    public string Value { get; set; } = string.Empty;
+
+    [Parameter]
+    public EventCallback<string> ValueChanged { get; set; }
+
+    private async Task OnInputChanged(ChangeEventArgs e)
+    {
+        Value = e.Value?.ToString() ?? string.Empty;
+        await ValueChanged.InvokeAsync(Value);
+    }
+}

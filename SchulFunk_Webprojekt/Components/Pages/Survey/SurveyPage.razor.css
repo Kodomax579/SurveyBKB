@@ -1,80 +1,78 @@
+/* =========================================================
+   Survey Header (Suche + Filter auf einer Linie)
+   ========================================================= */
 .survey-page-header {
     position: relative;
     z-index: 20;
-    overflow: visible;
-    padding: 14px 16px;
-    margin-bottom: 22px;
+    width: 100%;
+    max-width: 600px; /* Begrenzung genau wie auf der News-Seite */
+    margin: var(--sf-space-lg) auto var(--sf-space-xl) auto;
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 16px;
 }
 
-.survey-search-box {
+/* Dehnt die ausgelagerte Suchkomponente aus */
+.survey-search-wrapper {
     flex: 1 1 auto;
 }
 
+/* Filter Box */
 .survey-filter-box {
     position: relative;
     z-index: 30;
-    flex: 0 0 190px;
+    flex: 0 0 160px;
 }
 
-.survey-search-input,
 .survey-filter-button {
     width: 100%;
-    min-height: 50px;
-    border: 1px solid var(--sf-border);
-    border-radius: var(--sf-radius);
-    padding: 0 16px;
+    height: 52px; /* Exakt die Höhe der funktionierenden SearchBar */
+    border: 2px solid var(--sf-border);
+    border-radius: var(--sf-radius-lg);
+    padding: 0 var(--sf-space-lg);
     background: var(--sf-input-bg);
     color: var(--sf-input-text);
-    font-size: var(--sf-font-size-sm);
-    font-weight: var(--sf-font-weight-medium);
-    outline: none;
-    transition: var(--sf-transition);
-}
-
-    .survey-search-input::placeholder {
-        color: var(--sf-input-placeholder);
-    }
-
-    .survey-search-input:hover,
-    .survey-filter-button:hover {
-        border-color: var(--sf-border-strong);
-        background: var(--sf-input-bg-hover);
-    }
-
-    .survey-search-input:focus,
-    .survey-filter-button:focus,
-    .survey-filter-button.open {
-        border-color: var(--sf-accent);
-        background: var(--sf-input-bg-focus);
-        box-shadow: 0 0 0 3px var(--sf-focus);
-    }
-
-.survey-filter-button {
-    cursor: pointer;
+    font-size: 1rem;
     font-weight: var(--sf-font-weight-bold);
+    font-family: var(--sf-font-family);
+    outline: none;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
+    box-sizing: border-box;
+    transition: all var(--sf-transition);
 }
 
+    .survey-filter-button:hover {
+        border-color: var(--sf-border-strong);
+    }
+
+    .survey-filter-button:focus,
+    .survey-filter-button.open {
+        border-color: var(--sf-button-bg);
+        background: var(--sf-input-bg-focus);
+        box-shadow: 0 0 0 3px var(--sf-focus);
+    }
+
+/* Pfeil-Icon */
 .survey-filter-arrow {
-    width: 10px;
-    height: 10px;
-    border-right: 3px solid var(--sf-text);
-    border-bottom: 3px solid var(--sf-text);
+    width: 8px;
+    height: 8px;
+    border-right: 2px solid var(--sf-input-text);
+    border-bottom: 2px solid var(--sf-input-text);
     transform: rotate(45deg);
     transition: transform 0.2s ease;
-    flex: 0 0 auto;
+    margin-bottom: 2px;
 }
 
 .survey-filter-button.open .survey-filter-arrow {
     transform: rotate(225deg);
+    margin-bottom: -2px;
 }
 
+/* Dropdown Menü */
 .survey-filter-menu {
     position: absolute;
     top: calc(100% + 8px);
@@ -82,9 +80,9 @@
     z-index: 999;
     width: 100%;
     padding: 6px;
-    background: var(--sf-panel-bg-strong);
-    border: 1px solid var(--sf-border);
-    border-radius: var(--sf-radius);
+    background: var(--sf-panel-bg-strong, #fff);
+    border: 2px solid var(--sf-border);
+    border-radius: var(--sf-radius-lg);
     box-shadow: var(--sf-shadow-hover);
 }
 
@@ -104,27 +102,31 @@
     }
 
         .survey-filter-menu button:hover {
-            background: var(--sf-accent-soft);
+            background: var(--sf-focus);
             color: var(--sf-text-strong);
         }
 
+/* =========================================================
+   Survey Card Grid (Rückgängig gemacht auf das Original-Bento-Design)
+   ========================================================= */
 .survey-card-grid {
-    position: relative;
-    z-index: 1;
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 22px;
-    align-items: stretch;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Dynamische Spalten wie bei den News */
+    gap: var(--sf-space-xl, 22px);
+    width: 100%;
+    max-width: 80vw;
+    margin: 0 auto;
+    padding: var(--sf-space-lg);
 }
 
 .survey-empty-state {
     padding: var(--sf-space-lg);
+    text-align: center;
 }
 
     .survey-empty-state h3 {
         margin: 0 0 8px;
         color: var(--sf-text-strong);
-        font-size: var(--sf-font-size-xl);
     }
 
     .survey-empty-state p {
@@ -133,34 +135,26 @@
         line-height: 1.55;
     }
 
-@media (max-width: 1100px) {
+/* =========================================================
+   Responsive Anpassungen
+   ========================================================= */
+@media (max-width: 768px) {
+    .survey-page-header {
+        max-width: 100%;
+        padding: 0 var(--sf-space-md);
+        gap: 12px;
+    }
+
     .survey-card-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        max-width: 100%;
+        padding: var(--sf-space-md);
+        grid-template-columns: 1fr;
     }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 480px) {
     .survey-page-header {
         flex-direction: column;
         align-items: stretch;
-    }
-
-    .survey-filter-box {
-        flex: 1 1 auto;
-    }
-}
-
-@media (max-width: 680px) {
-    .survey-page-header {
-        padding: 14px;
-    }
-
-    .survey-search-input,
-    .survey-filter-button {
-        min-height: 46px;
-    }
-
-    .survey-card-grid {
-        grid-template-columns: 1fr;
     }
 }

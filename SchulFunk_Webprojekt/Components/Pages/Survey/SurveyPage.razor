@@ -6,6 +6,32 @@
 
 <PageTitle>Umfragen</PageTitle>
 
+<PageTitle>Umfragen</PageTitle>
+
+<div class="survey-page-header">
+   <div class="survey-search-wrapper">
+        <Search Placeholder="Nach Umfragen suchen..." @bind-Value="Suchtext" />
+    </div>
+    <!-- Filter-Dropdown bleibt daneben -->
+    <div class="survey-filter-box">
+        <button type="button"
+                class="survey-filter-button @(FilterDropdownOpen ? "open" : "")"
+                @onclick="ToggleFilterDropdown">
+            <span>@StatusFilterLabel</span>
+            <span class="survey-filter-arrow"></span>
+        </button>
+
+        @if (FilterDropdownOpen)
+        {
+            <div class="survey-filter-menu">
+                <button type="button" @onclick='() => SetStatusFilter("all")'>Alle Status</button>
+                <button type="button" @onclick='() => SetStatusFilter("active")'>Nur Aktive</button>
+                <button type="button" @onclick='() => SetStatusFilter("ended")'>Beendete</button>
+            </div>
+        }
+    </div>
+</div>
+
 @{
     var sichtbareUmfragen = GefilterteSurveyListe.ToList();
 }
@@ -23,7 +49,7 @@ else
 {
     <section class="survey-empty-state sf-panel">
         <h3>Keine Umfragen gefunden</h3>
-        <p>Für deine Suche oder den gewählten Filter gibt es aktuell keine passenden Umfragen.</p>
+        <p>Für deine Suche oder den gewählten Filter gibt es aktuell keine passende Umfragen.</p>
     </section>
 }
 
@@ -32,6 +58,7 @@ else
 
     private string Suchtext = "";
     private string StatusFilter = "all";
+    private bool FilterDropdownOpen = false;
 
     private List<SurveyModel> SurveyListe => surveyStateService.GetAllSurveys();
 
@@ -62,16 +89,14 @@ else
 
     private bool MatchesSearch(SurveyModel survey)
     {
-        var searchText = string.IsNullOrWhiteSpace(Suchtext) ? SearchQuery : Suchtext;
-
-        if (string.IsNullOrWhiteSpace(searchText))
+        if (string.IsNullOrWhiteSpace(Suchtext))
         {
             return true;
         }
 
-        return survey.Title.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-               survey.Description.Contains(searchText, StringComparison.OrdinalIgnoreCase) ||
-               survey.CreatorName.Contains(searchText, StringComparison.OrdinalIgnoreCase);
+        return survey.Title.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
+               survey.Description.Contains(Suchtext, StringComparison.OrdinalIgnoreCase) ||
+               survey.CreatorName.Contains(Suchtext, StringComparison.OrdinalIgnoreCase);
     }
 
     private bool MatchesStatusFilter(SurveyModel survey)
@@ -91,8 +116,6 @@ else
         return survey.OnlineUntil < DateOnly.FromDateTime(DateTime.Today);
     }
 
-    private bool FilterDropdownOpen = false;
-
     private string StatusFilterLabel =>
         StatusFilter switch
         {
@@ -111,6 +134,7 @@ else
         StatusFilter = filter;
         FilterDropdownOpen = false;
     }
+
     public void Dispose()
     {
         surveyStateService.OnChange -= HandleStateChanged;

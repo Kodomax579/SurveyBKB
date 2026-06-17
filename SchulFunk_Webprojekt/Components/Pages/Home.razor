@@ -1,58 +1,22 @@
 @page "/home"
 @using SchulFunk_Webprojekt.Components.Pages.News
-@using SchulFunk_Webprojekt.Components.Pages.Survey
 @rendermode InteractiveServer
-
 
 <PageTitle>SchulFunk</PageTitle>
 
 <div class="tab-container">
-    <div class="page-tabs">
-        <button class="btn @(currentPage == "news" ? "btn-primary" : "")" 
-                @onclick='() => SwitchPage("news")'>
-            📰 News
-        </button>
-        <button class="btn @(currentPage == "survey" ? "btn-primary" : "")" 
-                @onclick='() => SwitchPage("survey")'>
-            📊 Umfrage
-        </button>
-    </div>
-
-    <div class="search-box">
-        <input type="text"
-               class="search-input"
-               placeholder="@GetSearchPlaceholder()"
-               @bind="searchQuery"
-               @bind:event="oninput" />
-        <span class="search-icon">🔍</span>
-    </div>
+    <Search Placeholder="Nach News-Titeln oder Tags suchen..." @bind-Value="searchQuery" />
 
     <div class="page-content">
-        @if (currentPage == "news")
-        {
-            <NewsPage SearchQuery="@searchQuery"></NewsPage>
-        }
-        else if (currentPage == "survey")
-        {
-            <SurveyPage SearchQuery="@searchQuery"></SurveyPage>
-        }
+        <NewsPage SearchQuery="@searchQuery"></NewsPage>
     </div>
 </div>
 
 @code {
-    private string currentPage = "news";
     private string searchQuery = "";
 
-    private void SwitchPage(string page)
+    protected override void OnParametersSet()
     {
-        currentPage = page;
         searchQuery = "";
-    }
-
-    private string GetSearchPlaceholder()
-    {
-        return currentPage == "news" 
-            ? "Nach News-Titeln oder Tags suchen..." 
-            : "Nach Umfragen suchen...";
     }
 }

@@ -25,6 +25,16 @@
         </button>
 
         <nav class="sf-navbar @(MobileMenuOpen ? "open" : "")">
+
+            <div class="sf-nav-links">
+                <NavLink class="sf-nav-item" href="/home" @onclick="CloseAllMenus">
+                    News
+                </NavLink>
+                <NavLink class="sf-nav-item" href="/survey" @onclick="CloseAllMenus">
+                    Umfrage
+                </NavLink>
+            </div>
+
             <div class="sf-settings-dropdown">
                 <button type="button"
                         class="sf-settings-button"
@@ -86,7 +96,7 @@
                             </span>
 
                             <span>
-                            @(IsDarkMode ? "Weißmodus aktivieren" : "Dunkelmodus aktivieren")
+                                @(IsDarkMode ? "Weißmodus aktivieren" : "Dunkelmodus aktivieren")
                             </span>
                         </button>
 
