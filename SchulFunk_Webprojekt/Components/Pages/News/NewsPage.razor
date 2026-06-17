@@ -155,20 +155,35 @@
         return question.AnswerModels.Select(answer => BerechneProzent(question, answer)).Max();
     }
 
-    private string? BackgroundStyle(NewsItem news)
+    private string? GetBackgroundStyle(NewsItem news)
     {
-        var hasImage = !string.IsNullOrEmpty(news.ImageLink);
-
-        if(hasImage)
+        if (string.IsNullOrEmpty(news.ImageLink))
         {
-            if (news.ImageLink.StartsWith("http", StringComparison.OrdinalIgnoreCase))
-            {
-                return $"background-image: url('{news.ImageLink}');";
-            }
-            return $"background-image: url('http://212.227.82.199:7224{news.ImageLink}');";
+            return null;
         }
 
-        return null;
+        // 1. Wenn es ein externer Link (z. B. Unsplash) ist, lassen wir ihn unverändert
+        if (news.ImageLink.StartsWith("http", StringComparison.OrdinalIgnoreCase) &&
+            !news.ImageLink.Contains("212.227.82.199"))
+        {
+            return $"background-image: url('{news.ImageLink}');";
+        }
+
+        // 2. BOMBENSICHERER EXTRAKTOR:
+        // Wir suchen nach dem Wort "/uploads/" im String.
+        int uploadsIndex = news.ImageLink.IndexOf("/uploads/", StringComparison.OrdinalIgnoreCase);
+
+        if (uploadsIndex >= 0)
+        {
+            // Schneidet alles vor "/uploads/" weg. Übrig bleibt z.B.: "/uploads/bild.png"
+            var reinerRelativerPfad = news.ImageLink.Substring(uploadsIndex);
+
+            // Der Browser lädt das Bild jetzt automatisch sicher über https://schulfunk-bkbeckum.de/uploads/...
+            return $"background-image: url('{reinerRelativerPfad}');";
+        }
+
+        // Fallback, falls der Pfad bereits relativ war oder ein anderes Format hatte
+        return $"background-image: url('{news.ImageLink}');";
     }
 
     private void GoToNewsDetail(int newsId)
