@@ -105,6 +105,7 @@ namespace Survey.ApiGateway
 
             app.UseCors("AllowAll");
             app.UseStaticFiles();
+            app.UseForwardedHeaders();
             app.UseAuthentication(); 
             app.UseAuthorization();  
             app.MapHub<RealtimeHub.RealtimeHub>("/realtimehub");
