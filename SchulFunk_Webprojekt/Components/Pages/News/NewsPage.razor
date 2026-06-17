@@ -161,11 +161,11 @@
 
         if(hasImage)
         {
-            if (news.ImageLink.StartsWith("https", StringComparison.OrdinalIgnoreCase))
+            if (news.ImageLink.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             {
                 return $"background-image: url('{news.ImageLink}');";
             }
-            return $"background-image: url('https:/schulfunk-bkbeckum.de/api{news.ImageLink}');";
+            return $"background-image: url('https://schulfunk-bkbeckum.de/api{news.ImageLink}');";
         }
 
         return null;
