@@ -1,14 +1,15 @@
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Survey.ApiGateway.Database;
-using Survey.ApiGateway.RealtimeHub;
-using System.Text;
-using Microsoft.EntityFrameworkCore;
-using Survey.ApiGateway.Services;
-using Survey.ApiGateway.Feature.User;
 using Survey.ApiGateway.Feature.News;
 using Survey.ApiGateway.Feature.Survey;
+using Survey.ApiGateway.Feature.User;
+using Survey.ApiGateway.RealtimeHub;
+using Survey.ApiGateway.Services;
+using System.Text;
 
 namespace Survey.ApiGateway
 {
@@ -35,6 +36,13 @@ namespace Survey.ApiGateway
             builder.Services.AddSwaggerGen();
             builder.Services.AddControllers();
             builder.Services.AddSignalR();
+            builder.Services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                // Wichtig: Löscht die Standard-Einschränkung, dass es nur auf localhost reagiert
+                options.KnownNetworks.Clear();
+                options.KnownProxies.Clear();
+            });
             // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
             builder.Services.AddOpenApi();
 
