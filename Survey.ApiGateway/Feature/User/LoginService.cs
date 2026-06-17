@@ -34,6 +34,7 @@ namespace Survey.ApiGateway.Feature.User
                 Firstname = user.Firstname,
                 Lastname = user.Lastname,
                 Email = user.Email,
+                ImageLink = user.ImageLink,
                 Class = new DTO.ClassDTO
                 {
                     Classname = user.Class.ClassName
