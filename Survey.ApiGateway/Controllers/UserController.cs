@@ -61,7 +61,7 @@ namespace Survey.ApiGateway.Controllers
                 await file.CopyToAsync(stream);
             }
 
-            var saved = await userService.UploadProfileImage(id, $"http://212.227.82.199:7224/uploads/{fileName}");
+            var saved = await userService.UploadProfileImage(id, $"/uploads/{fileName}");
             if (saved == null) return NotFound("Benutzer nicht gefunden oder konnte nicht gespeichert werden.");
 
             return Ok(new { ImageLink = saved });
