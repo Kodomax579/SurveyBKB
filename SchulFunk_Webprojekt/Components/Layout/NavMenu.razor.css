@@ -22,8 +22,7 @@
     position: relative;
 }
 
-/* Brand */
-
+/* Brand / Logo-Bereich */
 ::deep .sf-brand {
     display: inline-flex;
     align-items: center;
@@ -67,19 +66,59 @@
         color: var(--sf-accent);
     }
 
-/* Desktop Navigation */
-
+/* Desktop-Navbar (Verteilt Links mittig, Profil rechts) */
 .sf-navbar {
     position: relative;
     z-index: 9100;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    gap: 28px;
-    flex-wrap: nowrap;
+    justify-content: space-between;
+    flex: 1;
 }
 
-::deep .sf-nav-button,
+/* Nav-Links Box zentriert sich automatisch im Header */
+.sf-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 auto;
+}
+
+/* Neues Style-Upgrade für Nav-Items: Breiter, dicker, moderner */
+::deep .sf-nav-item,
+.sf-nav-item {
+    min-height: 46px;
+    padding: 0 24px;
+    border-radius: var(--sf-radius-md, 8px);
+    color: var(--sf-text-muted);
+    font-size: 1.05rem;
+    font-weight: 800; /* Extra "fat" & modern */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all var(--sf-transition);
+    border: 1px solid transparent;
+    white-space: nowrap;
+    background: transparent;
+    cursor: pointer;
+}
+
+    ::deep .sf-nav-item:hover,
+    .sf-nav-item:hover {
+        background: var(--sf-accent-soft);
+        color: var(--sf-text-strong);
+        text-decoration: none;
+    }
+
+    ::deep .sf-nav-item.active,
+    .sf-nav-item.active {
+        background: var(--sf-accent-soft);
+        color: var(--sf-accent);
+        border-color: rgba(24, 185, 129, 0.15);
+    }
+
+/* Profil-Button linksunabhängig rechts verankern */
 .sf-settings-button {
     position: relative;
     min-height: auto;
@@ -102,41 +141,11 @@
     transition: var(--sf-transition);
 }
 
-    ::deep .sf-nav-button::after,
-    .sf-settings-button::after {
-        content: "";
-        position: absolute;
-        left: 0;
-        bottom: -8px;
-        width: 0;
-        height: 2px;
-        border-radius: 999px;
-        background: var(--sf-accent);
-        transition: width var(--sf-transition);
-    }
-
-    ::deep .sf-nav-button:hover,
     .sf-settings-button:hover {
-        background: var(--sf-accent-soft);
         color: var(--sf-text-strong);
-        text-decoration: none;
     }
 
-        ::deep .sf-nav-button:hover::after,
-        .sf-settings-button:hover::after,
-        ::deep .sf-nav-button.active::after {
-            width: 100%;
-        }
-
-    ::deep .sf-nav-button.active {
-        color: var(--sf-accent);
-        background: transparent;
-        border: none;
-        box-shadow: none;
-    }
-
-/* Burger Button */
-
+/* Burger Button für Mobilgeräte */
 .sf-mobile-menu-button {
     display: none;
     width: 44px;
@@ -180,11 +189,11 @@
         }
 
 /* Profil Dropdown */
-
 .sf-settings-dropdown {
     position: relative;
     z-index: 9500;
     display: inline-flex;
+    margin-left: auto;
 }
 
 .sf-settings-menu {
@@ -342,8 +351,7 @@
     }
 }
 
-/* Tablet */
-
+/* Medium / Tablet Displays */
 @media (max-width: 1050px) {
     .sf-header-inner {
         padding: 0 22px;
@@ -353,14 +361,14 @@
         gap: 20px;
     }
 
-    ::deep .sf-nav-button,
-    .sf-settings-button {
+    ::deep .sf-nav-item,
+    .sf-nav-item {
+        padding: 0 16px;
         font-size: var(--sf-font-size-sm);
     }
 }
 
-/* Smartphone */
-
+/* Smartphone Layout (Kollabiert flüssig ins Burger-Menü) */
 @media (max-width: 760px) {
     .sf-header-inner {
         min-height: 68px;
@@ -400,8 +408,17 @@
             display: flex;
         }
 
-    ::deep .sf-nav-button,
-    .sf-settings-button {
+    /* Setzt Desktop-Mittelzentrierung für Smartphone zurück */
+    .sf-nav-links {
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        margin: 0;
+        gap: 6px;
+    }
+
+    ::deep .sf-nav-item,
+    .sf-nav-item {
         width: 100%;
         min-height: 44px;
         padding: 0 12px;
@@ -410,21 +427,29 @@
         color: var(--sf-text);
     }
 
-        ::deep .sf-nav-button::after,
-        .sf-settings-button::after {
-            content: none;
-        }
-
-        ::deep .sf-nav-button:hover,
-        .sf-settings-button:hover,
-        ::deep .sf-nav-button.active {
+        ::deep .sf-nav-item:hover,
+        .sf-nav-item:hover,
+        ::deep .sf-nav-item.active {
             background: var(--sf-accent-soft);
             color: var(--sf-text-strong);
+        }
+
+    .sf-settings-button {
+        width: 100%;
+        min-height: 44px;
+        padding: 0 12px;
+        border-radius: var(--sf-radius-sm);
+        justify-content: flex-start;
+    }
+
+        .sf-settings-button:hover {
+            background: var(--sf-accent-soft);
         }
 
     .sf-settings-dropdown {
         width: 100%;
         display: block;
+        margin-left: 0;
     }
 
     .sf-settings-menu {
@@ -439,8 +464,7 @@
         }
 }
 
-/* Sehr kleine Displays */
-
+/* Sehr kleine Smartphone Displays */
 @media (max-width: 420px) {
     .sf-brand-text h1 {
         font-size: 1.2rem;

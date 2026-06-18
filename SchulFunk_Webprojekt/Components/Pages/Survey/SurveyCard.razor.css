@@ -43,7 +43,17 @@
 .survey-card.is-active .survey-card-status {
     background: #18b981;
 }
-
+/* Am Ende deiner CSS-Datei ergänzen */
+.survey-card-action-disabled {
+    background: var(--sf-input-bg) !important;
+    color: var(--sf-text-muted) !important;
+    border-color: var(--sf-border) !important;
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none; /* Verhindert jegliche Klicks oder Fokus-Events */
+    transform: none !important; /* Verhindert das Hochspringen beim Hover */
+    box-shadow: none !important;
+}
 .survey-card.is-ended .survey-card-status {
     background: #64748b;
 }

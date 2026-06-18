@@ -22,10 +22,12 @@
     <div class="survey-card-footer">
         @if (CanClick)
         {
+            @* Führt entweder zur Abstimmung (aktiv) oder zu den Ergebnissen (beendet oder bereits teilgenommen) *@
             <a href="@ActionLink" class="survey-card-action">@ActionText</a>
         }
         else
         {
+            @* Nur aktiv und bereits teilgenommen blockiert den Button *@
             <span class="survey-card-action survey-card-action-disabled">@ActionText</span>
         }
     </div>
@@ -40,27 +42,35 @@
 
     private int? CurrentUserId => userStateService?.GetUser()?.Id;
 
-    private bool HasParticipated => CurrentUserId.HasValue && Item.UserIDs != null && Item.UserIDs.Contains(CurrentUserId.Value);
+    private bool HasParticipated =>
+        CurrentUserId.HasValue && Item.UserIDs != null && Item.UserIDs.Contains(CurrentUserId.Value);
 
-    private bool CanClick => !IsExpired && !HasParticipated;
+    // Klickbar, wenn sie abgelaufen ist (Ergebnisse) ODER wenn aktiv und noch nicht teilgenommen
+    private bool CanClick => IsExpired || !HasParticipated;
 
     private string ActionText =>
         IsExpired ? "Ergebnisse ansehen" : (HasParticipated ? "Bereits teilgenommen" : "Jetzt abstimmen");
 
+    // Wenn abgelaufen ODER bereits teilgenommen, geht es zu den Ergebnissen
     private string ActionLink =>
-        IsExpired ? $"/survey/results/{Item.Id}" : $"/survey/{Item.Id}";
+        (IsExpired || HasParticipated) ? $"/survey/results/{Item.Id}" : $"/survey/{Item.Id}";
 
     private int TeilnehmerAnzahl
     {
         get
         {
+            if (Item.UserIDs != null)
+            {
+                return Item.UserIDs.Count;
+            }
+
             if (Item.Questions is null || !Item.Questions.Any())
             {
                 return 0;
             }
 
             return Item.Questions
-                .Select(question => question.AnswerModels.Sum(option => option.NumberOfSelectedAnswer))
+                .Select(question => question.AnswerModels?.Sum(option => option.NumberOfSelectedAnswer) ?? 0)
                 .DefaultIfEmpty(0)
                 .Max();
         }

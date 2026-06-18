@@ -26,15 +26,17 @@
 
         <nav class="sf-navbar @(MobileMenuOpen ? "open" : "")">
 
+            @* ZENTRIERTE NAVIGATION IM DESKTOP-MODUS *@
             <div class="sf-nav-links">
                 <NavLink class="sf-nav-item" href="/home" @onclick="CloseAllMenus">
                     News
                 </NavLink>
                 <NavLink class="sf-nav-item" href="/survey" @onclick="CloseAllMenus">
-                    Umfrage
+                    Umfragen
                 </NavLink>
             </div>
 
+            @* PROFIL / SETTINGS DROPDOWN RECHTS *@
             <div class="sf-settings-dropdown">
                 <button type="button"
                         class="sf-settings-button"
@@ -195,7 +197,7 @@
 
     private string GetAvatarPicture()
     {
-        return $"https://schulfunk-bkbeckum.de/api/{CurrentUser.ImageLink}";
+        return $"https://schulfunk-bkbeckum.de/api{CurrentUser.ImageLink}";
     }
 
     public void Dispose()

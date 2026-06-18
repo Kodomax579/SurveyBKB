@@ -1,4 +1,5 @@
 @page "/survey/results/{SurveyId:int}"
+@rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
 @inject SurveyStateService surveyStateService
 @implements IDisposable
@@ -39,31 +40,40 @@ else
             @for (var questionIndex = 0; questionIndex < Survey.Questions.Count; questionIndex++)
             {
                 var question = Survey.Questions[questionIndex];
+                // WICHTIG: Berechne die Gesamtstimmen EINMAL pro Frage, nicht in der foreach-Schleife der Antworten
+                var totalVotes = question.AnswerModels?.Sum(option => option.NumberOfSelectedAnswer) ?? 0;
 
                 <article class="survey-results-question-block">
                     <h3>Frage @(questionIndex + 1)</h3>
                     <p>@question.Question</p>
 
                     <div class="survey-results-answer-list">
-                        @foreach (var answer in question.AnswerModels)
+                        @if (question.AnswerModels is null || !question.AnswerModels.Any())
                         {
-                            var totalVotes = question.AnswerModels.Sum(option => option.NumberOfSelectedAnswer);
-                            var percentage = totalVotes == 0
-                                ? 0
-                                : Math.Round((double)answer.NumberOfSelectedAnswer / totalVotes * 100);
+                            <p>Keine Antwortmöglichkeiten für diese Frage vorhanden.</p>
+                        }
+                        else
+                        {
+                            @foreach (var answer in question.AnswerModels)
+                            {
+                                var percentage = totalVotes == 0
+                                    ? 0
+                                    : Math.Round((double)answer.NumberOfSelectedAnswer / totalVotes * 100);
 
-                            <div class="survey-results-answer">
-                                <div class="survey-results-answer-top">
-                                    <strong>@answer.Answers</strong>
-                                    <span>@percentage%</span>
+                                <div class="survey-results-answer">
+                                    <div class="survey-results-answer-top">
+                                        <strong>@answer.Answers</strong>
+                                        <span>@percentage%</span>
+                                    </div>
+
+                                    <div class="survey-results-bar">
+                                        @* InvariantCulture sorgt dafür, dass Breiten wie 55.5% im HTML mit Punkt statt Komma gerendert werden *@
+                                        <div style="width: @percentage.ToString(System.Globalization.CultureInfo.InvariantCulture)%"></div>
+                                    </div>
+
+                                    <small>@answer.NumberOfSelectedAnswer Stimmen</small>
                                 </div>
-
-                                <div class="survey-results-bar">
-                                    <div style="width: @percentage%"></div>
-                                </div>
-
-                                <small>@answer.NumberOfSelectedAnswer Stimmen</small>
-                            </div>
+                            }
                         }
                     </div>
                 </article>
