@@ -3,6 +3,8 @@
 @using SchulFunk_Webprojekt.Model
 @inject UserStateService userStateService
 @inject SurveyStateService surveyStateService
+@inject SurveyService surveyService
+@inject NavigationManager navigationManager
 @implements IDisposable
 
 <PageTitle>Umfragen verwalten</PageTitle>
@@ -157,24 +159,42 @@ else
         return survey.OnlineUntil < DateOnly.FromDateTime(DateTime.Today);
     }
 
-    private void EndSurveyEarly(SurveyModel survey)
+    private async Task EndSurveyEarly(SurveyModel survey)
     {
         if (!CanEndSurveyEarly(survey))
         {
             return;
         }
 
-        survey.OnlineUntil = DateOnly.FromDateTime(DateTime.Today.AddDays(-1));
+        // Sendet den Request an das Backend
+        var success = await surveyService.EndSurveyEarly(survey.Id);
+
+        if (success)
+        {
+            // Lokale UI-Instanz sofort anpassen, falls SignalR eine Millisekunde braucht
+            survey.OnlineUntil = DateOnly.FromDateTime(DateTime.Today.AddDays(-1));
+
+            // UI-Neuzeichnung erzwingen
+            StateHasChanged();
+        }
+        else
+        {
+            Console.WriteLine("Die Umfrage konnte nicht vorzeitig beendet werden.");
+        }
     }
 
-    private void DeleteSurvey(SurveyModel survey)
+    private async Task DeleteSurvey(SurveyModel survey)
     {
         if (!CanDeleteSurvey(survey))
         {
             return;
         }
 
-        Surveys.Remove(survey);
+        var result = await surveyService.DeleteSurvey(survey.Id);
+
+        if(result)
+        {
+        }
     }
 
     public void Dispose()

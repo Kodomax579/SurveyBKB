@@ -49,8 +49,6 @@ namespace SchulFunk_Webprojekt.Feature.SurveyHandling
 
             if (!result.IsSuccessStatusCode) return false;
             
-            var createdSurvey = await result.Content.ReadFromJsonAsync<SurveyModel>();
-            surveyStateService.AddSurveyItem(createdSurvey);
             return true;
         }
 
@@ -62,6 +60,19 @@ namespace SchulFunk_Webprojekt.Feature.SurveyHandling
             if (result.IsSuccessStatusCode)
             {
                 surveyStateService.DeleteSurveyItem(id);
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<bool> EndSurveyEarly(int id)
+        {
+            AddToken();
+
+            var result = await httpClient.PutAsync($"{BaseURL}/api/Survey/{id}/end", null);
+
+            if (result.IsSuccessStatusCode)
+            {
                 return true;
             }
             return false;

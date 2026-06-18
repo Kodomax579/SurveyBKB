@@ -45,7 +45,6 @@ namespace Survey.ApiGateway.Feature.Survey
         public async Task<List<SurveyDTO>> GetAllSurveys()
         {
             var surveys = await surveyDbContext.Surveys
-                .Where(s => s.OnlineUntil >= DateOnly.FromDateTime(DateTime.UtcNow))
                 .Include(s => s.User)
                     .ThenInclude(u => u.Class) 
                 .Include(s => s.Questions)
@@ -71,6 +70,29 @@ namespace Survey.ApiGateway.Feature.Survey
             }
 
             return ConvertToDto(survey);
+        }
+        public async Task<bool> EndSurveyEarly(int id)
+        {
+            // Hol dir die Umfrage aus der Datenbank (passe ggf. den Entitätsnamen an)
+            var survey = await surveyDbContext.Surveys.FindAsync(id);
+
+            if (survey == null)
+            {
+                return false;
+            }
+
+            // Setze das Enddatum auf gestern, damit sie abgelaufen ist
+            survey.OnlineUntil = DateOnly.FromDateTime(DateTime.Today.AddDays(-1));
+
+            try
+            {
+                await surveyDbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         public async Task<SurveyDTO?> UpdateSurvey(int id, SurveyModel surveyUpdate)

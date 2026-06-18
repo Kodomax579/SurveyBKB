@@ -3,6 +3,7 @@
 @using SchulFunk_Webprojekt.Model
 @inject NewsStateService newsStateService
 @inject UserStateService userStateService
+@inject SchulFunk_Webprojekt.Feature.NewsHandling.NewsService newsService
 
 
 <PageTitle>Nachrichten verwalten</PageTitle>
@@ -191,17 +192,27 @@ else
         EditArtikel = news.MainText;
     }
 
-    private void SaveNewsEdit()
+    private async Task SaveNewsEdit()
     {
         if (NewsInBearbeitung is null || !CanEditNews(NewsInBearbeitung))
         {
             return;
         }
 
+        // Änderungen in das Modell übernehmen
         NewsInBearbeitung.Titel = EditTitle;
         NewsInBearbeitung.Tag = EditTag;
         NewsInBearbeitung.PreviewText = EditDescription;
         NewsInBearbeitung.MainText = EditArtikel;
+
+        // Auf Server aktualisieren. NewsStateService wird bei Erfolg das UI via SignalR aktualisieren.
+        var success = await newsService.UpdateNews(NewsInBearbeitung.Id, NewsInBearbeitung);
+
+        if (!success)
+        {
+            Console.WriteLine($"Fehler beim Aktualisieren der Nachricht mit Id {NewsInBearbeitung.Id}");
+            return;
+        }
 
         CancelNewsEdit();
     }
@@ -215,14 +226,23 @@ else
         EditArtikel = "";
     }
 
-    private void DeleteNews(NewsItem news)
+    private async Task DeleteNews(NewsItem news)
     {
         if (!CanDeleteNews(news))
         {
             return;
         }
 
-        NewsListe.Remove(news);
+        // Versuche, die News über den Service zu löschen. Der NewsStateService
+        // wird bei Erfolg über SignalR das UI aktualisieren.
+        var success = await newsService.DeleteNews(news.Id);
+
+        if (!success)
+        {
+            // Fehlerbehandlung: vorerst in der Konsole loggen. UI-Feedback kann ergänzt werden.
+            Console.WriteLine($"Fehler beim Löschen der Nachricht mit Id {news.Id}");
+            return;
+        }
 
         if (NewsInBearbeitung == news)
         {

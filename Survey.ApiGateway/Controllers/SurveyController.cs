@@ -78,6 +78,33 @@ namespace Survey.ApiGateway.Controllers
             return Ok(true);
         }
 
+        [HttpPut("{id}/end")]
+        [Authorize]
+        public async Task<IActionResult> EndSurveyEarly(int id)
+        {
+            var existingSurvey = await surveyService.GetSurveyById(id);
+            if (existingSurvey == null)
+            {
+                return NotFound("Umfrage nicht gefunden.");
+            }
+
+            // Service-Aufruf zum Ändern des Datums
+            var success = await surveyService.EndSurveyEarly(id);
+
+            if (!success)
+            {
+                return BadRequest("Umfrage konnte nicht beendet werden.");
+            }
+
+            // Aktualisiertes Objekt holen, um es an alle Clients zu senden
+            var updatedSurvey = await surveyService.GetSurveyById(id);
+
+            // SignalR: Alle Clients informieren, dass diese Umfrage nun aktualisiert (beendet) wurde
+            await hubContext.Clients.All.SendAsync("SurveyVoteUpdated", updatedSurvey);
+
+            return Ok(true);
+        }
+
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteSurvey(int id)
