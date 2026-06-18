@@ -192,5 +192,31 @@ namespace Survey.ApiGateway.Feature.User
                 return false;
             }
         }
+
+        public async Task<bool> ResetPasswordByEmail(string email, string newPassword)
+        {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(newPassword))
+            {
+                return false;
+            }
+
+            var user = await dbContext.Users.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
+            if (user == null)
+            {
+                return false; 
+            }
+
+            user.Password = _passwordHasher.HashPassword(user, newPassword);
+
+            try
+            {
+                await dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
     }
 }

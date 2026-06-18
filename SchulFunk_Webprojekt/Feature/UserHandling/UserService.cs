@@ -170,5 +170,14 @@ namespace SchulFunk_Webprojekt.Feature.UserHandling
             }
             return true;
         }
+
+        public async Task<bool> ResetPassword(string email, string newPassword)
+        {
+            // Wir nutzen hier POST, da wir sensible Daten (das neue Passwort) im Body mitsenden wollen
+            var requestData = new { Email = email, Password = newPassword };
+
+            var response = await httpClient.PostAsJsonAsync("api/Login/ResetPassword", requestData);
+            return response.IsSuccessStatusCode;
+        }
     }
 }

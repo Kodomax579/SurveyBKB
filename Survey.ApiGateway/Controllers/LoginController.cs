@@ -13,7 +13,7 @@ namespace Survey.ApiGateway.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    public class LoginController(LoginService loginService, AuthService authService, EmailService emailService) : ControllerBase
+    public class LoginController(LoginService loginService, AuthService authService, EmailService emailService, UserService userService) : ControllerBase
     {
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginDTO request)
@@ -62,6 +62,31 @@ namespace Survey.ApiGateway.Controllers
                 return Ok(email);
             }
             return BadRequest();
+        }
+
+        [HttpPost("/ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO request)
+        {
+            try
+            {
+                if (request == null || string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.NewPassword))
+                {
+                    return BadRequest("Ungültige Daten übergeben.");
+                }
+
+                var erfolg = await userService.ResetPasswordByEmail(request.Email, request.NewPassword);
+
+                if (erfolg)
+                {
+                    return Ok(new { Message = "Das Passwort wurde erfolgreich zurückgesetzt." });
+                }
+
+                return BadRequest("Passwort konnte nicht zurückgesetzt werden. Benutzer existiert eventuell nicht.");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Fehler beim Zurücksetzen: {ex.Message}");
+            }
         }
     }
 }
