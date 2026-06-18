@@ -12,10 +12,9 @@ namespace Survey.ApiGateway.Feature.Email
             mailMessage.Subject = "Passwort zurücksetzen";
             mailMessage.Body = "Hier ist der Link zum Zurücksetzen Ihres Passworts: https://schulfunk-bkbeckum.de/reset-password?email=" + toEmail;
 
-            // Explizit IP und Port 25 angeben
-            using (SmtpClient smtpClient = new SmtpClient("host.docker.internal", 25))
+            // 172.17.0.1 ist unter Linux IMMER die IP des echten Servers aus Docker heraus!
+            using (SmtpClient smtpClient = new SmtpClient("172.17.0.1", 25))
             {
-                // WICHTIG für lokale Postfix-Instanzen ohne SSL auf Port 25:
                 smtpClient.EnableSsl = false;
                 smtpClient.UseDefaultCredentials = true;
                 smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
@@ -23,17 +22,12 @@ namespace Survey.ApiGateway.Feature.Email
                 try
                 {
                     smtpClient.Send(mailMessage);
-                    Console.WriteLine("E-Mail erfolgreich an Postfix übergeben!");
+                    Console.WriteLine("E-Mail erfolgreich gesendet!");
                 }
                 catch (Exception ex)
                 {
-                    // Schreibt den genauen Fehler in die Server-Konsole deiner App
-                    Console.WriteLine($"[EmailService Fehler] -> {ex.Message}");
-                    if (ex.InnerException != null)
-                    {
-                        Console.WriteLine($"[Innerer Fehler] -> {ex.InnerException.Message}");
-                    }
-                    throw; // Wirft den Fehler weiter, damit der LoginController ihn fängt
+                    Console.WriteLine($"Fehler beim Senden: {ex.Message}");
+                    throw;
                 }
             }
         }
