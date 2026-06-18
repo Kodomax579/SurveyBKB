@@ -43,13 +43,12 @@ namespace Survey.ApiGateway.Controllers
             }
             catch (Exception ex)
             {
-                // HIER IST DER TRICK: Wir schicken die echte Fehlermeldung an Swagger zurück!
                 return StatusCode(500, $"Backend-Absturz: {ex.Message} -> {ex.InnerException?.Message}");
             }
         }
 
         [HttpPut("ForgotPassword")]
-        public async Task<IActionResult> ForgotPassword([FromQuery] string email) // <- HIER [FromQuery] nutzen!
+        public async Task<IActionResult> ForgotPassword([FromQuery] string email) 
         {
             if (string.IsNullOrEmpty(email))
             {

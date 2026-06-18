@@ -1,160 +1,307 @@
-.auth-wrapper {
-    min-height: calc(100vh - 180px);
+/* ==========================================================================
+   SPLIT CONTAINER BASE
+   ========================================================================== */
+.sf-login-split-container {
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    min-height: 100vh;
+    width: 100vw;
+    background: var(--sf-page-bg);
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 9999;
+    font-family: var(--sf-font-family);
+}
+
+/* ==========================================================================
+   LINKE SPALTE: INFO-BEREICH (Modernes Grid-Branding)
+   ========================================================================== */
+.sf-login-info-side {
+    background: linear-gradient(135deg, var(--sf-page-bg-secondary) 0%, var(--sf-panel-bg) 100%);
+    border-right: 1px solid var(--sf-border);
+    padding: clamp(var(--sf-space-lg), 5vw, var(--sf-space-2xl));
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    justify-content: center; /* Zentriert den Inhalt vertikal (oben/unten) */
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtiler Glow-Effekt im Hintergrund basierend auf der Akzentfarbe (Koralle) */
+.sf-login-info-side::after {
+    content: '';
+    position: absolute;
+    bottom: -10%;
+    left: -10%;
+    width: 400px;
+    height: 400px;
+    background: var(--sf-accent);
+    filter: blur(150px);
+    opacity: 0.08;
+    pointer-events: none;
+}
+
+.sf-login-info-content {
+    max-width: 540px;
+    margin: auto 0;
+    text-align: left;
+}
+
+.sf-info-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: var(--sf-accent-softer);
+    border: 1px solid var(--sf-border);
+    color: var(--sf-accent);
+    font-size: var(--sf-font-size-xs);
+    font-weight: var(--sf-font-weight-black);
+    border-radius: var(--sf-radius-pill);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: var(--sf-space-md);
+}
+
+.sf-login-info-side h1 {
+    color: var(--sf-text-strong);
+    font-size: var(--sf-font-size-3xl);
+    line-height: 1.1;
+    font-weight: var(--sf-font-weight-black);
+    letter-spacing: -0.04em;
+    margin: 0 0 var(--sf-space-md) 0;
+}
+
+.sf-info-text {
+    color: var(--sf-text-muted);
+    font-size: var(--sf-font-size-md);
+    line-height: 1.6;
+    margin: 0 0 var(--sf-space-xl) 0;
+}
+
+/* Feature Grid */
+.sf-login-mini-grid {
+    display: grid;
+    gap: var(--sf-space-md);
+}
+
+.mini-grid-item {
+    background: var(--sf-card-bg);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius-md);
+    padding: var(--sf-space-md);
+    display: flex;
+    align-items: center;
+    gap: var(--sf-space-md);
+    box-shadow: var(--sf-shadow-sm);
+}
+
+    .mini-grid-item:hover {
+        transform: var(--sf-hover-lift-lg);
+        background-color: var(--sf-card-bg-hover)
+    }
+
+.mini-grid-item img {
+    width: 42px;
+    height: 42px;
+    object-fit: contain;
+}
+
+.mini-grid-item strong {
+    display: block;
+    color: var(--sf-text-strong);
+    font-size: var(--sf-font-size-sm);
+    font-weight: var(--sf-font-weight-bold);
+    margin-bottom: 2px;
+}
+
+.mini-grid-item span {
+    color: var(--sf-text-muted);
+    font-size: var(--sf-font-size-xs);
+}
+
+.sf-login-info-footer {
+    color: var(--sf-text-subtle);
+    font-size: var(--sf-font-size-xs);
+    font-weight: var(--sf-font-weight-medium);
+    text-align: left;
+}
+
+/* ==========================================================================
+   RECHTE SPALTE: ANMELDE-FORMULAR
+   ========================================================================== */
+.sf-login-form-side {
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: var(--sf-space-xl) var(--sf-space-md);
+    padding: var(--sf-space-lg);
+    background: var(--sf-panel-bg-strong);
 }
 
 .auth-panel {
-    position: relative;
-    overflow: hidden;
     width: 100%;
-    max-width: 460px;
-    padding: var(--sf-space-xl);
-    text-align: center;
-    background: var(--sf-panel-bg);
-    border: 2px solid var(--sf-border);
-    border-radius: var(--sf-radius);
-    box-shadow: var(--sf-shadow);
-    color: var(--sf-text);
+    max-width: 420px;
+    padding: var(--sf-space-lg);
 }
 
-    .auth-panel::before,
-    .auth-panel::after {
-        content: none !important;
-        display: none !important;
-    }
-
 .auth-logo {
-    width: 86px;
-    height: 86px;
+    width: 76px;
+    height: 76px;
     object-fit: contain;
     margin-bottom: var(--sf-space-md);
 }
 
 .auth-header h2 {
-    margin: 0 0 8px;
+    margin: 0 0 var(--sf-space-xs);
     color: var(--sf-text-strong);
-    font-size: 2.15rem;
+    font-size: var(--sf-font-size-2xl);
+    font-weight: var(--sf-font-weight-black);
     letter-spacing: -0.05em;
+    text-align: center;
 }
 
-    .auth-header h2 span {
-        color: var(--sf-accent);
-    }
+.auth-header h2 span {
+    color: var(--sf-accent);
+}
 
 .auth-header p {
     margin: 0 0 var(--sf-space-lg);
     color: var(--sf-text-muted);
-    line-height: 1.55;
-}
-
-.auth-form {
-    position: relative;
-    z-index: 1;
-    text-align: left;
-}
-
-    .auth-form .form-group label {
-        color: var(--sf-accent);
-    }
-
-    .auth-form .form-control,
-    .auth-form .sf-input,
-    .auth-form input {
-        background: var(--sf-input-bg) !important;
-        border: 2px solid var(--sf-border) !important;
-        color: var(--sf-input-text) !important;
-        caret-color: var(--sf-accent);
-    }
-
-        .auth-form .form-control::placeholder,
-        .auth-form .sf-input::placeholder,
-        .auth-form input::placeholder {
-            color: var(--sf-input-placeholder) !important;
-        }
-
-        .auth-form .form-control:hover,
-        .auth-form .sf-input:hover,
-        .auth-form input:hover {
-            background: var(--sf-input-bg-hover) !important;
-            border-color: var(--sf-accent) !important;
-            color: var(--sf-input-text) !important;
-        }
-
-        .auth-form .form-control:focus,
-        .auth-form .sf-input:focus,
-        .auth-form input:focus {
-            background: var(--sf-input-bg-focus) !important;
-            border-color: var(--sf-accent) !important;
-            color: var(--sf-input-text) !important;
-            box-shadow: 0 0 0 4px var(--sf-focus) !important;
-        }
-
-.auth-footer {
-    position: relative;
-    z-index: 1;
-    margin-top: var(--sf-space-lg);
     font-size: var(--sf-font-size-sm);
-    color: var(--sf-text-muted);
+    line-height: 1.55;
     text-align: center;
 }
 
-    .auth-footer a {
-        color: var(--sf-accent);
-        font-weight: var(--sf-font-weight-black);
-        transition: var(--sf-transition);
-    }
-
-        .auth-footer a:hover {
-            color: var(--sf-text-strong);
-            text-decoration: underline;
-        }
-.mt-2 {
-    margin-top: 0.75rem;
-}
-
-.mb-3 {
-    margin-bottom: 1rem;
-}
-
-.text-center {
-    text-align: center;
-}
-
-.text-left {
+/* Form-Controls */
+.auth-form {
     text-align: left;
+}
+
+.form-group {
+    margin-bottom: var(--sf-space-md);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.auth-form .form-group label {
+    color: var(--sf-text-strong);
+    font-size: var(--sf-font-size-xs);
+    font-weight: var(--sf-font-weight-black);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.auth-form .sf-input {
+    width: 100%;
+    padding: var(--sf-space-md);
+    background: var(--sf-input-bg) !important;
+    border: 2px solid var(--sf-border) !important;
+    color: var(--sf-input-text) !important;
+    border-radius: var(--sf-radius-md);
+    font-size: var(--sf-font-size-base);
+    transition: all var(--sf-transition-fast);
+}
+
+.auth-form .sf-input::placeholder {
+    color: var(--sf-input-placeholder) !important;
+}
+
+.auth-form .sf-input:hover {
+    background: var(--sf-input-bg-hover) !important;
+    border-color: var(--sf-border-strong) !important;
+}
+
+.auth-form .sf-input:focus {
+    background: var(--sf-input-bg-focus) !important;
+    border-color: var(--sf-accent) !important;
+    outline: none;
+    box-shadow: 0 0 0 4px var(--sf-focus) !important;
+}
+
+.form-actions-row {
+    display: flex;
+    justify-content: flex-end;
+    margin: -4px 0 var(--sf-space-md) 0;
 }
 
 .sf-link-button {
     background: none;
     border: none;
-    color: var(--sf-text-muted);
+    color: var(--sf-text-subtle);
     font-size: var(--sf-font-size-sm);
+    font-weight: var(--sf-font-weight-bold);
     padding: 0;
-    margin: var(--sf-space-xs) 0 var(--sf-space-md) 0;
     cursor: pointer;
-    text-align: left;
-    transition: var(--sf-transition);
-    display: inline-block;
+    transition: color var(--sf-transition-fast);
 }
 
-    .sf-link-button:hover {
-        color: var(--sf-accent);
-        text-decoration: underline;
-    }
+.sf-link-button:hover {
+    color: var(--sf-accent);
+    text-decoration: underline;
+}
 
-/* MODAL DESIGN STYLES */
+/* Buttons */
+.w-100 { width: 100%; }
+.mt-2 { margin-top: 0.75rem; }
+.mb-3 { margin-bottom: 1rem; }
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+
+.auth-form .sf-button {
+    background: var(--sf-button-bg) !important;
+    color: var(--sf-button-text) !important;
+    border: 2px solid var(--sf-button-border) !important;
+    border-radius: var(--sf-radius-md);
+    padding: 14px;
+    font-size: var(--sf-font-size-base);
+    font-weight: var(--sf-font-weight-black);
+    cursor: pointer;
+    transition: all var(--sf-transition-fast);
+}
+
+.auth-form .sf-button:hover {
+    background: var(--sf-button-hover-bg) !important;
+    color: var(--sf-button-hover-text) !important;
+    border-color: var(--sf-button-hover-border) !important;
+    transform: var(--sf-hover-lift-sm);
+}
+
+/* ==========================================================================
+   FEEDBACK MESSAGES & MODAL
+   ========================================================================== */
+.success-message, .validation-message {
+    padding: var(--sf-space-sm);
+    border-radius: var(--sf-radius-sm);
+    margin-bottom: var(--sf-space-md);
+    font-size: var(--sf-font-size-sm);
+    text-align: center;
+    font-weight: var(--sf-font-weight-medium);
+}
+
+.success-message {
+    background: var(--sf-success-bg);
+    border: 1px solid var(--sf-success-border);
+    color: var(--sf-success-text);
+}
+
+.validation-message {
+    background: var(--sf-danger-bg);
+    border: 1px solid var(--sf-danger-bg);
+    color: var(--sf-danger-text);
+}
+
+/* Modal Backdrops */
 .sf-modal-backdrop {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: rgba(0, 0, 0, 0.6);
+    background: rgba(var(--sf-color-black-rgb), 0.6);
     backdrop-filter: blur(4px);
-    z-index: 999;
+    z-index: 10000;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -164,18 +311,24 @@
     width: 100%;
     max-width: 440px;
     padding: var(--sf-space-xl);
-    animation: sfModalFadeIn 0.25s ease-out;
+    border-radius: var(--sf-radius-lg);
+    background: var(--sf-panel-bg);
+    border: 1px solid var(--sf-border);
+    box-shadow: var(--sf-shadow-lg);
+    animation: sfModalFadeIn var(--sf-transition-slow);
 }
 
-    .sf-modal-content h3 {
-        color: var(--sf-text-strong);
-        font-size: 1.75rem;
-        margin-bottom: 8px;
-    }
+.sf-modal-content h3 {
+    color: var(--sf-text-strong);
+    font-size: var(--sf-font-size-xl);
+    font-weight: var(--sf-font-weight-black);
+    margin-bottom: 8px;
+    letter-spacing: -0.02em;
+}
 
-        .sf-modal-content h3 span {
-            color: var(--sf-accent);
-        }
+.sf-modal-content h3 span {
+    color: var(--sf-accent);
+}
 
 .modal-actions {
     display: flex;
@@ -185,46 +338,52 @@
 }
 
 .sf-button-secondary {
-    background: transparent !important;
-    border: 2px solid var(--sf-border) !important;
-    color: var(--sf-text-muted) !important;
+    background: var(--sf-button-dark-bg) !important;
+    border: 2px solid var(--sf-button-dark-border) !important;
+    color: var(--sf-button-dark-text) !important;
+}
+/* Verhindert Unterstreichungen im Link-Text */
+a.mini-grid-item {
+    text-decoration: none;
 }
 
-    .sf-button-secondary:hover {
-        border-color: var(--sf-text-muted) !important;
-        color: var(--sf-text-strong) !important;
-    }
-
-.success-message {
-    background: rgba(46, 204, 113, 0.15);
-    border: 1px solid #2ecc71;
-    color: #2ecc71;
-    padding: var(--sf-space-sm);
-    border-radius: var(--sf-radius);
-    margin-bottom: var(--sf-space-md);
-    font-size: var(--sf-font-size-sm);
-    text-align: center;
+/* Drückt den Text nach links und lässt ihn sauber umbrechen */
+.link-text-container {
+    flex-grow: 1;
+    text-align: left;
 }
 
-.validation-message {
-    background: rgba(231, 76, 60, 0.15);
-    border: 1px solid #e74c3c;
-    color: #e74c3c;
-    padding: var(--sf-space-sm);
-    border-radius: var(--sf-radius);
-    margin-bottom: var(--sf-space-md);
-    font-size: var(--sf-font-size-sm);
-    text-align: center;
+/* Stylt den kleinen Pfeil am rechten Rand */
+.link-arrow {
+    color: var(--sf-text-subtle);
+    font-size: var(--sf-font-size-lg);
+    font-weight: var(--sf-font-weight-bold);
+    padding-left: var(--sf-space-xs);
+}
+.sf-button-secondary:hover {
+    background: var(--sf-button-dark-hover-bg) !important;
+    color: var(--sf-button-dark-hover-text) !important;
+    border-color: var(--sf-button-dark-hover-border) !important;
 }
 
 @keyframes sfModalFadeIn {
-    from {
-        opacity: 0;
-        transform: translateY(-20px);
+    from { opacity: 0; transform: translateY(-12px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* ==========================================================================
+   RESPONSIVE LAYOUT (COLLAPSE FÜR MOBILGERÄTE)
+   ========================================================================== */
+@media (max-width: 950px) {
+    .sf-login-split-container {
+        grid-template-columns: 1fr;
     }
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
+    .sf-login-info-side {
+        display: none;
+    }
+
+    .sf-login-form-side {
+        background: var(--sf-page-bg);
     }
 }
