@@ -43,7 +43,7 @@ namespace Survey.ApiGateway.Controllers
                     await image.CopyToAsync(stream);
                 }
 
-                news.ImageLink = $"http://212.227.82.199:7224/uploads/{fileName}";
+                news.ImageLink = $"/uploads/{fileName}";
             }
             var result = await newsService.CreateNews(news);
 

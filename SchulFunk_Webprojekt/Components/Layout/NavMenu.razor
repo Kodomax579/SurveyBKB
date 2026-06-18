@@ -43,7 +43,7 @@
                     <span class="sf-avatar sf-avatar--small">
                         @if (CurrentUser != null && !string.IsNullOrWhiteSpace(CurrentUser.ImageLink))
                         {
-                            <img src="@CurrentUser.ImageLink" alt="Avatar" />
+                            <img src="@GetAvatarPicture()" alt="Avatar" />
                         }
                         else
                         {
@@ -62,7 +62,7 @@
                                 <span class="sf-avatar">
                                     @if (CurrentUser != null && !string.IsNullOrWhiteSpace(CurrentUser.ImageLink))
                                     {
-                                        <img src="@CurrentUser.ImageLink" alt="Avatar" />
+                                        <img src="@GetAvatarPicture()" alt="Avatar" />
                                     }
                                     else
                                     {
@@ -191,6 +191,11 @@
         var last = !string.IsNullOrWhiteSpace(user.Lastname) ? user.Lastname.Trim()[0].ToString().ToUpper() : string.Empty;
 
         return (first + last).Trim();
+    }
+
+    private string GetAvatarPicture()
+    {
+        return $"https://schulfunk-bkbeckum.de/api/{CurrentUser.ImageLink}";
     }
 
     public void Dispose()
