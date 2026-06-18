@@ -64,7 +64,7 @@ namespace Survey.ApiGateway.Controllers
             return BadRequest();
         }
 
-        [HttpPost("/ResetPassword")]
+        [HttpPost("ResetPassword")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO request)
         {
             try

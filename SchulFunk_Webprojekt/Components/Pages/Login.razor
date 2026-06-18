@@ -156,7 +156,6 @@
         isSending = true;
         try
         {
-            // Ruft die Methode im UserService auf, die du im Backend gebaut hast
             var erfolg = await userService.ForgotPassword(resetEmail);
 
             if (erfolg)
