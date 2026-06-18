@@ -13,7 +13,6 @@ namespace Survey.ApiGateway.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Route("[controller]")]
     public class LoginController(LoginService loginService, AuthService authService, EmailService emailService) : ControllerBase
     {
         [HttpPost]
