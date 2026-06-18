@@ -13,6 +13,32 @@
     box-sizing: border-box;
 }
 
+/* Styling für die rechte Umfragen-Sidebar */
+.sf-sidebar-heading {
+    font-size: 1.2rem;
+    font-weight: var(--sf-font-weight-black);
+    color: var(--sf-text-strong);
+    margin-bottom: var(--sf-space-sm);
+    padding-left: var(--sf-space-xs);
+}
+
+.sf-sidebar-surveys {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-space-lg);
+}
+
+/* Optional: Die Survey-Cards in der Sidebar ein wenig kompakter machen, 
+   damit sie sich besser in die schmale 300px-Spalte einfügen */
+.sf-sidebar-right ::deep .survey-card {
+    min-height: 280px;
+    padding: 20px;
+}
+
+    .sf-sidebar-right ::deep .survey-card h3 {
+        font-size: 1.25rem;
+    }
+
 /* =========================================================
    2. Die Kacheln (Nutzen jetzt nativ deine SchulFunk-Tokens)
    ========================================================= */
@@ -190,7 +216,70 @@
 .card.tall .card-content {
     justify-content: flex-start;
 }
+/* =========================================================
+   Das übergeordnete 3-Spalten-Layout (ZWINGEND ERFORDERLICH)
+   ========================================================= */
+.sf-layout-wrapper {
+    display: grid;
+    grid-template-columns: 300px 1fr 300px; /* Links 300px, Mitte flexibel, Rechts 300px */
+    gap: var(--sf-space-lg);
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 0 var(--sf-page-padding);
+    align-items: start;
+}
 
+.sf-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-space-md);
+    position: sticky;
+    top: calc(78px + var(--sf-space-lg));
+    height: max-content;
+    z-index: 10;
+}
+
+/* Verhindert, dass der Bento-Container ausbricht */
+.sf-layout-wrapper .bento-container {
+    max-width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+.sf-sticky-box {
+    background: var(--sf-panel-bg);
+    border: 1px solid var(--sf-border);
+    box-shadow: var(--sf-shadow-sm);
+    border-radius: var(--sf-radius-lg);
+}
+
+/* Responsives Verhalten für kleinere Bildschirme */
+@media (max-width: 1400px) {
+    .sf-layout-wrapper {
+        grid-template-columns: 280px 1fr;
+    }
+
+    .sf-sidebar-right {
+        display: none;
+    }
+    /* Rechte Sidebar auf Tablets ausblenden */
+}
+
+@media (max-width: 1050px) {
+    .sf-layout-wrapper {
+        grid-template-columns: 1fr;
+        padding: 0 var(--sf-page-padding-mobile);
+    }
+
+    .sf-sidebar {
+        position: static;
+        width: 100%;
+    }
+
+    .sf-sidebar-right {
+        display: flex;
+    }
+}
 /* =========================================================
    7. Responsive Breakpoints
    ========================================================= */

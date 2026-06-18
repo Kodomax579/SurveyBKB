@@ -1,22 +1,20 @@
 ﻿@rendermode InteractiveServer
 @inject NewsService newsService
-@inject SurveyService surveyService
 @inject NewsStateService newsStateService
-@inject SurveyStateService surveyStateService
 @inject SignalRHub hub
 @inject NavigationManager navigationManager
+@implements IDisposable
 
 <main class="bento-container">
     @if (newsStateService.GetNewsItems() != null)
     {
-        @* Sortiert die News so, dass die neuesten Einträge (neuestes Erstellungsdatum) zuerst kommen *@
         @foreach (var item in GetFilteredNews().OrderByDescending(item => item.CreatedAt))
         {
             var cardSize = GetGridClass(item);
             var hasImage = !string.IsNullOrEmpty(item.ImageLink);
             var backgroundStyle = BackgroundStyle(item);
 
-            <article class="card @cardSize @(hasImage ? "has-image" : "")" 
+            <article class="card @cardSize @(hasImage ? "has-image" : "")"
                      style="@backgroundStyle"
                      @onclick="() => GoToNewsDetail(item.Id)"
                      role="button"
@@ -54,10 +52,6 @@
 
                             <div class="author-details">
                                 <span class="author-name">@item.User.Firstname @item.User.Lastname</span>
-                                @if (!string.IsNullOrEmpty(item.User.Class?.Classname))
-                                {
-                                    <span class="author-class">@item.User.Class.Classname</span>
-                                }
                             </div>
                         </div>
                     }
@@ -70,14 +64,9 @@
 @code {
     [Parameter] public string SearchQuery { get; set; } = string.Empty;
 
-    private int AktuelleUmfrageIndex = 0;
-    private string SurveyAnimationClass = "slide-in";
-    private List<SurveyModel> surveyModels => surveyStateService.GetAllSurveys().Take(3).ToList();
-
     protected async override Task OnInitializedAsync()
     {
         newsStateService.OnChange += UpdateUI;
-        surveyStateService.OnChange += UpdateUI;
         await hub.Connect();
     }
 
@@ -86,7 +75,6 @@
         StateHasChanged();
     }
 
-    // Filtert die News basierend auf Titel und Tags
     private List<NewsItem> GetFilteredNews()
     {
         var news = newsStateService.GetNewsItems() ?? new List<NewsItem>();
@@ -98,13 +86,12 @@
 
         var query = SearchQuery.ToLower().Trim();
 
-        return news.Where(item => 
+        return news.Where(item =>
             (!string.IsNullOrEmpty(item.Titel) && item.Titel.ToLower().Contains(query)) ||
             (!string.IsNullOrEmpty(item.Tag) && item.Tag.ToLower().Contains(query))
         ).ToList();
     }
 
-    // Hilfsmethode zur Bestimmung der Kachelgröße basierend auf Priorität oder Bild
     private string GetGridClass(NewsItem item)
     {
         if (item.Prioritaet?.Equals("breaking", StringComparison.OrdinalIgnoreCase) == true)
@@ -124,42 +111,11 @@
 
     private void UpdateUI() => InvokeAsync(StateHasChanged);
 
-    private async Task NaechsteUmfrage()
-    {
-        if (!surveyModels.Any()) return;
-        SurveyAnimationClass = "slide-out-up";
-        await Task.Delay(140);
-        AktuelleUmfrageIndex = (AktuelleUmfrageIndex + 1) % surveyModels.Count;
-        SurveyAnimationClass = "slide-in";
-    }
-
-    private async Task VorherigeUmfrage()
-    {
-        if (!surveyModels.Any()) return;
-        SurveyAnimationClass = "slide-out-down";
-        await Task.Delay(140);
-        AktuelleUmfrageIndex = (AktuelleUmfrageIndex - 1 + surveyModels.Count) % surveyModels.Count;
-        SurveyAnimationClass = "slide-in";
-    }
-
-    private int BerechneProzent(QuestionModel question, AnswerModel answer)
-    {
-        var gesamtStimmen = question.AnswerModels.Sum(option => option.NumberOfSelectedAnswer);
-        if (gesamtStimmen == 0) return 0;
-        return (int)Math.Round((double)answer.NumberOfSelectedAnswer / gesamtStimmen * 100);
-    }
-
-    private int HoechsterProzentwert(QuestionModel question)
-    {
-        if (!question.AnswerModels.Any()) return 0;
-        return question.AnswerModels.Select(answer => BerechneProzent(question, answer)).Max();
-    }
-
     private string? BackgroundStyle(NewsItem news)
     {
         var hasImage = !string.IsNullOrEmpty(news.ImageLink);
 
-        if(hasImage)
+        if (hasImage)
         {
             if (news.ImageLink.StartsWith("http", StringComparison.OrdinalIgnoreCase))
             {
@@ -179,6 +135,5 @@
     public void Dispose()
     {
         newsStateService.OnChange -= UpdateUI;
-        surveyStateService.OnChange -= UpdateUI;
     }
 }

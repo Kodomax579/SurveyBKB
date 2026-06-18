@@ -1,0 +1,46 @@
+﻿@using SchulFunk_Webprojekt.Model
+@using SchulFunk_Webprojekt.Components.Pages.Survey
+@inject SurveyStateService surveyStateService
+@implements IDisposable
+
+<aside class="sf-sidebar sf-sidebar-right">
+    <h3 class="sf-sidebar-heading">📊 Aktuelle Umfragen</h3>
+
+    <div class="sf-sidebar-surveys">
+        @if (ActiveSurveys.Any())
+        {
+            @foreach (var survey in ActiveSurveys)
+            {
+                <SurveyCard Item="@survey" />
+            }
+        }
+        else
+        {
+            <div class="card sf-sticky-box">
+                <div class="card-content">
+                    <p class="preview-text">Derzeit gibt es keine aktiven Umfragen.</p>
+                </div>
+            </div>
+        }
+    </div>
+</aside>
+
+@code {
+    // Holt die neuesten 2 aktiven Umfragen
+    private IEnumerable<SurveyModel> ActiveSurveys => surveyStateService.GetAllSurveys()
+        .Where(s => s.OnlineUntil >= DateOnly.FromDateTime(DateTime.Today))
+        .OrderByDescending(s => s.CreatedAt)
+        .Take(2);
+
+    protected override void OnInitialized()
+    {
+        surveyStateService.OnChange += UpdateUI;
+    }
+
+    private void UpdateUI() => InvokeAsync(StateHasChanged);
+
+    public void Dispose()
+    {
+        surveyStateService.OnChange -= UpdateUI;
+    }
+}

@@ -1,0 +1,38 @@
+﻿@inject SchulFunk_Webprojekt.Feature.UserHandling.UserStateService userStateService
+
+<aside class="sf-sidebar sf-sidebar-left">
+    <div class="card sf-sticky-box">
+        <div class="card-content">
+            <div class="tag" style="background: var(--sf-color-primary); color: var(--sf-color-white);">
+                Klasse @(userStateService.GetUser()?.Class?.Classname ?? "")
+            </div>
+            <h3>Klassensprecher</h3>
+
+            <div class="author-info" style="border-top: none; padding-top: var(--sf-space-xs);">
+                <div class="author-details">
+                    <span class="author-name">Max Mustermann</span>
+                    <span class="author-class">Klassensprecher</span>
+                </div>
+            </div>
+            <div class="author-info" style="padding-top: var(--sf-space-sm); margin-top: var(--sf-space-xs);">
+                <div class="author-details">
+                    <span class="author-name">Erika Mustermann</span>
+                    <span class="author-class">Klassensprecher</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card sf-sticky-box">
+        <div class="card-content">
+            <div class="tag">Schule</div>
+            <h3>Schülersprecher</h3>
+            <div class="author-info" style="border-top: none; padding-top: var(--sf-space-xs);">
+                <div class="author-details">
+                    <span class="author-name">Mia Meier</span>
+                    <span class="author-class">Schülersprecherin</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</aside>

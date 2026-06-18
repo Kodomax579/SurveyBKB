@@ -8,7 +8,15 @@
     <Search Placeholder="Nach News-Titeln oder Tags suchen..." @bind-Value="searchQuery" />
 
     <div class="page-content">
-        <NewsPage SearchQuery="@searchQuery"></NewsPage>
+        <div class="sf-layout-wrapper">
+
+            <LeftSidebar />
+
+            <NewsPage SearchQuery="@searchQuery"></NewsPage>
+
+            <RightSidebar />
+
+        </div>
     </div>
 </div>
 
