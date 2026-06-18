@@ -6,23 +6,27 @@ namespace Survey.ApiGateway.Feature.Email
     {
         public void CreatePasswordResetEmail(string toEmail)
         {
-            string fromEmail = "noreply@schulfunk-bkbecku.de";
+            // ACHTUNG: Hier fehlte am Ende das "m" bei bkbeckum.de!
+            string fromEmail = "noreply@schulfunk-bkbeckum.de";
 
-            MailMessage mailMessage = new MailMessage(fromEmail,toEmail);
+            MailMessage mailMessage = new MailMessage(fromEmail, toEmail);
             mailMessage.Subject = "Passwort zurücksetzen";
-            mailMessage.Body = "Hier ist der Link zum Zurücksetzen Ihres Passworts: https://schulfunk-bkbecku.de/reset-password?email=" + toEmail;
-            SmtpClient smtpClient = new SmtpClient("127.0.0.0");
+
+            mailMessage.Body = "Hier ist der Link zum Zurücksetzen Ihres Passworts: https://schulfunk-bkbeckum.de/reset-password?email=" + toEmail;
+
+            SmtpClient smtpClient = new SmtpClient("127.0.0.1", 25);
 
             smtpClient.UseDefaultCredentials = true;
 
             try
             {
                 smtpClient.Send(mailMessage);
+                Console.WriteLine("E-Mail erfolgreich an Postfix übergeben!");
             }
             catch (Exception ex)
             {
-                // Log the exception or handle it as needed
                 Console.WriteLine($"Fehler beim Senden der E-Mail: {ex.Message}");
+                throw;
             }
         }
     }
