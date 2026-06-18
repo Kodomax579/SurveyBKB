@@ -2,8 +2,8 @@ services:
   # DEIN NEUES BLAZOR FRONTEND
   frontend:
     build: 
-      context: . # Baut vom Hauptverzeichnis aus
-      dockerfile: SchulFunk_Webprojekt/Dockerfile # Pfad zum neuen Frontend-Dockerfile
+      context: .
+      dockerfile: SchulFunk_Webprojekt/Dockerfile
     ports:
       - "7189:7189"
     environment:
@@ -16,9 +16,11 @@ services:
   api:
     build: 
       context: .
-      dockerfile: Survey.ApiGateway/Dockerfile # Pfad zu dem Dockerfile, das du mir geschickt hast
+      dockerfile: Survey.ApiGateway/Dockerfile
     ports:
       - "7224:7224"
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # <--- GENAU DIESE ZWEI ZEILEN HIER HINZUFGEN!
     environment:
       - ASPNETCORE_URLS=http://+:7224
       - DefaultConnectionPublish=Host=db;Port=5432;Database=SchulfunkDb;Username=schulfunk_admin;Password=DeinSicheresPasswort;

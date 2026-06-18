@@ -13,7 +13,7 @@ namespace Survey.ApiGateway.Feature.Email
             mailMessage.Body = "Hier ist der Link zum Zurücksetzen Ihres Passworts: https://schulfunk-bkbeckum.de/reset-password?email=" + toEmail;
 
             // Explizit IP und Port 25 angeben
-            using (SmtpClient smtpClient = new SmtpClient("127.0.0.1", 25))
+            using (SmtpClient smtpClient = new SmtpClient("host.docker.internal", 25))
             {
                 // WICHTIG für lokale Postfix-Instanzen ohne SSL auf Port 25:
                 smtpClient.EnableSsl = false;
