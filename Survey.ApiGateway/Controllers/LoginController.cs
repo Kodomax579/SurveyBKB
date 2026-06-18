@@ -48,16 +48,16 @@ namespace Survey.ApiGateway.Controllers
         }
 
         [HttpPut("ForgotPassword")]
-        public IActionResult ForgotPassword([FromBody] ForgotPasswordRequest request) 
+        public IActionResult ForgotPassword([FromQuery] string email) // <- HIER [FromQuery] nutzen!
         {
-            if (request == null || string.IsNullOrEmpty(request.Email))
+            if (string.IsNullOrEmpty(email))
             {
                 return BadRequest("Email should not be null or empty.");
             }
 
-            emailService.CreatePasswordResetEmail(request.Email);
+            emailService.CreatePasswordResetEmail(email);
 
-            return Ok(request.Email);
+            return Ok(email);
         }
     }
 }
