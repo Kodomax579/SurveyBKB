@@ -47,7 +47,7 @@ namespace Survey.ApiGateway.Controllers
             }
         }
 
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> ForgotPassword([FromBody]string email)
         {
             if(string.IsNullOrEmpty(email))
