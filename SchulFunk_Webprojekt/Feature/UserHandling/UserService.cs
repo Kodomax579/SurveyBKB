@@ -142,6 +142,11 @@ namespace SchulFunk_Webprojekt.Feature.UserHandling
             var response = await httpClient.PostAsJsonAsync($"{BaseURL}/api/User/classes", newClass);
             return response.IsSuccessStatusCode;
         }
+        public async Task<bool> ForgotPassword(string email)
+        {
+            var response = await httpClient.PutAsync($"{BaseURL}/api/Login/ForgotPassword?email={Uri.EscapeDataString(email)}", null);
+            return response.IsSuccessStatusCode;
+        }
 
         public async Task<bool> ChangePassword(int userId, string oldPassword, string newPassword)
         {

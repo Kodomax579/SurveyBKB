@@ -48,16 +48,20 @@ namespace Survey.ApiGateway.Controllers
         }
 
         [HttpPut("ForgotPassword")]
-        public IActionResult ForgotPassword([FromQuery] string email) // <- HIER [FromQuery] nutzen!
+        public async Task<IActionResult> ForgotPassword([FromQuery] string email) // <- HIER [FromQuery] nutzen!
         {
             if (string.IsNullOrEmpty(email))
             {
                 return BadRequest("Email should not be null or empty.");
             }
 
-            emailService.CreatePasswordResetEmail(email);
+            var result = await emailService.CreatePasswordResetEmail(email);
 
-            return Ok(email);
+            if(result)
+            {
+                return Ok(email);
+            }
+            return BadRequest();
         }
     }
 }

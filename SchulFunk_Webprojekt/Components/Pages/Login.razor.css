@@ -111,3 +111,120 @@
             color: var(--sf-text-strong);
             text-decoration: underline;
         }
+.mt-2 {
+    margin-top: 0.75rem;
+}
+
+.mb-3 {
+    margin-bottom: 1rem;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.sf-link-button {
+    background: none;
+    border: none;
+    color: var(--sf-text-muted);
+    font-size: var(--sf-font-size-sm);
+    padding: 0;
+    margin: var(--sf-space-xs) 0 var(--sf-space-md) 0;
+    cursor: pointer;
+    text-align: left;
+    transition: var(--sf-transition);
+    display: inline-block;
+}
+
+    .sf-link-button:hover {
+        color: var(--sf-accent);
+        text-decoration: underline;
+    }
+
+/* MODAL DESIGN STYLES */
+.sf-modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sf-modal-content {
+    width: 100%;
+    max-width: 440px;
+    padding: var(--sf-space-xl);
+    animation: sfModalFadeIn 0.25s ease-out;
+}
+
+    .sf-modal-content h3 {
+        color: var(--sf-text-strong);
+        font-size: 1.75rem;
+        margin-bottom: 8px;
+    }
+
+        .sf-modal-content h3 span {
+            color: var(--sf-accent);
+        }
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--sf-space-sm);
+    margin-top: var(--sf-space-lg);
+}
+
+.sf-button-secondary {
+    background: transparent !important;
+    border: 2px solid var(--sf-border) !important;
+    color: var(--sf-text-muted) !important;
+}
+
+    .sf-button-secondary:hover {
+        border-color: var(--sf-text-muted) !important;
+        color: var(--sf-text-strong) !important;
+    }
+
+.success-message {
+    background: rgba(46, 204, 113, 0.15);
+    border: 1px solid #2ecc71;
+    color: #2ecc71;
+    padding: var(--sf-space-sm);
+    border-radius: var(--sf-radius);
+    margin-bottom: var(--sf-space-md);
+    font-size: var(--sf-font-size-sm);
+    text-align: center;
+}
+
+.validation-message {
+    background: rgba(231, 76, 60, 0.15);
+    border: 1px solid #e74c3c;
+    color: #e74c3c;
+    padding: var(--sf-space-sm);
+    border-radius: var(--sf-radius);
+    margin-bottom: var(--sf-space-md);
+    font-size: var(--sf-font-size-sm);
+    text-align: center;
+}
+
+@keyframes sfModalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
