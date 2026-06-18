@@ -13,7 +13,7 @@ namespace Survey.ApiGateway.Feature.Email
             mailMessage.Body = "Hier ist der Link zum Zurücksetzen Ihres Passworts: https://schulfunk-bkbeckum.de/reset-password?email=" + toEmail;
 
             // 172.17.0.1 ist unter Linux IMMER die IP des echten Servers aus Docker heraus!
-            using (SmtpClient smtpClient = new SmtpClient("172.17.0.1", 25))
+            using (SmtpClient smtpClient = new SmtpClient("172.19.0.1", 25))
             {
                 smtpClient.EnableSsl = false;
                 smtpClient.UseDefaultCredentials = true;
