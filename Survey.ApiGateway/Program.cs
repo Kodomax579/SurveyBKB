@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Survey.ApiGateway.Database;
+using Survey.ApiGateway.Feature.Email;
 using Survey.ApiGateway.Feature.News;
 using Survey.ApiGateway.Feature.Survey;
 using Survey.ApiGateway.Feature.User;
@@ -32,6 +33,7 @@ namespace Survey.ApiGateway
             builder.Services.AddScoped<UserService>();
             builder.Services.AddScoped<LoginService>();
             builder.Services.AddScoped<NewsService>();
+            builder.Services.AddScoped<EmailService>();
             builder.Services.AddScoped<SurveyService>();
             builder.Services.AddSwaggerGen();
             builder.Services.AddControllers();

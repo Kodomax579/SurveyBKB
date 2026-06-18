@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
+using Survey.ApiGateway.Feature.Email;
 using Survey.ApiGateway.Feature.User;
 using Survey.ApiGateway.Feature.User.DTO;
 using Survey.ApiGateway.Models;
@@ -12,7 +13,7 @@ namespace Survey.ApiGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class LoginController (LoginService loginService, AuthService authService): ControllerBase
+    public class LoginController(LoginService loginService, AuthService authService, EmailService emailService) : ControllerBase
     {
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginDTO request)
@@ -44,6 +45,19 @@ namespace Survey.ApiGateway.Controllers
                 // HIER IST DER TRICK: Wir schicken die echte Fehlermeldung an Swagger zurück!
                 return StatusCode(500, $"Backend-Absturz: {ex.Message} -> {ex.InnerException?.Message}");
             }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ForgotPassword([FromBody]string email)
+        {
+            if(string.IsNullOrEmpty(email))
+            {
+                return BadRequest("Email should not be null or empty.");    
+            }
+
+            emailService.CreatePasswordResetEmail(email);
+
+            return Ok(email);
         }
     }
 }
