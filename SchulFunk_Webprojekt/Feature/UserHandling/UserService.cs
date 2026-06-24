@@ -136,11 +136,12 @@ namespace SchulFunk_Webprojekt.Feature.UserHandling
             return await response.Content.ReadFromJsonAsync<List<ClassModel>>();
         }
 
-        public async Task<bool> CreateClass(ClassModel newClass)
+        public async Task<ClassModel?> CreateClass(ClassModel newClass)
         {
             AddToken();
             var response = await httpClient.PostAsJsonAsync($"{BaseURL}/api/User/classes", newClass);
-            return response.IsSuccessStatusCode;
+
+           return await response.Content.ReadFromJsonAsync<ClassModel>();
         }
         public async Task<bool> ForgotPassword(string email)
         {

@@ -1,55 +1,54 @@
-/* In MainLayout.razor.css anpassen/ersetzen */
 .sf-page {
     min-height: 100vh;
     display: flex;
     background: linear-gradient(135deg, var(--sf-page-bg) 0%, var(--sf-page-bg-secondary) 100%);
-    background-color: #f4f7f9;
-}
-
-.sf-container {
-    width: 100%;
-    max-width: 1400px; /* Darf jetzt etwas breiter sein */
-    margin: 0 auto;
-    padding: 0 28px;
-    margin-top: 20px;
 }
 
 .sf-main {
     flex: 1;
-    margin-left: 260px; /* Platz für die linke Sidebar */
-    margin-right: 320px; /* NEU: Platz für die rechte Sidebar */
-    padding-top: 34px;
-    padding-bottom: 34px;
-    width: calc(100% - 260px - 320px);
-    scroll-padding-top: 40px;
+    margin-left: 260px;
+    padding: 60px 0 40px 0;
+    /* WICHTIG: width: 100% statt calc() verhindert das "Ausbrechen" auf kleinen Screens */
+    width: 100%;
+    transition: all var(--sf-transition);
 }
 
-/* Wenn der Bildschirm kleiner wird (Tablets/Laptops), blenden wir die rechte Sidebar aus */
+    /* Nur wenn Sidebar rechts vorhanden ist, Platz reservieren */
+    .sf-main.has-sidebar-right {
+        margin-right: 320px;
+    }
+
+.sf-container {
+    width: 100%;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 28px;
+    box-sizing: border-box;
+}
+
+/* =========================================
+   RESPONSIVE LOGIK
+   ========================================= */
+
+/* Tablet-Größe: Sidebar rechts ausblenden */
 @media (max-width: 1200px) {
-    .sf-main {
-        margin-right: 0 !important; /* Platz rechts wieder freigeben */
-        width: calc(100% - 260px) !important;
+    .sf-main.has-sidebar-right {
+        margin-right: 0 !important;
     }
 }
 
-/* Mobile Ansicht (Handys) */
-/* In MainLayout.razor.css anpassen */
-
+/* Mobile-Größe: NavMenu (links) wird mobil, alles auf 100% */
 @media (max-width: 1050px) {
     .sf-page {
-        /* DAS ist der magische Befehl, der das Quetschen verhindert */
         flex-direction: column;
     }
 
     .sf-main {
         margin-left: 0 !important;
-        margin-right: 0 !important;
-        width: 100% !important;
-        /* Optional: Etwas weniger Padding oben, da die Mobile-Topbar Platz braucht */
-        padding-top: var(--sf-space-lg);
+        padding-top: 20px;
     }
 
     .sf-container {
-        padding: 0 16px; /* Etwas Platz am Rand für Handys */
+        padding: 0 16px;
     }
 }

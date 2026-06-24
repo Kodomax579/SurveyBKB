@@ -1,14 +1,41 @@
 @using SchulFunk_Webprojekt.Components.Pages
 @inherits LayoutComponentBase
+@inject NavigationManager NavigationManager
+@implements IDisposable
 
 <div class="sf-page">
     <NavMenu />
 
-    <main class="sf-main">
+    <main class="sf-main @(IsHomePage ? "has-sidebar-right" : "")">
         <div class="sf-container">
             @Body
         </div>
     </main>
 
-    <RightSidebar />
+    @* Sidebar wird nur angezeigt, wenn der Pfad exakt /home ist *@
+    @if (IsHomePage)
+    {
+        <RightSidebar />
+    }
 </div>
+
+@code {
+    private bool IsHomePage => NavigationManager.Uri.EndsWith("/home", StringComparison.OrdinalIgnoreCase);
+
+    protected override void OnInitialized()
+    {
+        // Event-Handler registrieren, damit die Seite bei Navigation aktualisiert wird
+        NavigationManager.LocationChanged += HandleLocationChanged;
+    }
+
+    private void HandleLocationChanged(object? sender, EventArgs e)
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    public void Dispose()
+    {
+        // Wichtig: Speicher freigeben
+        NavigationManager.LocationChanged -= HandleLocationChanged;
+    }
+}

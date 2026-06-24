@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Survey.ApiGateway.Database;
+using Survey.ApiGateway.Feature.User.DTO;
 using Survey.ApiGateway.Feature.User.Models;
 
 namespace Survey.ApiGateway.Feature.User
@@ -9,9 +10,13 @@ namespace Survey.ApiGateway.Feature.User
     {
         private readonly PasswordHasher<UserModel> _passwordHasher = new();
 
-        public async Task<ClassModel?> CreateClass(ClassModel newClass)
+        public async Task<ClassModel?> CreateClass(ClassDTO clasDto)
         {
-            var exists = await dbContext.Classes.AnyAsync(c => c.ClassName.ToLower() == newClass.ClassName.ToLower());
+            var exists = await dbContext.Classes.AnyAsync(c => c.ClassName.ToLower() == clasDto.Classname.ToLower());
+            var newClass = new ClassModel
+            {
+                ClassName = clasDto.Classname
+            };
             if (exists)
             {
                 return null;

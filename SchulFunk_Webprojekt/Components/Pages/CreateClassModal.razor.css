@@ -1,0 +1,61 @@
+﻿/* Wiederverwendung der Backdrop-Struktur */
+.modal-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(var(--sf-color-black-rgb), 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.modal-container {
+    background: var(--sf-panel-bg);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius-xl);
+    padding: var(--sf-space-xl);
+    width: 100%;
+    max-width: 360px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-space-lg);
+    box-shadow: var(--sf-shadow-lg);
+}
+
+    .modal-container h3 {
+        margin: 0;
+        font-size: var(--sf-font-size-xl);
+        color: var(--sf-text-strong);
+    }
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-space-xs);
+}
+
+.form-control {
+    padding: var(--sf-space-md);
+    border-radius: var(--sf-radius-md);
+    border: 1px solid var(--sf-border);
+    background: var(--sf-input-bg);
+    color: var(--sf-text-strong);
+}
+
+.form-actions {
+    display: flex;
+    gap: var(--sf-space-sm);
+    justify-content: flex-end;
+    margin-top: var(--sf-space-sm);
+}
+
+.text-danger {
+    color: var(--sf-danger-bg);
+    font-size: var(--sf-font-size-sm);
+    text-align: center;
+    margin: 0;
+}

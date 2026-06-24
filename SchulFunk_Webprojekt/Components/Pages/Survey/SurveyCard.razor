@@ -2,36 +2,40 @@
 @inject SchulFunk_Webprojekt.Feature.UserHandling.UserStateService userStateService
 
 <article class="survey-card @(IsExpired ? "is-ended" : "is-active")">
-    <div class="survey-card-meta">
-        <span class="survey-card-status">
-            @(IsExpired ? "BEENDET" : "AKTIV")
-        </span>
 
-        <span class="survey-card-participants" title="Anzahl der Teilnehmer">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-                <circle cx="9" cy="7" r="4"></circle>
-                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
-            </svg>
-            @TeilnehmerAnzahl
-        </span>
+    <div class="survey-header">
+        <div class="status-badge">
+            @(IsExpired ? "Abgelaufen" : "Aktiv")
+        </div>
+
+        <div class="expiry-pill">
+            @(IsExpired ? "Ende: " : "Läuft bis: ") @Item.OnlineUntil.ToString("dd.MM.yyyy")
+        </div>
     </div>
 
-    <h3 title="@Item.Title">@Item.Title</h3>
+    <div class="survey-body">
+        <h3>@Item.Title</h3>
+        <p>@Item.Description</p>
+    </div>
 
-    <p class="survey-card-description">
-        @Item.Description
-    </p>
+    <div class="survey-footer">
+        <div class="stats">
+            <span class="stat-item">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                @TeilnehmerAnzahl
+            </span>
+            <span class="stat-item" title="Erstellt von">
+                @Item.CreatorName
+            </span>
+        </div>
 
-    <div class="survey-card-footer">
         @if (CanClick)
         {
-            <a href="@ActionLink" class="survey-card-action">@ActionText</a>
+            <a href="@ActionLink" class="action-btn">@ActionText</a>
         }
         else
         {
-            <span class="survey-card-action survey-card-action-disabled">@ActionText</span>
+            <span class="action-btn disabled">@ActionText</span>
         }
     </div>
 </article>

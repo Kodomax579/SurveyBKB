@@ -91,7 +91,7 @@ else
     <section class="sf-auto-grid">
         @foreach (var user in GefilterteUsers)
         {
-            <article class="sf-flat-card">
+            <article class="user-card">
                 <div class="sf-flat-card-body">
                     <h3>@GetFullName(user)</h3>
                     <p style="font-size: 0.85rem; color: var(--sf-text-muted);">@user.Email</p>
@@ -99,12 +99,13 @@ else
                     <div class="sf-card-meta" style="margin: 15px 0;">
                         <span class="sf-badge">@PermissionRules.GetGroupLabel(user.Group)</span>
                         <span class="sf-badge">@user.Class.Classname</span>
+
                     </div>
 
                     <div class="form-group">
                         <label>Profilbild</label>
                         <div style="display: flex; align-items: center; gap: 10px;">
-                            <img src="@GetAvatarUrl()" alt="Avatar" class="admin-avatar-preview" />
+                            <img src="@GetAvatarUrl(user.ImageLink)" alt="Avatar" class="admin-avatar-preview" />
                             <label class="sf-upload-label">
                                 Ändern
                                 <InputFile OnChange="e => OnFileSelected(e, user)" style="display:none" />
@@ -126,6 +127,13 @@ else
                                     <option value="@klasse.Classname">@klasse.Classname</option>
                                 }
                             </select>
+
+                            <button type="button"
+                                    class="sf-button"
+                                    style="margin-top: 5px; font-size: 0.75rem;"
+                                    @onclick="() => showModal = true">
+                                Neue Klasse erstellen
+                            </button>
                         }
                     </div>
 
@@ -158,7 +166,9 @@ else
         }
     </section>
 }
-
+<CreateClassModal IsVisible="showModal"
+                  OnClose="() => showModal = false"
+                  OnClassCreated="OnClassCreated"/>
 @code {
     private string Suchtext = "";
     private string SelectedClass = "";
@@ -167,6 +177,7 @@ else
     private UserModel? CurrentUser => userStateService.GetUser();
     private List<UserModel>? AllUser = new();
     private List<ClassModel>? AvailableClasses = new();
+    private bool showModal = false;
 
     protected async override Task OnInitializedAsync()
     {
@@ -230,6 +241,12 @@ else
         return user.Class.Classname == SelectedClass;
     }
 
+    private void OnClassCreated(string newClassName)
+    {
+        AvailableClasses.Add(new ClassModel { Classname = newClassName });
+        StateHasChanged();
+    }
+
     private bool MatchesGroupFilter(UserModel user)
     {
         if (string.IsNullOrWhiteSpace(SelectedGroup))
@@ -291,10 +308,10 @@ else
         //                                               Optional: Feedback geben, dass es geklappt hat
         // }
     }
-    private string GetAvatarUrl()
+    private string GetAvatarUrl(string imageLink)
     {
         // Gleiche Logik wie im NavMenu
-        return $"https://schulfunk-bkbeckum.de/api{CurrentUser.ImageLink}";
+        return $"https://schulfunk-bkbeckum.de/api{imageLink}";
     }
     private void DeleteUser(UserModel user)
     {

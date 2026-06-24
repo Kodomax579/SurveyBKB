@@ -1,0 +1,56 @@
+﻿@inject UserService userService
+
+@if (IsVisible)
+{
+    <div class="modal-backdrop">
+        <div class="modal-container sf-panel">
+            <h3>Neue Klasse erstellen</h3>
+
+            <div class="form-group">
+                <label for="classname">Klassenbezeichnung</label>
+                <input id="classname" type="text" class="form-control" @bind="ClassName" placeholder="z.B. DT21" />
+            </div>
+
+            <div class="form-actions">
+                <button class="sf-button" @onclick="Close">Abbrechen</button>
+                <button class="sf-button sf-button-dark" @onclick="Submit">Erstellen</button>
+            </div>
+
+            @if (!string.IsNullOrEmpty(ErrorMessage))
+            {
+                <p class="text-danger">@ErrorMessage</p>
+            }
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool IsVisible { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public EventCallback<string> OnClassCreated { get; set; }
+
+    private string ClassName = "";
+    private string ErrorMessage = "";
+
+    private async Task Submit()
+    {
+        if (string.IsNullOrWhiteSpace(ClassName))
+        {
+            ErrorMessage = "Bitte gib einen Klassennamen ein.";
+            return;
+        }
+
+        var classModel = new ClassModel { Classname = ClassName };
+
+        await userService.CreateClass(classModel);
+        await OnClassCreated.InvokeAsync(ClassName);
+        await Close();
+    }
+
+    private async Task Close()
+    {
+        ClassName = "";
+        ErrorMessage = "";
+        await OnClose.InvokeAsync();
+    }
+}

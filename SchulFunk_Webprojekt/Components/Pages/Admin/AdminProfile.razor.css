@@ -2,6 +2,17 @@
     overflow: visible;
 }
 
+.user-card {
+    position: relative;
+    overflow: hidden;
+    background: var(--sf-card-bg);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius);
+    box-shadow: var(--sf-shadow-sm);
+    color: var(--sf-text);
+    transition: var(--sf-transition);
+}
+
 .admin-filter-dropdown {
     position: relative;
     z-index: 80;
@@ -11,7 +22,63 @@
 .admin-filter-button {
     min-width: 130px;
 }
+/* Container für die Karten */
+.sf-auto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: var(--sf-space-lg);
+    margin-top: var(--sf-space-lg);
+}
 
+/* Die einzelne Benutzerkarte */
+.user-card {
+    background: var(--sf-panel-bg);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius-lg);
+    padding: var(--sf-space-lg);
+    transition: var(--sf-transition);
+    box-shadow: var(--sf-shadow-sm);
+}
+
+    .user-card:hover {
+        box-shadow: var(--sf-shadow-md);
+        border-color: var(--sf-border-strong);
+    }
+
+/* Felder innerhalb der Karte */
+.form-group {
+    margin-bottom: var(--sf-space-sm);
+}
+
+    .form-group label {
+        display: block;
+        font-size: 0.75rem;
+        font-weight: var(--sf-font-weight-bold);
+        color: var(--sf-text-muted);
+        text-transform: uppercase;
+        margin-bottom: 4px;
+    }
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius-sm);
+    background: var(--sf-input-bg);
+    color: var(--sf-text-strong);
+}
+
+/* Badge Styling */
+.sf-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    background: var(--sf-accent-soft);
+    color: var(--sf-accent);
+    border-radius: var(--sf-radius-pill);
+    font-size: 0.7rem;
+    font-weight: bold;
+    margin-right: 5px;
+}
 .admin-filter-menu {
     position: absolute;
     top: calc(100% + 10px);

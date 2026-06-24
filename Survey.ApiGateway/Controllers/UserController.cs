@@ -116,7 +116,7 @@ namespace Survey.ApiGateway.Controllers
 
         [HttpPost("classes")]
         [Authorize]
-        public async Task<IActionResult> CreateClass([FromBody] ClassModel model)
+        public async Task<IActionResult> CreateClass([FromBody] ClassDTO model)
         {
             var createdClass = await userService.CreateClass(model);
             if (createdClass == null)
