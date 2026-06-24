@@ -149,7 +149,10 @@ else
 
                     <div class="form-actions" style="margin-top: 20px; display: grid; gap: 10px;">
                         <button type="button" class="sf-button sf-button-dark" @onclick="() => SaveUser(user)">Speichern</button>
-
+                        @if (UserFeedback.ContainsKey(user.Id))
+                        {
+                            <span class="save-status">@UserFeedback[user.Id]</span>
+                        }
                         <button type="button" class="sf-button sf-danger-button" @onclick="() => ResetUserPassword(user)">
                             Passwort zurücksetzen
                         </button>
@@ -178,6 +181,7 @@ else
     private List<UserModel>? AllUser = new();
     private List<ClassModel>? AvailableClasses = new();
     private bool showModal = false;
+    private Dictionary<int, string> UserFeedback = new();
 
     protected async override Task OnInitializedAsync()
     {
@@ -338,9 +342,25 @@ else
 
     private async Task SaveUser(UserModel user)
     {
-        await userService.UpdateUser(user.Id, user);
-    }
+        try
+        {
+            await userService.UpdateUser(user.Id, user);
 
+            // Erfolg setzen
+            UserFeedback[user.Id] = "Gespeichert";
+
+            // Feedback nach 3 Sekunden löschen
+            StateHasChanged();
+            await Task.Delay(3000);
+            UserFeedback.Remove(user.Id);
+            StateHasChanged();
+        }
+        catch (Exception)
+        {
+            UserFeedback[user.Id] = "Fehler beim Speichern";
+            StateHasChanged();
+        }
+    }
     private void ToggleFilterPanel()
     {
         FilterPanelVisible = !FilterPanelVisible;
