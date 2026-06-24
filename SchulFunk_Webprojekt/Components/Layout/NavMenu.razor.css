@@ -1,260 +1,158 @@
-.sf-header {
-    position: sticky;
+/* =========================================
+       SIDEBAR LAYOUT
+       ========================================= */
+.sf-sidebar {
+    position: fixed;
     top: 0;
+    left: 0;
+    width: 260px;
+    height: 100vh;
+    background: var(--sf-panel-bg-strong, #ffffff);
+    border-right: 1px solid var(--sf-border, #e2e8f0);
     z-index: 9000;
-    width: 100%;
-    background: var(--sf-panel-bg-strong);
-    border-bottom: 1px solid var(--sf-border);
-    border-top: 4px solid var(--sf-accent);
-    box-shadow: var(--sf-shadow-sm);
+    transition: transform 0.3s ease;
 }
 
-.sf-header-inner {
-    width: 100%;
-    max-width: 1440px;
-    min-height: 78px;
-    margin: 0 auto;
-    padding: 0 34px;
+.sf-sidebar-inner {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--sf-space-lg);
-    position: relative;
+    flex-direction: column;
+    height: 100%;
+    padding: 24px 20px;
+    overflow-y: auto;
 }
 
 /* Brand / Logo-Bereich */
-::deep .sf-brand {
-    display: inline-flex;
+.sf-brand {
+    display: flex;
     align-items: center;
-    gap: 14px;
-    flex: 0 0 auto;
-    color: var(--sf-text-strong);
     text-decoration: none;
-    min-width: 0;
-}
-
-    ::deep .sf-brand:hover {
-        color: var(--sf-text-strong);
-        text-decoration: none;
-    }
-
-    ::deep .sf-brand,
-    ::deep .sf-brand:focus,
-    ::deep .sf-brand:focus-visible {
-        outline: none;
-        box-shadow: none;
-    }
-
-.sf-logo {
-    width: 54px;
-    height: 54px;
-    object-fit: contain;
-    flex: 0 0 auto;
+    margin-bottom: 40px;
+    padding-left: 12px;
 }
 
 .sf-brand-text h1 {
     margin: 0;
-    color: var(--sf-text-strong);
+    color: #1a365d; /* Dunkelblau aus dem Screenshot */
     font-size: 1.65rem;
-    font-weight: var(--sf-font-weight-black);
-    line-height: 1;
-    letter-spacing: -0.04em;
-    white-space: nowrap;
+    font-weight: 900;
+    letter-spacing: -0.02em;
 }
 
-    .sf-brand-text h1 span {
-        color: var(--sf-accent);
-    }
-
-/* Desktop-Navbar (Verteilt Links mittig, Profil rechts) */
-.sf-navbar {
-    position: relative;
-    z-index: 9100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex: 1;
-}
-
-/* Nav-Links Box zentriert sich automatisch im Header */
+/* Nav-Links (Vertikal gestapelt) */
 .sf-nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 30px;
+}
+
+.sf-nav-item {
+    min-height: 46px;
+    padding: 0 16px;
+    border-radius: 12px;
+    color: #4a5568;
+    font-size: 1.05rem;
+    font-weight: 600;
     display: flex;
     align-items: center;
     gap: 12px;
-    margin: 0 auto;
-}
-
-/* Neues Style-Upgrade für Nav-Items: Breiter, dicker, moderner */
-::deep .sf-nav-item,
-.sf-nav-item {
-    min-height: 46px;
-    padding: 0 24px;
-    border-radius: var(--sf-radius-md, 8px);
-    color: var(--sf-text-muted);
-    font-size: 1.05rem;
-    font-weight: 800; /* Extra "fat" & modern */
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
     text-decoration: none;
-    transition: all var(--sf-transition);
-    border: 1px solid transparent;
-    white-space: nowrap;
+    transition: all 0.2s ease;
+    border: none;
     background: transparent;
-    cursor: pointer;
 }
 
-    ::deep .sf-nav-item:hover,
     .sf-nav-item:hover {
-        background: var(--sf-accent-soft);
-        color: var(--sf-text-strong);
-        text-decoration: none;
+        background: #f7fafc;
+        color: #2d3748;
     }
 
-    ::deep .sf-nav-item.active,
     .sf-nav-item.active {
-        background: var(--sf-accent-soft);
-        color: var(--sf-accent);
-        border-color: rgba(24, 185, 129, 0.15);
+        background: #ebf8ff; /* Hellblaues Highlight aus dem Screenshot */
+        color: #1e40af; /* Dunkelblaues Text-Highlight */
+        font-weight: 700;
     }
 
-/* Profil-Button linksunabhängig rechts verankern */
-.sf-settings-button {
+.sf-nav-icon {
+    font-size: 1.2rem;
+    opacity: 0.8;
+}
+
+/* Statische Sektionen (Klassenvertretung etc.) */
+.sf-sidebar-section {
+    margin-top: 20px;
+    padding: 0 12px;
+}
+
+    .sf-sidebar-section h4 {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+        color: #a0aec0;
+        margin-bottom: 16px;
+    }
+
+.sf-person {
+    margin-bottom: 14px;
+    line-height: 1.3;
+}
+
+    .sf-person strong {
+        display: block;
+        color: #2d3748;
+        font-size: 0.95rem;
+    }
+
+    .sf-person span {
+        display: block;
+        color: #718096;
+        font-size: 0.85rem;
+    }
+
+/* Hilfs-Div um Profil an den Boden zu drücken */
+.sf-spacer {
+    flex: 1;
+}
+
+/* Profil-Button am Boden */
+.sf-settings-container {
     position: relative;
-    min-height: auto;
-    padding: 0;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--sf-border, #e2e8f0);
+}
+
+.sf-settings-button {
+    width: 100%;
+    padding: 8px 12px;
     border: none;
-    border-radius: 0;
     background: transparent;
     color: var(--sf-text);
-    font-size: var(--sf-font-size-base);
-    font-weight: var(--sf-font-weight-bold);
-    line-height: 1;
-    display: inline-flex;
+    font-size: 1rem;
+    font-weight: 600;
+    display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 8px;
-    white-space: nowrap;
-    text-decoration: none;
-    box-shadow: none;
+    gap: 12px;
     cursor: pointer;
-    transition: var(--sf-transition);
+    border-radius: 8px;
+    transition: background 0.2s;
 }
 
     .sf-settings-button:hover {
-        color: var(--sf-text-strong);
-    }
-
-/* Burger Button für Mobilgeräte */
-.sf-mobile-menu-button {
-    display: none;
-    width: 44px;
-    height: 44px;
-    border: 1px solid var(--sf-border);
-    border-radius: var(--sf-radius-sm);
-    background: var(--sf-card-bg);
-    cursor: pointer;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 5px;
-    padding: 0;
-    transition: var(--sf-transition);
-}
-
-    .sf-mobile-menu-button span {
-        width: 20px;
-        height: 2px;
-        border-radius: 999px;
-        background: var(--sf-text-strong);
-        transition: var(--sf-transition);
-    }
-
-    .sf-mobile-menu-button:hover,
-    .sf-mobile-menu-button.open {
-        border-color: var(--sf-accent);
-        background: var(--sf-accent-soft);
-    }
-
-        .sf-mobile-menu-button.open span:nth-child(1) {
-            transform: translateY(7px) rotate(45deg);
-        }
-
-        .sf-mobile-menu-button.open span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .sf-mobile-menu-button.open span:nth-child(3) {
-            transform: translateY(-7px) rotate(-45deg);
-        }
-
-/* Profil Dropdown */
-.sf-settings-dropdown {
-    position: relative;
-    z-index: 9500;
-    display: inline-flex;
-    margin-left: auto;
-}
-
-.sf-settings-menu {
-    position: absolute;
-    top: calc(100% + 22px);
-    right: 0;
-    z-index: 99999;
-    width: 270px;
-    padding: var(--sf-space-sm);
-    background: var(--sf-panel-bg-strong);
-    border: 1px solid var(--sf-border);
-    border-radius: var(--sf-radius);
-    box-shadow: var(--sf-shadow-hover);
-    animation: sf-dropdown-open 0.18s ease forwards;
-    transform-origin: top right;
-}
-
-    .sf-settings-menu::before {
-        content: "";
-        position: absolute;
-        top: -7px;
-        right: 28px;
-        width: 12px;
-        height: 12px;
-        background: var(--sf-panel-bg-strong);
-        border-left: 1px solid var(--sf-border);
-        border-top: 1px solid var(--sf-border);
-        transform: rotate(45deg);
-    }
-
-.sf-settings-user {
-    padding: 12px 14px;
-    margin-bottom: var(--sf-space-xs);
-    border-radius: var(--sf-radius-sm);
-    background: var(--sf-card-bg);
-    border: 1px solid var(--sf-border);
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 8px;
-}
-
-    .sf-settings-user strong {
-        color: var(--sf-text-strong);
-        font-weight: var(--sf-font-weight-bold);
-    }
-
-    .sf-settings-user span {
-        color: var(--sf-text-muted);
-        font-size: var(--sf-font-size-sm);
+        background: var(--sf-accent-soft, #f7fafc);
     }
 
 .sf-avatar {
     width: 40px;
     height: 40px;
     border-radius: 999px;
-    background: var(--sf-accent-soft);
+    background: var(--sf-accent-soft, #edf2f7);
     display: inline-flex;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    flex: 0 0 auto;
+    flex-shrink: 0;
 }
 
 .sf-avatar--small {
@@ -266,83 +164,82 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    display: block;
 }
 
 .sf-avatar-initials {
     color: var(--sf-text-strong);
-    font-weight: var(--sf-font-weight-bold);
+    font-weight: bold;
     font-size: 0.9rem;
 }
 
-.sf-settings-name {
-    display: inline-block;
-    text-align: left;
+/* Einstellungs-Dropdown Pop-Up (öffnet sich nun nach oben/rechts) */
+.sf-settings-menu {
+    position: absolute;
+    bottom: calc(100% + 10px);
+    left: 0;
+    width: 100%;
+    padding: 12px;
+    background: var(--sf-panel-bg-strong, #ffffff);
+    border: 1px solid var(--sf-border, #e2e8f0);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    animation: sf-dropdown-open 0.18s ease forwards;
+    transform-origin: bottom left;
 }
 
-::deep .sf-settings-menu-item,
+.sf-settings-user {
+    padding: 12px;
+    margin-bottom: 8px;
+    border-radius: 8px;
+    background: var(--sf-card-bg, #f7fafc);
+    border: 1px solid var(--sf-border, #e2e8f0);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 10px;
+}
+
+    .sf-settings-user strong {
+        display: block;
+        color: var(--sf-text-strong);
+        font-size: 0.95rem;
+    }
+
+    .sf-settings-user span {
+        color: var(--sf-text-muted);
+        font-size: 0.8rem;
+    }
+
 .sf-settings-menu-item {
     width: 100%;
-    min-height: 40px;
     padding: 10px 12px;
     border: none;
-    border-radius: var(--sf-radius-sm);
+    border-radius: 6px;
     background: transparent;
-    color: var(--sf-text);
-    font-size: var(--sf-font-size-sm);
-    font-weight: var(--sf-font-weight-bold);
+    color: var(--sf-text, #4a5568);
+    font-size: 0.9rem;
+    font-weight: 600;
     text-align: left;
     display: flex;
     align-items: center;
-    gap: var(--sf-space-sm);
+    gap: 8px;
     cursor: pointer;
     text-decoration: none;
-    transition: var(--sf-transition);
 }
 
-    ::deep .sf-settings-menu-item:hover,
     .sf-settings-menu-item:hover {
-        background: var(--sf-accent-soft);
-        color: var(--sf-text-strong);
-        text-decoration: none;
+        background: var(--sf-accent-soft, #f7fafc);
+        color: var(--sf-text-strong, #1a202c);
     }
 
-    ::deep .sf-settings-menu-item.active {
-        background: var(--sf-accent-soft);
-        color: var(--sf-text-strong);
-    }
-
-::deep .sf-settings-logout,
 .sf-settings-logout {
-    color: var(--sf-accent);
-}
-
-    ::deep .sf-settings-logout:hover,
-    .sf-settings-logout:hover {
-        background: var(--sf-accent-soft);
-        color: var(--sf-text-strong);
-    }
-
-.sf-theme-toggle {
-    justify-content: flex-start;
-    gap: var(--sf-space-sm);
-}
-
-.sf-theme-toggle-icon {
-    width: 26px;
-    height: 26px;
-    border-radius: var(--sf-radius-pill);
-    background: var(--sf-accent-soft);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex: 0 0 auto;
+    color: #e53e3e;
+    margin-top: 4px;
 }
 
 @keyframes sf-dropdown-open {
     from {
         opacity: 0;
-        transform: translateY(-6px) scale(0.98);
+        transform: translateY(6px) scale(0.98);
     }
 
     to {
@@ -351,127 +248,61 @@
     }
 }
 
-/* Medium / Tablet Displays */
-@media (max-width: 1050px) {
-    .sf-header-inner {
-        padding: 0 22px;
-    }
-
-    .sf-navbar {
-        gap: 20px;
-    }
-
-    ::deep .sf-nav-item,
-    .sf-nav-item {
-        padding: 0 16px;
-        font-size: var(--sf-font-size-sm);
-    }
+/* =========================================
+       MOBILE MENU & TOPBAR
+       ========================================= */
+.sf-mobile-topbar {
+    display: none;
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px;
+    background: var(--sf-panel-bg-strong, #ffffff);
+    border-bottom: 1px solid var(--sf-border, #e2e8f0);
+    z-index: 8900;
+    align-items: center;
+    padding: 0 16px;
+    gap: 16px;
 }
 
-/* Smartphone Layout (Kollabiert flüssig ins Burger-Menü) */
-@media (max-width: 760px) {
-    .sf-header-inner {
-        min-height: 68px;
-        padding: 0 14px;
-    }
-
-    .sf-logo {
-        width: 44px;
-        height: 44px;
-    }
-
-    .sf-brand-text h1 {
-        font-size: 1.35rem;
-    }
-
-    .sf-mobile-menu-button {
-        display: inline-flex;
-    }
-
-    .sf-navbar {
-        position: absolute;
-        top: calc(100% + 1px);
-        left: 14px;
-        right: 14px;
-        display: none;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 6px;
-        padding: 12px;
-        background: var(--sf-panel-bg-strong);
-        border: 1px solid var(--sf-border);
-        border-radius: var(--sf-radius);
-        box-shadow: var(--sf-shadow-hover);
-    }
-
-        .sf-navbar.open {
-            display: flex;
-        }
-
-    /* Setzt Desktop-Mittelzentrierung für Smartphone zurück */
-    .sf-nav-links {
-        flex-direction: column;
-        align-items: stretch;
-        width: 100%;
-        margin: 0;
-        gap: 6px;
-    }
-
-    ::deep .sf-nav-item,
-    .sf-nav-item {
-        width: 100%;
-        min-height: 44px;
-        padding: 0 12px;
-        border-radius: var(--sf-radius-sm);
-        justify-content: flex-start;
-        color: var(--sf-text);
-    }
-
-        ::deep .sf-nav-item:hover,
-        .sf-nav-item:hover,
-        ::deep .sf-nav-item.active {
-            background: var(--sf-accent-soft);
-            color: var(--sf-text-strong);
-        }
-
-    .sf-settings-button {
-        width: 100%;
-        min-height: 44px;
-        padding: 0 12px;
-        border-radius: var(--sf-radius-sm);
-        justify-content: flex-start;
-    }
-
-        .sf-settings-button:hover {
-            background: var(--sf-accent-soft);
-        }
-
-    .sf-settings-dropdown {
-        width: 100%;
-        display: block;
-        margin-left: 0;
-    }
-
-    .sf-settings-menu {
-        position: static;
-        width: 100%;
-        margin-top: 8px;
-        box-shadow: none;
-    }
-
-        .sf-settings-menu::before {
-            content: none;
-        }
+.sf-mobile-brand h1 {
+    font-size: 1.3rem;
+    color: #1a365d;
+    margin: 0;
 }
 
-/* Sehr kleine Smartphone Displays */
-@media (max-width: 420px) {
-    .sf-brand-text h1 {
-        font-size: 1.2rem;
+.sf-mobile-menu-button {
+    width: 40px;
+    height: 40px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+}
+
+    .sf-mobile-menu-button span {
+        width: 22px;
+        height: 2px;
+        background: #2d3748;
+        transition: 0.3s;
     }
 
-    .sf-logo {
-        width: 40px;
-        height: 40px;
+/* Responsive Verhalten */
+@media (max-width: 900px) {
+    .sf-mobile-topbar {
+        display: flex;
     }
+
+    .sf-sidebar {
+        transform: translateX(-100%);
+        box-shadow: 10px 0 25px rgba(0,0,0,0.1);
+    }
+
+        .sf-sidebar.open {
+            transform: translateX(0);
+        }
 }

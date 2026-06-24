@@ -1,116 +1,121 @@
 @using Microsoft.JSInterop
+@using SchulFunk_Webprojekt.Components.Pages
 @using SchulFunk_Webprojekt.Model
 @inject NavigationManager NavManager
 @inject UserStateService userStateService
 @inject IJSRuntime JS
 @implements IDisposable
 
-<header class="sf-header">
-    <div class="sf-header-inner">
-        <NavLink class="sf-brand" href="/home" Match="NavLinkMatch.All" @onclick="CloseAllMenus">
-            <img class="sf-logo" src="/lib/images/SchulFunk-Logo.png" alt="SchulFunk Logo" />
+<!-- Mobile Header (Nur sichtbar auf kleinen Bildschirmen) -->
+<div class="sf-mobile-topbar">
+    <button type="button"
+            class="sf-mobile-menu-button @(MobileMenuOpen ? "open" : "")"
+            @onclick="ToggleMobileMenu"
+            aria-label="Menü öffnen oder schließen">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
+    <div class="sf-mobile-brand">
+        <h1>SchulFunk</h1>
+    </div>
+</div>
 
+<!-- Desktop Sidebar & Mobile Overlay -->
+<aside class="sf-sidebar @(MobileMenuOpen ? "open" : "")">
+    <div class="sf-sidebar-inner">
+
+        <NavLink class="sf-brand" href="/home" Match="NavLinkMatch.All" @onclick="CloseAllMenus">
             <div class="sf-brand-text">
-                <h1>Schul<span>Funk</span></h1>
+                <h1>SchulFunk</h1>
             </div>
         </NavLink>
 
-        <button type="button"
-                class="sf-mobile-menu-button @(MobileMenuOpen ? "open" : "")"
-                @onclick="ToggleMobileMenu"
-                aria-label="Menü öffnen oder schließen">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-
-        <nav class="sf-navbar @(MobileMenuOpen ? "open" : "")">
-
-            <div class="sf-nav-links">
-                <NavLink class="sf-nav-item" href="/home" @onclick="CloseAllMenus">
-                    News
-                </NavLink>
-                <NavLink class="sf-nav-item" href="/survey" @onclick="CloseAllMenus">
-                    Umfragen
-                </NavLink>
-            </div>
-
-            <div class="sf-settings-dropdown">
-                <button type="button"
-                        class="sf-settings-button"
-                        @onclick="ToggleSettingsMenu"
-                        aria-label="Profil öffnen">
-                    <span class="sf-avatar sf-avatar--small">
-                        @if (CurrentUser != null && !string.IsNullOrWhiteSpace(CurrentUser.ImageLink))
-                        {
-                            <img src="@GetAvatarPicture()" alt="Avatar" />
-                        }
-                        else
-                        {
-                            <span class="sf-avatar-initials">@GetInitials(CurrentUser)</span>
-                        }
-                    </span>
-
-                    <span class="sf-settings-name">@(CurrentUser != null ? $"{CurrentUser.Firstname} {CurrentUser.Lastname}" : "Profil")</span>
-                </button>
-
-                @if (SettingsMenuOpen)
-                {
-                    <div class="sf-settings-menu">
-                        <div class="sf-settings-user">
-                            <div class="sf-settings-user-left">
-                                <span class="sf-avatar">
-                                    @if (CurrentUser != null && !string.IsNullOrWhiteSpace(CurrentUser.ImageLink))
-                                    {
-                                        <img src="@GetAvatarPicture()" alt="Avatar" />
-                                    }
-                                    else
-                                    {
-                                        <span class="sf-avatar-initials">@GetInitials(CurrentUser)</span>
-                                    }
-                                </span>
-                            </div>
-
-                            <div class="sf-settings-user-right">
-                                <strong>@(CurrentUser != null ? $"{CurrentUser.Firstname} {CurrentUser.Lastname}" : "Gast")</strong>
-                                <span>@(CurrentUser != null ? PermissionRules.GetGroupLabel(CurrentUser.Group) : string.Empty)</span>
-                            </div>
-                        </div>
-
-                        @if (CanOpenAdminPanel)
-                        {
-                            <NavLink class="sf-settings-menu-item" href="/admin" @onclick="CloseAllMenus">
-                                Admin Panel
-                            </NavLink>
-                        }
-
-                        <NavLink class="sf-settings-menu-item" href="/profile" @onclick="CloseAllMenus">
-                            Mein Profil
-                        </NavLink>
-
-                        <button type="button"
-                                class="sf-settings-menu-item sf-theme-toggle"
-                                @onclick="ToggleTheme">
-                            <span class="sf-theme-toggle-icon">
-                                @(IsDarkMode ? "☀" : "🌙")
-                            </span>
-
-                            <span>
-                                @(IsDarkMode ? "Weißmodus aktivieren" : "Dunkelmodus aktivieren")
-                            </span>
-                        </button>
-
-                        <button type="button"
-                                class="sf-settings-menu-item sf-settings-logout"
-                                @onclick="Logout">
-                            Abmelden
-                        </button>
-                    </div>
-                }
-            </div>
+        <nav class="sf-nav-links">
+            <!-- Icons können durch deine eigenen (z.B. FontAwesome) ersetzt werden -->
+            <NavLink class="sf-nav-item" href="/home" Match="NavLinkMatch.All" @onclick="CloseAllMenus">
+                <span class="sf-nav-icon">📰</span> News
+            </NavLink>
+            <NavLink class="sf-nav-item" href="/survey" @onclick="CloseAllMenus">
+                <span class="sf-nav-icon">📊</span> Umfragen
+            </NavLink>
+            <NavLink class="sf-nav-item" href="/termine" @onclick="CloseAllMenus">
+                <span class="sf-nav-icon">📅</span> Termine
+            </NavLink>
+            <NavLink class="sf-nav-item" href="/dokumente" @onclick="CloseAllMenus">
+                <span class="sf-nav-icon">📁</span> Dokumente
+            </NavLink>
         </nav>
+
+       <LeftSidebar></LeftSidebar>
+
+        <div class="sf-spacer"></div>
+
+        <!-- Profil & Einstellungen am unteren Rand -->
+        <div class="sf-settings-container">
+            <button type="button"
+                    class="sf-settings-button"
+                    @onclick="ToggleSettingsMenu"
+                    aria-label="Profil öffnen">
+                <span class="sf-avatar sf-avatar--small">
+                    @if (CurrentUser != null && !string.IsNullOrWhiteSpace(CurrentUser.ImageLink))
+                    {
+                        <img src="@GetAvatarPicture()" alt="Avatar" />
+                    }
+                    else
+                    {
+                        <span class="sf-avatar-initials">@GetInitials(CurrentUser)</span>
+                    }
+                </span>
+                <span class="sf-settings-name">@(CurrentUser != null ? $"{CurrentUser.Firstname} {CurrentUser.Lastname}" : "Profil")</span>
+            </button>
+
+            @if (SettingsMenuOpen)
+            {
+                <div class="sf-settings-menu">
+                    <div class="sf-settings-user">
+                        <div class="sf-settings-user-left">
+                            <span class="sf-avatar">
+                                @if (CurrentUser != null && !string.IsNullOrWhiteSpace(CurrentUser.ImageLink))
+                                {
+                                    <img src="@GetAvatarPicture()" alt="Avatar" />
+                                }
+                                else
+                                {
+                                    <span class="sf-avatar-initials">@GetInitials(CurrentUser)</span>
+                                }
+                            </span>
+                        </div>
+                        <div class="sf-settings-user-right">
+                            <strong>@(CurrentUser != null ? $"{CurrentUser.Firstname} {CurrentUser.Lastname}" : "Gast")</strong>
+                            <span>@(CurrentUser != null ? PermissionRules.GetGroupLabel(CurrentUser.Group) : string.Empty)</span>
+                        </div>
+                    </div>
+
+                    @if (CanOpenAdminPanel)
+                    {
+                        <NavLink class="sf-settings-menu-item" href="/admin" @onclick="CloseAllMenus">
+                            Admin Panel
+                        </NavLink>
+                    }
+
+                    <NavLink class="sf-settings-menu-item" href="/profile" @onclick="CloseAllMenus">
+                        Mein Profil
+                    </NavLink>
+
+                    <button type="button" class="sf-settings-menu-item sf-theme-toggle" @onclick="ToggleTheme">
+                        <span class="sf-theme-toggle-icon">@(IsDarkMode ? "☀" : "🌙")</span>
+                        <span>@(IsDarkMode ? "Weißmodus aktivieren" : "Dunkelmodus aktivieren")</span>
+                    </button>
+
+                    <button type="button" class="sf-settings-menu-item sf-settings-logout" @onclick="Logout">
+                        Abmelden
+                    </button>
+                </div>
+            }
+        </div>
     </div>
-</header>
+</aside>
 
 @code {
     private bool SettingsMenuOpen = false;
@@ -137,11 +142,8 @@
         if (firstRender)
         {
             var theme = await JS.InvokeAsync<string>("schulFunkTheme.get");
-
             IsDarkMode = theme != "light";
-
             await JS.InvokeVoidAsync("schulFunkTheme.apply", IsDarkMode ? "dark" : "light");
-
             StateHasChanged();
         }
     }
@@ -149,11 +151,7 @@
     private void ToggleMobileMenu()
     {
         MobileMenuOpen = !MobileMenuOpen;
-
-        if (!MobileMenuOpen)
-        {
-            SettingsMenuOpen = false;
-        }
+        if (!MobileMenuOpen) SettingsMenuOpen = false;
     }
 
     private void ToggleSettingsMenu()
@@ -170,9 +168,7 @@
     private async Task ToggleTheme()
     {
         IsDarkMode = !IsDarkMode;
-
         var theme = IsDarkMode ? "dark" : "light";
-
         await JS.InvokeVoidAsync("schulFunkTheme.set", theme);
     }
 
@@ -186,10 +182,8 @@
     private string GetInitials(UserModel? user)
     {
         if (user == null) return string.Empty;
-
         var first = !string.IsNullOrWhiteSpace(user.Firstname) ? user.Firstname.Trim()[0].ToString().ToUpper() : string.Empty;
         var last = !string.IsNullOrWhiteSpace(user.Lastname) ? user.Lastname.Trim()[0].ToString().ToUpper() : string.Empty;
-
         return (first + last).Trim();
     }
 
