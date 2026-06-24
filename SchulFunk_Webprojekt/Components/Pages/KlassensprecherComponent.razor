@@ -1,0 +1,62 @@
+﻿@inject SchulFunk_Webprojekt.Feature.UserHandling.UserStateService userStateService
+@inject UserService userService
+
+<div class="sf-sidebar-section">
+    <h4>Klasse @(userStateService.GetUser()?.Class?.Classname ?? "")</h4>
+
+    @if (_klassensprecher.Count == 0)
+    {
+        <div class="sf-person">
+            <span>Es wurde noch kein/e Klassensprecher/in gewählt</span>
+        </div>
+    }
+    else
+    {
+        @foreach (var klassensprecher in _klassensprecher)
+        {
+            <div class="sf-person">
+                <strong>@klassensprecher.Firstname @klassensprecher.Lastname</strong>
+                <span>Klassensprecher</span>
+            </div>
+        }
+    }
+</div>
+
+<div class="sf-sidebar-section">
+    <h4>Schule</h4>
+
+    @if (_schuelerSprecher.Count == 0)
+    {
+        <div class="sf-person">
+            <span>Es wurde noch kein/e Schülersprecher/in gewählt</span>
+        </div>
+    }
+    else
+    {
+        @foreach (var schuelersprecher in _schuelerSprecher)
+        {
+            <div class="sf-person">
+                <strong>@schuelersprecher.Firstname @schuelersprecher.Lastname</strong>
+                <span>Schülersprecher</span>
+            </div>
+        }
+    }
+</div>
+
+@code {
+    private List<UserModel> _klassensprecher = new();
+    private List<UserModel> _schuelerSprecher = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var users = await userService.GetAllUsers();
+
+        if (users == null)
+        {
+            return;
+        }
+
+        _klassensprecher = users.Where(u => u.Group == Groups.ClassRepresentatives && userStateService.GetUser()?.Class?.Classname == u.Class?.Classname).ToList();
+        _schuelerSprecher = users.Where(u => u.Group == Groups.StudentRepresentatives).ToList();
+    }
+}

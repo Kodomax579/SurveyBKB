@@ -9,59 +9,54 @@
 {
     <section class="news-detail-page sf-panel">
         <h2>Nachricht nicht gefunden</h2>
-        <p>Die gewünschte Nachricht konnte nicht gefunden werden.</p>
-
-        <a href="/news" class="sf-button sf-button-dark">
-            Zurück zu den Nachrichten
-        </a>
+        <a href="/home" class="sf-button">Zurück zur Übersicht</a>
     </section>
 }
 else
 {
-    <section class="news-detail-page sf-panel">
-        <div class="news-detail-header">
-            <img src="@imageUrl" alt="News Icon" />
+    <section class="news-detail-wrapper">
+        <article class="news-detail-content @(hasImage ? "has-image" : "")">
 
-            <div>
-                <span>@News.Tag</span>
-                <h2>@News.Titel</h2>
-                <p>@News.CreatedAt</p>
+            @if (hasImage)
+            {
+                <div class="news-hero-image" style="background-image: url('@imageUrl')">
+                    <div class="news-hero-overlay"></div>
+                    <header class="news-hero-header">
+                        <span class="news-tag">@News.Tag</span>
+                        <h1>@News.Titel</h1>
+                        <p class="news-date">@News.CreatedAt.ToString("dd. MMMM yyyy")</p>
+                    </header>
+                </div>
+            }
+
+            <div class="news-body">
+                @if (!hasImage)
+                {
+                    <header class="news-simple-header">
+                        <span class="news-tag">@News.Tag</span>
+                        <h1>@News.Titel</h1>
+                        <p class="news-date">@News.CreatedAt.ToString("dd. MMMM yyyy")</p>
+                    </header>
+                }
+
+                <p class="news-preview">@News.PreviewText</p>
+                <div class="news-article">
+                    @News.MainText
+                </div>
+
+                <a href="/home" class="sf-button news-back-btn">← Zurück zu den Nachrichten</a>
             </div>
-        </div>
-
-        <p class="news-detail-description">
-            @News.PreviewText
-        </p>
-
-        <article class="news-detail-article">
-            @News.MainText
         </article>
-
-        <a href="/news" class="sf-button sf-button-dark news-detail-back">
-            Zurück zu den Nachrichten
-        </a>
     </section>
 }
 
 @code {
-    [Parameter]
-    public int Id { get; set; }
-    
+    [Parameter] public int Id { get; set; }
     private NewsItem? News => newsStateService.GetNewsItems().FirstOrDefault(n => n.Id == Id);
-    string imageUrl => $"{configuration.GetValue<string>("ApiSettings:BaseUrl")!}{News.ImageLink}";
+    private bool hasImage => !string.IsNullOrEmpty(News?.ImageLink);
+    private string imageUrl => $"{configuration.GetValue<string>("ApiSettings:BaseUrl")!}{News?.ImageLink}";
 
-    protected override void OnInitialized()
-    {
-        newsStateService.OnChange += HandleStateChanged;
-    }
-
-    private void HandleStateChanged()
-    {
-        InvokeAsync(StateHasChanged);
-    }
-
-    public void Dispose()
-    {
-        newsStateService.OnChange -= HandleStateChanged;
-    }
+    protected override void OnInitialized() => newsStateService.OnChange += HandleStateChanged;
+    private void HandleStateChanged() => InvokeAsync(StateHasChanged);
+    public void Dispose() => newsStateService.OnChange -= HandleStateChanged;
 }

@@ -1,0 +1,42 @@
+﻿/* In RightSidebar.razor.css anpassen/ersetzen */
+.sf-sidebar-right {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 320px;
+    height: 100vh;
+    background: var(--sf-panel-bg-strong); /* Gleicher Hintergrund wie links */
+    border-left: 1px solid var(--sf-border); /* Die saubere Abgrenzungslinie */
+    z-index: 8900;
+    overflow-y: auto;
+    padding: var(--sf-space-xl) var(--sf-space-md);
+    display: flex;
+    flex-direction: column;
+    font-family: var(--sf-font-family);
+}
+
+/* Überschrift stylen */
+.sf-sidebar-heading {
+    font-size: var(--sf-font-size-md);
+    font-weight: var(--sf-font-weight-bold);
+    color: var(--sf-text-strong);
+    margin-top: 0;
+    margin-bottom: var(--sf-space-lg);
+    padding-bottom: var(--sf-space-sm);
+    border-bottom: 1px solid var(--sf-border);
+    display: flex;
+    align-items: center;
+}
+
+.sf-sidebar-surveys {
+    display: flex;
+    flex-direction: column;
+    gap: var(--sf-space-lg);
+}
+
+/* Ausblenden auf kleineren Bildschirmen */
+@media (max-width: 1200px) {
+    .sf-sidebar-right {
+        display: none;
+    }
+}

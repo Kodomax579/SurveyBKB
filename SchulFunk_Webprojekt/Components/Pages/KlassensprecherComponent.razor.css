@@ -1,0 +1,42 @@
+﻿.sf-sidebar-section {
+    margin-top: var(--sf-space-lg);
+    padding: 0 var(--sf-space-sm);
+}
+
+    .sf-sidebar-section h4 {
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        font-weight: var(--sf-font-weight-bold);
+        letter-spacing: 0.05em;
+        color: var(--sf-text-subtle);
+        margin-bottom: var(--sf-space-sm);
+    }
+
+.sf-person {
+    display: flex;
+    flex-direction: column;
+    padding: 4px 0 4px 12px; /* Platz für den linken Strich */
+    margin-bottom: var(--sf-space-sm);
+    border-left: 3px solid var(--sf-color-secondary); /* Akzentlinie */
+    transition: border-color var(--sf-transition-fast);
+}
+
+    /* Beim Hovern färbt sich die Linie in deiner Akzentfarbe */
+    .sf-person:hover {
+        border-left-color: var(--sf-color-accent);
+    }
+
+    .sf-person strong {
+        display: block;
+        color: var(--sf-text-strong);
+        font-size: var(--sf-font-size-sm);
+        font-weight: var(--sf-font-weight-medium);
+        line-height: 1.2;
+    }
+
+    .sf-person span {
+        display: block;
+        color: var(--sf-text-muted);
+        font-size: var(--sf-font-size-xs);
+        margin-top: 1px;
+    }

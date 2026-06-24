@@ -125,6 +125,7 @@ namespace Survey.ApiGateway.Feature.News
                     Email = news.User.Email,
                     Group = news.User.Group,
                     Lastname = news.User.Lastname,
+                    ImageLink = news.User.ImageLink,
                     Class = new User.DTO.ClassDTO()
                     {
                         Classname = news.User.Class.ClassName

@@ -39,7 +39,7 @@ namespace SchulFunk_Webprojekt.Feature.UserHandling
             try
             {
                 var json = await response.Content.ReadFromJsonAsync<JsonElement>();
-                if (json.TryGetProperty("ImageLink", out var prop))
+                if (json.TryGetProperty("imageLink", out var prop))
                 {
                     var link = prop.GetString();
                     // if the current user updated their own image, update state

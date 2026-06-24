@@ -4,6 +4,7 @@
 @inject SignalRHub hub
 @inject NavigationManager navigationManager
 @implements IDisposable
+@inject IConfiguration configuration
 
 <main class="bento-container">
     @if (newsStateService.GetNewsItems() != null)
@@ -46,12 +47,16 @@
                     @if (cardSize != "small" && item.User != null)
                     {
                         <div class="author-info">
-                            <img src="@(string.IsNullOrEmpty(item.User.ImageLink) ? "assets/default-avatar.png" : item.User.ImageLink)"
+                            <img src="@GetAuthorAvatarUrl(item.User)"
                                  alt="@item.User.Firstname"
                                  class="author-avatar" />
 
                             <div class="author-details">
                                 <span class="author-name">@item.User.Firstname @item.User.Lastname</span>
+                                @if (!string.IsNullOrEmpty(item.User.Class?.Classname))
+                                {
+                                    <span class="author-class">@item.User.Class.Classname</span>
+                                }
                             </div>
                         </div>
                     }
@@ -125,6 +130,22 @@
         }
 
         return null;
+    }
+
+    private string GetAuthorAvatarUrl(UserModel user)
+    {
+        if (string.IsNullOrEmpty(user.ImageLink))
+        {
+            return "assets/default-avatar.png";
+        }
+
+        if (user.ImageLink.StartsWith("http"))
+        {
+            return user.ImageLink;
+        }
+
+        var baseUrl = configuration.GetValue<string>("ApiSettings:BaseUrl");
+        return $"{baseUrl}{user.ImageLink}";
     }
 
     private void GoToNewsDetail(int newsId)

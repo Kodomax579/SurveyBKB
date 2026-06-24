@@ -2,6 +2,7 @@
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
 @inject SurveyStateService surveyStateService
+@inject UserStateService userStateService
 @implements IDisposable
 
 <PageTitle>Umfragen</PageTitle>
@@ -60,7 +61,22 @@ else
     private string StatusFilter = "all";
     private bool FilterDropdownOpen = false;
 
-    private List<SurveyModel> SurveyListe => surveyStateService.GetAllSurveys();
+    private List<SurveyModel> SurveyListe
+    {
+        get
+        {
+            var userClass = userStateService.GetUser()?.Class?.Classname;
+
+            return surveyStateService.GetAllSurveys()
+                .Where(s =>
+                    s.Classes == null ||
+                    s.Classes.Count == 0 ||
+
+                    (!string.IsNullOrWhiteSpace(userClass) && s.Classes.Contains(userClass))
+                )
+                .ToList();
+        }
+    }
 
     private IEnumerable<SurveyModel> GefilterteSurveyListe =>
         SurveyListe

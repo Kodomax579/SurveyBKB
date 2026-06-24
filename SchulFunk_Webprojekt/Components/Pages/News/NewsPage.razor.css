@@ -3,7 +3,7 @@
    ========================================================= */
 .bento-container {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 280px), 1fr));
     grid-auto-rows: minmax(180px, auto);
     gap: var(--sf-space-md);
     max-width: var(--sf-container-width);
@@ -219,15 +219,6 @@
 /* =========================================================
    Das übergeordnete 3-Spalten-Layout (ZWINGEND ERFORDERLICH)
    ========================================================= */
-.sf-layout-wrapper {
-    display: grid;
-    grid-template-columns: 300px 1fr 300px; /* Links 300px, Mitte flexibel, Rechts 300px */
-    gap: var(--sf-space-lg);
-    max-width: 1600px;
-    margin: 0 auto;
-    padding: 0 var(--sf-page-padding);
-    align-items: start;
-}
 
 .sf-sidebar {
     display: flex;
@@ -254,51 +245,29 @@
 }
 
 /* Responsives Verhalten für kleinere Bildschirme */
+/* =========================================================
+   7. Responsive Breakpoints (GEFIXT)
+   ========================================================= */
 @media (max-width: 1400px) {
-    .sf-layout-wrapper {
-        grid-template-columns: 280px 1fr;
-    }
 
     .sf-sidebar-right {
         display: none;
     }
-    /* Rechte Sidebar auf Tablets ausblenden */
 }
 
 @media (max-width: 1050px) {
-    .sf-layout-wrapper {
-        grid-template-columns: 1fr;
-        padding: 0 var(--sf-page-padding-mobile);
-    }
 
     .sf-sidebar {
-        position: static;
-        width: 100%;
-    }
-
-    .sf-sidebar-right {
-        display: flex;
-    }
-}
-/* =========================================================
-   7. Responsive Breakpoints
-   ========================================================= */
-@media (max-width: 900px) {
-    .bento-container {
-        grid-template-columns: repeat(3, 1fr);
-        padding: var(--sf-page-padding-mobile);
+        display: none; /* Sidebar blockiert sonst den Mobile-View */
     }
 }
 
-@media (max-width: 600px) {
-    .bento-container {
-        grid-template-columns: 1fr;
-        grid-auto-rows: auto;
-    }
-
+/* Mobile Bento-Korrektur */
+@media (max-width: 768px) {
     .card.hero, .card.wide, .card.tall {
+        /* WICHTIG: Zwingt alle großen Kacheln auf Mobile in exakt 1 Spalte! */
         grid-column: span 1 !important;
         grid-row: span 1 !important;
-        min-height: 180px;
+        min-height: 220px;
     }
 }

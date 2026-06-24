@@ -4,10 +4,11 @@
 .tab-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     max-width: 100%; /* Volle Breite erlauben */
     margin: 0 auto;
     width: 100%;
+    box-sizing: border-box;
 }
 
 .page-tabs {
@@ -67,6 +68,8 @@
     padding: var(--sf-space-lg) 2vw;
     min-height: 600px;
     animation: fadeIn var(--sf-transition-slow) ease;
+    box-sizing:border-box;
+    overflow-x:hidden;
 }
 
 @keyframes fadeIn {
@@ -81,135 +84,6 @@
     }
 }
 
-/* =========================================================
-   2. Das übergeordnete 3-Spalten-Layout (Das Herzstück!)
-   ========================================================= */
-.sf-layout-wrapper {
-    display: grid;
-    /* Links 280px, Mitte (News) füllt den Rest, Rechts 320px */
-    grid-template-columns: 280px 1fr 320px;
-    gap: 32px;
-    width: 100%;
-    align-items: start;
-}
-
-/* Basis-Klasse für beide Sidebars */
-::deep .sf-sidebar {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sf-space-md);
-    position: sticky;
-    top: calc(78px + var(--sf-space-lg)); /* Klebt sauber unter der Nav-Bar */
-    height: max-content;
-    z-index: 10;
-}
-
-/* Überschreibt das Bento-Grid für das Dashboard: 
-   Verhindert das Quetschen in feste Spalten! 
-*/
-.sf-layout-wrapper ::deep .bento-container {
-    max-width: 100%;
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    /* Macht die News-Kacheln flexibel anstatt stur 4-spaltig */
-    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-}
-
-/* =========================================================
-   3. Fix für die linke Sidebar (Hintergründe & Formatierung)
-   ========================================================= */
-/* Da die Komponenten isoliert sind, müssen wir die Basis-Card-Styles hier erzwingen */
-::deep .sf-sticky-box {
-    background-color: var(--sf-card-bg) !important;
-    border: 1px solid var(--sf-border) !important;
-    border-radius: var(--sf-radius-lg) !important;
-    padding: var(--sf-space-md) !important;
-    box-shadow: var(--sf-shadow-sm) !important;
-    color: var(--sf-text) !important;
-    cursor: default !important;
-    transform: none !important;
-    display: flex !important;
-    flex-direction: column !important;
-    overflow: hidden !important;
-}
-
-    ::deep .sf-sticky-box h3 {
-        margin: 0 0 var(--sf-space-md) 0;
-        font-size: var(--sf-font-size-lg);
-        color: var(--sf-text-strong);
-        font-weight: var(--sf-font-weight-bold);
-    }
-
-    ::deep .sf-sticky-box .tag {
-        align-self: flex-start;
-        display: inline-block;
-        background: var(--sf-button-bg);
-        color: var(--sf-button-text);
-        font-size: var(--sf-font-size-xs);
-        font-weight: var(--sf-font-weight-medium);
-        padding: var(--sf-space-2xs) var(--sf-space-xs);
-        border-radius: var(--sf-radius-sm);
-        margin-bottom: var(--sf-space-sm);
-    }
-
-    ::deep .sf-sticky-box .author-info {
-        display: flex;
-        align-items: center;
-        gap: var(--sf-space-xs);
-        margin-top: var(--sf-space-xs);
-    }
-
-    ::deep .sf-sticky-box .author-details {
-        display: flex;
-        flex-direction: column;
-    }
-
-    ::deep .sf-sticky-box .author-name {
-        font-size: var(--sf-font-size-sm);
-        font-weight: var(--sf-font-weight-medium);
-        color: var(--sf-text-strong);
-    }
-
-    ::deep .sf-sticky-box .author-class {
-        font-size: var(--sf-font-size-xs);
-        color: var(--sf-text-subtle);
-    }
-
-    ::deep .sf-sticky-box .preview-text {
-        font-size: var(--sf-font-size-sm);
-        color: var(--sf-text-muted);
-        margin: 0 0 var(--sf-space-sm) 0;
-        line-height: 1.4;
-    }
-
-/* =========================================================
-   4. Styling für die rechte Umfragen-Sidebar
-   ========================================================= */
-::deep .sf-sidebar-heading {
-    font-size: 1.25rem;
-    font-weight: var(--sf-font-weight-black);
-    color: var(--sf-text-strong);
-    margin-bottom: var(--sf-space-sm);
-    padding-left: var(--sf-space-xs);
-}
-
-::deep .sf-sidebar-surveys {
-    display: flex;
-    flex-direction: column;
-    gap: var(--sf-space-lg);
-}
-
-/* Formatiert die SurveyCard etwas kompakter für die rechte Spalte */
-::deep .sf-sidebar-right .survey-card {
-    min-height: 260px;
-    padding: 20px;
-    margin: 0;
-}
-
-    ::deep .sf-sidebar-right .survey-card h3 {
-        font-size: 1.25rem;
-    }
 
 /* =========================================================
    5. Search Box (Deine Original-Styles)
@@ -228,6 +102,7 @@
     width: 100%;
     padding: var(--sf-space-md) var(--sf-space-lg) var(--sf-space-md) var(--sf-space-lg);
     font-size: 1rem;
+    box-sizing: border-box;
     border: 2px solid var(--sf-border);
     border-radius: var(--sf-radius-lg);
     background: var(--sf-input-bg);
@@ -262,30 +137,21 @@
 /* =========================================================
    6. Responsive Breakpoints (@media)
    ========================================================= */
-/* Tablet/Laptops: Rechte Sidebar ausblenden, um den News Platz zu lassen */
-@media (max-width: 1400px) {
-    .sf-layout-wrapper {
-        grid-template-columns: 280px 1fr;
-    }
+@media (max-width: 1200px) {
 
-    ::deep .sf-sidebar-right {
+
+    /* Optional: Blende die Sidebar auf kleinen Geräten aus, da sonst alles zu lang wird */
+    .sf-sidebar-right {
         display: none;
     }
 }
-
-/* Kleine Screens: 1-Spalten-Layout für alles */
 @media (max-width: 1050px) {
-    .sf-layout-wrapper {
-        grid-template-columns: 1fr;
-    }
 
-    ::deep .sf-sidebar {
-        position: static;
-        width: 100%;
-    }
 
-    ::deep .sf-sidebar-right {
-        display: flex;
+    .search-box {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin: var(--sf-space-lg) auto !important;
     }
 }
 

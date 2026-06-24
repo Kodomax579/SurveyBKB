@@ -1,54 +1,227 @@
 @page "/profile"
+@rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
+@using Microsoft.AspNetCore.Components.Forms
 @inject UserStateService userStateService
+@inject UserService userService
+@implements IDisposable
 
-<PageTitle>Profil</PageTitle>
+<PageTitle>Mein Profil</PageTitle>
 
-<section class="profile-action-bar">
-    <a href="/profile/edit" class="sf-button sf-button-dark profile-edit-button">
-        Profil bearbeiten
-    </a>
-</section>
+<div class="sf-profile-page">
+    <div class="sf-profile-card sf-panel">
 
-<section class="profile-info sf-panel">
-    <h3>Profildaten</h3>
+        <div class="sf-profile-cover"></div>
+        <div class="sf-profile-header">
+            <div class="sf-profile-avatar-wrapper">
+                <div class="sf-profile-avatar">
+                    @if (CurrentUser != null && !string.IsNullOrWhiteSpace(CurrentUser.ImageLink))
+                    {
+                        <img src="@GetAvatarUrl()" alt="Avatar" />
+                    }
+                    else
+                    {
+                        <span class="sf-avatar-initials">@GetInitials()</span>
+                    }
+                </div>
 
-    <div class="profile-info-list">
-        <div class="profile-info-row">
-            <span>Name</span>
-            <strong>@UserName</strong>
+                @if (IsEditing)
+                {
+                    <label class="sf-avatar-upload-btn" title="Neues Profilbild hochladen">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                        <InputFile OnChange="OnFileSelected" accept="image/*" style="display:none" />
+                    </label>
+                }
+            </div>
+
+            <div class="sf-profile-title">
+                <h2>@(CurrentUser != null ? $"{CurrentUser.Firstname} {CurrentUser.Lastname}" : "Gast")</h2>
+                <span class="sf-profile-role">@UserRole</span>
+            </div>
+
+            <div class="sf-profile-actions">
+                @if (!IsEditing)
+                {
+                    <button type="button" class="sf-button" @onclick="OpenPasswordModal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 6px; vertical-align: text-bottom;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                        Passwort ändern
+                    </button>
+                    <button type="button" class="sf-button sf-button-dark" @onclick="ToggleEdit">Profil bearbeiten</button>
+                }
+                else
+                {
+                    <button type="button" class="sf-button" @onclick="CancelEdit">Abbrechen</button>
+                    <button type="button" class="sf-button sf-button-dark" @onclick="SaveProfile">Speichern</button>
+                }
+            </div>
         </div>
 
-        <div class="profile-info-row">
-            <span>E-Mail-Adresse</span>
-            <strong>@UserEmail</strong>
-        </div>
+        @if (!string.IsNullOrEmpty(ErrorMessage))
+        {
+            <div class="sf-profile-alert @(IsError ? "alert-danger" : "alert-success")">
+                @ErrorMessage
+            </div>
+        }
 
-        <div class="profile-info-row">
-            <span>Klasse</span>
-            <strong>@UserClass</strong>
-        </div>
-
-        <div class="profile-info-row">
-            <span>Rolle</span>
-            <strong>@UserRole</strong>
+        <div class="sf-profile-content">
+            @if (!IsEditing)
+            {
+                <div class="profile-info-list">
+                    <div class="profile-info-row">
+                        <span>Vorname</span>
+                        <strong>@CurrentUser?.Firstname</strong>
+                    </div>
+                    <div class="profile-info-row">
+                        <span>Nachname</span>
+                        <strong>@CurrentUser?.Lastname</strong>
+                    </div>
+                    <div class="profile-info-row">
+                        <span>E-Mail-Adresse</span>
+                        <strong>@CurrentUser?.Email</strong>
+                    </div>
+                    <div class="profile-info-row">
+                        <span>Klasse</span>
+                        <strong>@(CurrentUser?.Class?.Classname ?? "-")</strong>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="profile-edit-grid">
+                    <div class="form-group">
+                        <label>Vorname</label>
+                        <input type="text" class="form-control" @bind="EditModel.Firstname" @bind:event="oninput" />
+                    </div>
+                    <div class="form-group">
+                        <label>Nachname</label>
+                        <input type="text" class="form-control" @bind="EditModel.Lastname" @bind:event="oninput" />
+                    </div>
+                    <div class="form-group full-width">
+                        <label>E-Mail-Adresse</label>
+                        <input type="email" class="form-control" @bind="EditModel.Email" @bind:event="oninput" />
+                    </div>
+                    <div class="form-group readonly-group">
+                        <label>Klasse</label>
+                        <div class="readonly-box">@(CurrentUser?.Class?.Classname ?? "-")</div>
+                    </div>
+                    <div class="form-group readonly-group">
+                        <label>Rolle</label>
+                        <div class="readonly-box">@UserRole</div>
+                    </div>
+                </div>
+            }
         </div>
     </div>
-</section>
+</div>
+
+<ChangePasswordModal IsVisible="ShowPasswordModal"
+                     OnClose="ClosePasswordModal"
+                     OnPasswordChanged="HandlePasswordChange" />
 
 @code {
     private UserModel CurrentUser => userStateService.GetUser();
 
-    private string UserName =>
-        $"{CurrentUser.Lastname} {CurrentUser.Firstname}".Trim();
+    // Wir nutzen ein temporäres Model für den Edit-Modus, damit Änderungen bei "Abbrechen" verworfen werden
+    private UserModel EditModel = new UserModel();
 
-    private string UserEmail =>
-        CurrentUser.Email;
+    private bool IsEditing = false;
+    private bool ShowPasswordModal = false;
+    private string ErrorMessage = string.Empty;
+    private bool IsError = true;
 
-    private string UserClass =>
-        CurrentUser.Class.Classname;
+    private string UserRole => CurrentUser != null ? PermissionRules.GetGroupLabel(CurrentUser.Group) : string.Empty;
 
-    private string UserRole =>
-        PermissionRules.GetGroupLabel(CurrentUser.Group);
+    protected override void OnInitialized()
+    {
+        userStateService.OnChange += HandleStateChanged;
+    }
 
+    private void HandleStateChanged() => InvokeAsync(StateHasChanged);
+
+    private void ToggleEdit()
+    {
+        ErrorMessage = string.Empty;
+        // Daten für den Bearbeitungsmodus kopieren
+        EditModel.Firstname = CurrentUser.Firstname;
+        EditModel.Lastname = CurrentUser.Lastname;
+        EditModel.Email = CurrentUser.Email;
+        IsEditing = true;
+    }
+
+    private void CancelEdit()
+    {
+        ErrorMessage = string.Empty;
+        IsEditing = false;
+    }
+
+    private async Task SaveProfile()
+    {
+        // Zurückspeichern ins Hauptmodel
+        CurrentUser.Firstname = EditModel.Firstname;
+        CurrentUser.Lastname = EditModel.Lastname;
+        CurrentUser.Email = EditModel.Email;
+
+        await userService.UpdateUser(CurrentUser.Id, CurrentUser);
+
+        IsError = false;
+        ErrorMessage = "Profil erfolgreich aktualisiert!";
+        IsEditing = false;
+    }
+
+    private async Task OnFileSelected(InputFileChangeEventArgs e)
+    {
+        var file = e.File;
+        if (file == null) return;
+
+        var link = await userService.UploadProfileImage(CurrentUser.Id, file);
+        if (!string.IsNullOrWhiteSpace(link))
+        {
+            CurrentUser.ImageLink = link;
+            IsError = false;
+            ErrorMessage = "Profilbild erfolgreich hochgeladen!";
+            StateHasChanged();
+        }
+    }
+
+    private void OpenPasswordModal() => ShowPasswordModal = true;
+    private void ClosePasswordModal() => ShowPasswordModal = false;
+
+    private async Task HandlePasswordChange((string oldPw, string newPw) data)
+    {
+        var (oldPw, newPw) = data;
+        var result = await userService.ChangePassword(CurrentUser.Id, oldPw, newPw);
+
+        ShowPasswordModal = false;
+
+        if (!result)
+        {
+            IsError = true;
+            ErrorMessage = "Fehler: Altes Passwort ist inkorrekt.";
+        }
+        else
+        {
+            IsError = false;
+            ErrorMessage = "Dein Passwort wurde erfolgreich geändert!";
+        }
+        StateHasChanged();
+    }
+
+    private string GetInitials()
+    {
+        if (CurrentUser == null) return "GA";
+        var first = !string.IsNullOrWhiteSpace(CurrentUser.Firstname) ? CurrentUser.Firstname.Trim()[0].ToString().ToUpper() : "";
+        var last = !string.IsNullOrWhiteSpace(CurrentUser.Lastname) ? CurrentUser.Lastname.Trim()[0].ToString().ToUpper() : "";
+        return (first + last);
+    }
+
+    private string GetAvatarUrl()
+    {
+        // Gleiche Logik wie im NavMenu
+        return $"https://schulfunk-bkbeckum.de/api{CurrentUser.ImageLink}";
+    }
+
+    public void Dispose()
+    {
+        userStateService.OnChange -= HandleStateChanged;
+    }
 }
