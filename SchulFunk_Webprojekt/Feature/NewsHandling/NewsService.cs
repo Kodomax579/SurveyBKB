@@ -124,5 +124,6 @@ namespace SchulFunk_Webprojekt.Feature.NewsHandling
             }
             return false;
         }
+
     }
 }

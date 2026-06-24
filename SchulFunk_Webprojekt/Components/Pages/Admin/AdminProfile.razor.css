@@ -40,7 +40,47 @@
         border-top: 1px solid var(--sf-border);
         transform: rotate(45deg);
     }
+/* Styling für das Avatar-Vorschau-Box */
+.admin-avatar-preview {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--sf-radius-md);
+    object-fit: cover;
+    border: 2px solid var(--sf-border);
+    margin-top: var(--sf-space-sm);
+}
 
+/* Button-Styling für den Upload-Button */
+.sf-upload-label {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--sf-space-xs);
+    padding: 8px 12px;
+    background: var(--sf-card-bg-hover);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-radius-sm);
+    cursor: pointer;
+    font-size: var(--sf-font-size-xs);
+    font-weight: var(--sf-font-weight-medium);
+    transition: var(--sf-transition-fast);
+}
+
+    .sf-upload-label:hover {
+        background: var(--sf-accent-soft);
+        border-color: var(--sf-accent);
+    }
+
+/* Button für Passwort-Reset */
+.sf-danger-button {
+    background: transparent;
+    color: var(--sf-danger-bg);
+    border: 1px solid var(--sf-danger-bg);
+}
+
+    .sf-danger-button:hover {
+        background: var(--sf-danger-bg);
+        color: white;
+    }
 .admin-filter-menu-head {
     padding: var(--sf-space-sm);
     margin-bottom: var(--sf-space-sm);

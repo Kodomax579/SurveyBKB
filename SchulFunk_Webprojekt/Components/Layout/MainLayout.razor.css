@@ -11,6 +11,7 @@
     max-width: 1400px; /* Darf jetzt etwas breiter sein */
     margin: 0 auto;
     padding: 0 28px;
+    margin-top: 20px;
 }
 
 .sf-main {
@@ -20,6 +21,7 @@
     padding-top: 34px;
     padding-bottom: 34px;
     width: calc(100% - 260px - 320px);
+    scroll-padding-top: 40px;
 }
 
 /* Wenn der Bildschirm kleiner wird (Tablets/Laptops), blenden wir die rechte Sidebar aus */
