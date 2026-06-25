@@ -4,6 +4,7 @@
 @inject UserService userService
 @inject UserStateService userStateService
 @inject SurveyService surveyService
+@inject NavigationManager navigationManager
 
 <PageTitle>Umfrage erstellen</PageTitle>
 
@@ -40,7 +41,7 @@ else
                 <div class="form-group">
                     <label>Erstellt am</label>
                     <div class="readonly-info-box">
-                        <strong>@CreatedAt.ToString("dd.MM.yyyy")</strong>
+                        <strong>@DateTime.Today.ToString("dd.MM.yyyy")</strong>
                     </div>
                 </div>
             </div>
@@ -50,10 +51,10 @@ else
                 <input id="survey-online-until"
                        type="date"
                        class="form-control"
-                       min="@MinimumOnlineUntil.ToString("yyyy-MM-dd")"
-                       @bind="surveyModel.OnlineUntil" />
+                       min="@DateTime.Today.AddDays(1).ToString("yyyy-MM-dd")"
+                       @bind="DateForBinding" />
 
-                @if (OnlineUntil <= CreatedAt)
+                @if (surveyModel.OnlineUntil <= DateOnly.FromDateTime(DateTime.Today))
                 {
                     <small class="validation-message">
                         Das Ablaufdatum muss nach dem heutigen Tag liegen.
@@ -71,11 +72,10 @@ else
                           @bind:event="oninput"></textarea>
             </div>
 
-            @if (CurrentUser.Group is Groups.Teacher or Groups.Admin)
+            @if (CurrentUser?.Group is Groups.Teacher or Groups.Admin)
             {
                 <div class="form-group">
                     <label>Klassen auswählen</label>
-
                     <div class="class-selection-grid">
                         @foreach (var klasse in AvailableClasses)
                         {
@@ -83,7 +83,6 @@ else
                                 <input type="checkbox"
                                        checked="@IstKlasseAusgewaehlt(klasse)"
                                        @onchange="() => ToggleClass(klasse)" />
-
                                 <span>@klasse.Classname</span>
                             </label>
                         }
@@ -105,10 +104,7 @@ else
                     <h3>Fragen</h3>
                     <p>Füge beliebig viele Fragen und Antwortmöglichkeiten hinzu.</p>
                 </div>
-
-                <button type="button" class="sf-button sf-button-dark" @onclick="AddQuestion">
-                    + Frage hinzufügen
-                </button>
+                <button type="button" class="sf-button sf-button-dark" @onclick="AddQuestion">+ Frage hinzufügen</button>
             </div>
 
             <div class="question-list">
@@ -120,116 +116,61 @@ else
                     <article class="question-editor">
                         <div class="question-editor-header">
                             <h4>Frage @(currentQuestionIndex + 1)</h4>
-
                             @if (surveyModel.Questions.Count > 1)
                             {
-                                <button type="button"
-                                        class="remove-button"
-                                        @onclick="() => RemoveQuestion(currentQuestionIndex)">
-                                    Entfernen
-                                </button>
+                                <button type="button" class="remove-button" @onclick="() => RemoveQuestion(currentQuestionIndex)">Entfernen</button>
                             }
                         </div>
-
                         <div class="form-group">
                             <label>Fragetext</label>
-                            <input type="text"
-                                   class="form-control"
-                                   placeholder="Frage eingeben"
-                                   @bind="question.Question"
-                                   @bind:event="oninput" />
+                            <input type="text" class="form-control" placeholder="Frage eingeben" @bind="question.Question" @bind:event="oninput" />
                         </div>
-
                         <div class="answer-list">
                             <label>Antwortmöglichkeiten</label>
-
                             @for (var answerIndex = 0; answerIndex < question.AnswerModels.Count; answerIndex++)
                             {
                                 var currentAnswerIndex = answerIndex;
                                 var answer = question.AnswerModels[currentAnswerIndex];
-
                                 <div class="answer-row">
-                                    <input type="text"
-                                           class="form-control"
-                                           placeholder="Antwortmöglichkeit eingeben"
-                                           @bind="answer.Answers"
-                                           @bind:event="oninput" />
-
+                                    <input type="text" class="form-control" placeholder="Antwortmöglichkeit eingeben" @bind="answer.Answers" @bind:event="oninput" />
                                     @if (question.AnswerModels.Count > 2)
                                     {
-                                        <button type="button"
-                                                class="remove-answer-button"
-                                                @onclick="() => RemoveAnswer(currentQuestionIndex, currentAnswerIndex)">
-                                            ✕
-                                        </button>
+                                        <button type="button" class="remove-answer-button" @onclick="() => RemoveAnswer(currentQuestionIndex, currentAnswerIndex)">✕</button>
                                     }
                                 </div>
                             }
-
-                            <button type="button"
-                                    class="add-answer-button"
-                                    @onclick="() => AddAnswer(currentQuestionIndex)">
-                                + Antwort hinzufügen
-                            </button>
+                            <button type="button" class="add-answer-button" @onclick="() => AddAnswer(currentQuestionIndex)">+ Antwort hinzufügen</button>
                         </div>
                     </article>
                 }
             </div>
 
             <div class="form-actions">
-                <button type="button"
-                        class="sf-button sf-button-dark"
-                        @onclick="UmfrageVeroeffentlichen">
-                    Umfrage veröffentlichen
-                </button>
+                <button type="button" class="sf-button sf-button-dark" @onclick="UmfrageVeroeffentlichen">Umfrage veröffentlichen</button>
             </div>
         </div>
 
         <aside class="survey-create-preview sf-panel">
             <span class="preview-label">Live Vorschau</span>
-
-            <div class="preview-icon">
-                <img src="/lib/images/Icon-Survey.png" alt="Umfrage Icon" />
-            </div>
-
             <h3>@(string.IsNullOrWhiteSpace(surveyModel.Title) ? "Umfragetitel" : surveyModel.Title)</h3>
-
             <div class="preview-meta">
                 <span>@CreatorName</span>
-                <span>@CreatedAt.ToString("dd.MM.yyyy")</span>
-                <span>bis @OnlineUntil.ToString("dd.MM.yyyy")</span>
+                <span>@DateTime.Today.ToString("dd.MM.yyyy")</span>
+                <span>bis @surveyModel.OnlineUntil.ToString("dd.MM.yyyy")</span>
             </div>
-
-            <p>
-                @(string.IsNullOrWhiteSpace(surveyModel.Description)
-                    ? "Hier erscheint später der Beweggrund oder die Beschreibung der Umfrage."
-                    : surveyModel.Description)
-            </p>
-
+            <p>@(string.IsNullOrWhiteSpace(surveyModel.Description) ? "Hier erscheint später der Beweggrund..." : surveyModel.Description)</p>
             <div class="preview-classes">
                 <strong>Klassen:</strong>
-
-                @if (SelectedClasses.Count == 0)
-                {
-                    <span>Keine Klasse ausgewählt</span>
-                }
-                else
-                {
-                    <span>@string.Join(", ", SelectedClasses.Select(klasse => klasse.Classname))</span>
-                }
+                <span>@(SelectedClasses.Count == 0 ? "Keine Auswahl" : string.Join(", ", SelectedClasses.Select(k => k.Classname)))</span>
             </div>
-
             <div class="preview-questions">
-                @foreach (var question in surveyModel.Questions)
+                @foreach (var q in surveyModel.Questions)
                 {
                     <div class="preview-question">
-                        <h4>@(string.IsNullOrWhiteSpace(question.Question) ? "Neue Frage" : question.Question)</h4>
-
-                        @foreach (var answer in question.AnswerModels)
+                        <h4>@(string.IsNullOrWhiteSpace(q.Question) ? "Neue Frage" : q.Question)</h4>
+                        @foreach (var a in q.AnswerModels)
                         {
-                            <div class="preview-answer">
-                                @(string.IsNullOrWhiteSpace(answer.Answers) ? "Antwortmöglichkeit" : answer.Answers)
-                            </div>
+                            <div class="preview-answer">@(string.IsNullOrWhiteSpace(a.Answers) ? "Antwort..." : a.Answers)</div>
                         }
                     </div>
                 }
@@ -239,138 +180,46 @@ else
 }
 
 @code {
-    private SurveyModel surveyModel = new()
+    private SurveyModel surveyModel = new() { Questions = new() { new QuestionModel { AnswerModels = new() { new(), new() } } } };
+
+    // Bindungshilfe für das Date-Input
+    private DateTime DateForBinding
     {
-        Questions = new()
-        {
-            new QuestionModel
-            {
-                Question = "",
-                AnswerModels = new()
-                {
-                    new AnswerModel(),
-                    new AnswerModel()
-                }
-            }
-        }
-    };
-    private DateTime CreatedAt = DateTime.Today;
-    private DateTime OnlineUntil = DateTime.Today.AddDays(14);
-    private DateTime MinimumOnlineUntil => CreatedAt.AddDays(1);
+        get => surveyModel.OnlineUntil.ToDateTime(TimeOnly.MinValue);
+        set => surveyModel.OnlineUntil = DateOnly.FromDateTime(value);
+    }
 
-    private UserModel CurrentUser => userStateService.GetUser();
-
-    private bool CanCreateSurveys =>
-        PermissionRules.HasPermission(CurrentUser, Permission.CreateSurveys);
-
-    private string CreatorName =>
-        $"{CurrentUser.Lastname} {CurrentUser.Firstname}".Trim();
-
-    private string UserRole =>
-        PermissionRules.GetGroupLabel(CurrentUser.Group);
-
-    private string UserClass =>
-        CurrentUser.Class.Classname;
-
-    private string ZielgruppenText =>
-        CurrentUser.Group switch
-        {
-            Groups.StudentRepresentatives => "Alle Klassen",
-            Groups.ClassRepresentatives => $"Nur Klasse {UserClass}",
-            _ => "Klassen manuell auswählen"
-        };
+    private UserModel? CurrentUser => userStateService.GetUser();
+    private bool CanCreateSurveys => CurrentUser != null && PermissionRules.HasPermission(CurrentUser, Permission.CreateSurveys);
+    private string CreatorName => CurrentUser != null ? $"{CurrentUser.Lastname} {CurrentUser.Firstname}".Trim() : "";
+    private string UserRole => CurrentUser != null ? PermissionRules.GetGroupLabel(CurrentUser.Group) : "";
+    private string ZielgruppenText => CurrentUser?.Group switch { Groups.StudentRepresentatives => "Alle Klassen", Groups.ClassRepresentatives => $"Nur Klasse {CurrentUser.Class?.Classname}", _ => "Manuell" };
 
     private List<ClassModel> AvailableClasses = new();
     private List<ClassModel> SelectedClasses = new();
 
-    protected override void OnInitialized()
-    {
-        if (CurrentUser.Group == Groups.StudentRepresentatives)
-        {
-            SelectedClasses = AvailableClasses.ToList();
-        }
-        else if (CurrentUser.Group == Groups.ClassRepresentatives)
-        {
-            var eigeneKlasse = AvailableClasses.FirstOrDefault(klasse => klasse.Classname == UserClass);
-
-            if (eigeneKlasse is not null)
-            {
-                SelectedClasses = new List<ClassModel> { eigeneKlasse };
-            }
-        }
-    }
-
     protected override async Task OnInitializedAsync()
     {
         var classes = await userService.GetAllClasses();
-        if(classes == null)
-        {
-            return;
-        }
-        AvailableClasses = classes;
+        AvailableClasses = classes ?? new();
+        // Initialisierung des Datums
+        surveyModel.OnlineUntil = DateOnly.FromDateTime(DateTime.Today.AddDays(14));
     }
 
-    private bool IstKlasseAusgewaehlt(ClassModel klasse)
-    {
-        return SelectedClasses.Any(selected => selected.Classname == klasse.Classname);
-    }
-
-    private void ToggleClass(ClassModel klasse)
-    {
-        if (IstKlasseAusgewaehlt(klasse))
-        {
-            SelectedClasses.RemoveAll(selected => selected.Classname == klasse.Classname);
-            return;
-        }
-
-        SelectedClasses.Add(klasse);
-    }
-
-    private void AddQuestion()
-    {
-        surveyModel.Questions.Add(new QuestionModel
-        {
-            Question = "",
-            AnswerModels = new()
-            {
-                new AnswerModel(),
-                new AnswerModel()
-            }
-        });
-    }
-
-    private void RemoveQuestion(int questionIndex)
-    {
-        if (surveyModel.Questions.Count > 1)
-        {
-            surveyModel.Questions.RemoveAt(questionIndex);
-        }
-    }
-
-    private void AddAnswer(int questionIndex)
-    {
-        surveyModel.Questions[questionIndex].AnswerModels.Add(new AnswerModel());
-    }
-
-    private void RemoveAnswer(int questionIndex, int answerIndex)
-    {
-        if (surveyModel.Questions[questionIndex].AnswerModels.Count > 2)
-        {
-            surveyModel.Questions[questionIndex].AnswerModels.RemoveAt(answerIndex);
-        }
-    }
+    private bool IstKlasseAusgewaehlt(ClassModel k) => SelectedClasses.Any(s => s.Classname == k.Classname);
+    private void ToggleClass(ClassModel k) { if (IstKlasseAusgewaehlt(k)) SelectedClasses.RemoveAll(s => s.Classname == k.Classname); else SelectedClasses.Add(k); }
+    private void AddQuestion() => surveyModel.Questions.Add(new QuestionModel { AnswerModels = new() { new(), new() } });
+    private void RemoveQuestion(int i) => surveyModel.Questions.RemoveAt(i);
+    private void AddAnswer(int q) => surveyModel.Questions[q].AnswerModels.Add(new AnswerModel());
+    private void RemoveAnswer(int q, int a) => surveyModel.Questions[q].AnswerModels.RemoveAt(a);
 
     private async Task UmfrageVeroeffentlichen()
     {
-        if (!CanCreateSurveys || OnlineUntil <= CreatedAt)
-        {
-            return;
-        }
-
-        surveyModel.CreatedAt = DateOnly.FromDateTime(CreatedAt);
-        surveyModel.User = userStateService.GetUser();
-        surveyModel.OnlineUntil = DateOnly.FromDateTime(OnlineUntil);
-        surveyModel.Classes = SelectedClasses.Select(klasse => klasse.Classname).ToList();
+        if (CurrentUser == null || !CanCreateSurveys || surveyModel.OnlineUntil <= DateOnly.FromDateTime(DateTime.Today)) return;
+        surveyModel.CreatedAt = DateOnly.FromDateTime(DateTime.Today);
+        surveyModel.User = CurrentUser;
+        surveyModel.Classes = SelectedClasses.Select(k => k.Classname).ToList();
         await surveyService.CreateSurvey(surveyModel);
+        navigationManager.NavigateTo("/home");
     }
 }

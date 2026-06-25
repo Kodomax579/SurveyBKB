@@ -1,15 +1,16 @@
 ﻿@using SchulFunk_Webprojekt.Model
 @using SchulFunk_Webprojekt.Components.Pages.Survey
 @inject SurveyStateService surveyStateService
+@inject UserStateService userStateService
 @implements IDisposable
 
 <aside class="sf-sidebar sf-sidebar-right">
     <h3 class="sf-sidebar-heading">Aktuelle Umfragen</h3>
 
     <div class="sf-sidebar-surveys">
-        @if (ActiveSurveys.Any())
+        @if (FilteredSurveys.Any())
         {
-            @foreach (var survey in ActiveSurveys)
+            @foreach (var survey in FilteredSurveys)
             {
                 <SurveyCard Item="@survey" />
             }
@@ -18,7 +19,7 @@
         {
             <div class="card sf-sticky-box">
                 <div class="card-content">
-                    <p class="preview-text">Derzeit gibt es keine aktiven Umfragen.</p>
+                    <p class="preview-text">Derzeit gibt es keine aktiven Umfragen für deine Klasse.</p>
                 </div>
             </div>
         }
@@ -26,11 +27,22 @@
 </aside>
 
 @code {
-    // Holt die neuesten 2 aktiven Umfragen
-    private IEnumerable<SurveyModel> ActiveSurveys => surveyStateService.GetAllSurveys()
-        .Where(s => s.OnlineUntil >= DateOnly.FromDateTime(DateTime.Today))
+    private IEnumerable<SurveyModel> FilteredSurveys => surveyStateService.GetAllSurveys()
+        .Where(s => s.OnlineUntil >= DateOnly.FromDateTime(DateTime.Today)) // Nur aktive
+        .Where(s => IsSurveyForUser(s))                                   // Dein Klassen-Filter
         .OrderByDescending(s => s.CreatedAt)
         .Take(2);
+
+    private bool IsSurveyForUser(SurveyModel survey)
+    {
+        var userClass = userStateService.GetUser()?.Class?.Classname;
+
+        // Zeige an, wenn keine Klassenbeschränkung (null oder leer)
+        // ODER wenn die Benutzerklasse in der Liste enthalten ist
+        return survey.Classes == null ||
+               survey.Classes.Count == 0 ||
+               (!string.IsNullOrWhiteSpace(userClass) && survey.Classes.Contains(userClass));
+    }
 
     protected override void OnInitialized()
     {

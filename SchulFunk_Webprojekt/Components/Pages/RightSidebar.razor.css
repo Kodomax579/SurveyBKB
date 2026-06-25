@@ -38,5 +38,34 @@
 @media (max-width: 1200px) {
     .sf-sidebar-right {
         display: none;
-    }
+    }.sf-sidebar-surveys .sf-sticky-box {
+    background-color: var(--sf-panel-bg);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-border-radius);
+    padding: var(--sf-space-md);
+    box-shadow: none; /* Oft besser in einer Sidebar */
 }
+
+.sf-sidebar-surveys .sf-sticky-box .preview-text {
+    margin: 0;
+    color: var(--sf-text-muted);
+    font-size: var(--sf-font-size-sm);
+    line-height: 1.4;
+    text-align: center;
+}
+}
+.sf-sidebar-surveys .sf-sticky-box {
+    background-color: var(--sf-panel-bg);
+    border: 1px solid var(--sf-border);
+    border-radius: var(--sf-border-radius);
+    padding: var(--sf-space-md);
+    box-shadow: none; /* Oft besser in einer Sidebar */
+}
+
+    .sf-sidebar-surveys .sf-sticky-box .preview-text {
+        margin: 0;
+        color: var(--sf-text-muted);
+        font-size: var(--sf-font-size-sm);
+        line-height: 1.4;
+        text-align: center;
+    }

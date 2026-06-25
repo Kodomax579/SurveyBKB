@@ -12,6 +12,8 @@
     z-index: 9000;
     transition: transform var(--sf-transition-slow);
     font-family: var(--sf-font-family);
+    display: flex;
+    flex-direction: column;
 }
 
 .sf-sidebar-inner {
@@ -20,8 +22,16 @@
     height: 100%;
     padding: var(--sf-space-lg) var(--sf-space-md);
     overflow-y: auto;
+    scrollbar-width: thin;
 }
+    .sf-sidebar-inner::-webkit-scrollbar {
+        width: 6px;
+    }
 
+    .sf-sidebar-inner::-webkit-scrollbar-thumb {
+        background-color: var(--sf-border);
+        border-radius: 3px;
+    }
 /* Brand / Logo-Bereich */
 .sf-brand {
     display: flex;
