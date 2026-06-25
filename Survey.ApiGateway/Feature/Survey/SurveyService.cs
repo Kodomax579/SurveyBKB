@@ -134,40 +134,46 @@ namespace Survey.ApiGateway.Feature.Survey
             }
         }
 
-        public async Task<bool> IncrementAnswerCount(int answerId, int userId)
+        public async Task<bool> IncrementAnswerCounts(List<int> answerIds, int userId)
         {
-            var answer = await surveyDbContext.Answers.FindAsync(answerId);
-
-            if (answer == null)
+            if (answerIds == null || !answerIds.Any())
             {
                 return false;
             }
 
-            // Find the related question
-            var question = await surveyDbContext.Questions.FirstOrDefaultAsync(q => q.Id == answer.QuestionModelId);
-            if (question == null)
+            // 1. Alle benötigten Daten laden
+            // Wir holen alle Antworten, die in der Liste sind
+            var answers = await surveyDbContext.Answers
+                .Where(a => answerIds.Contains(a.Id))
+                .ToListAsync();
+
+            if (answers.Count != answerIds.Distinct().Count())
             {
+                // Falls eine oder mehrere IDs nicht existieren
                 return false;
             }
 
-            // Find the related survey
+            var firstAnswer = answers.First();
+            var question = await surveyDbContext.Questions.FirstOrDefaultAsync(q => q.Id == firstAnswer.QuestionModelId);
             var survey = await surveyDbContext.Surveys.FirstOrDefaultAsync(s => s.Id == question.SurveyModelId);
+
             if (survey == null)
             {
                 return false;
             }
 
-            // Initialize list if null
+            // 2. User-Check: Hat er bereits für DIESE Umfrage abgestimmt?
             survey.UserIDs ??= new List<int>();
-
-            // If user already voted for this survey, do not increment again
             if (userId > 0 && survey.UserIDs.Contains(userId))
             {
                 return false;
             }
 
-            // Increment answer count and record participant
-            answer.NumberOfSelectedAnswer++;
+            foreach (var answer in answers)
+            {
+                answer.NumberOfSelectedAnswer++;
+            }
+
             if (userId > 0)
             {
                 survey.UserIDs.Add(userId);

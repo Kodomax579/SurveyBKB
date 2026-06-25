@@ -65,13 +65,20 @@ else
     {
         get
         {
-            var userClass = userStateService.GetUser()?.Class?.Classname;
+            var currentUser = userStateService.GetUser();
+            var userClass = currentUser?.Class?.Classname;
+            var isTeacher = currentUser?.Class.Classname == "Lehrer"; // Passe den Rollennamen ggf. an dein Model an
 
             return surveyStateService.GetAllSurveys()
                 .Where(s =>
+                    // 1. Lehrer sehen immer alles
+                    isTeacher ||
+
+                    // 2. Allgemeine Umfragen (keine Klassenbeschränkung)
                     s.Classes == null ||
                     s.Classes.Count == 0 ||
 
+                    // 3. Umfragen für die eigene Klasse
                     (!string.IsNullOrWhiteSpace(userClass) && s.Classes.Contains(userClass))
                 )
                 .ToList();

@@ -8,9 +8,9 @@
     <h3 class="sf-sidebar-heading">Aktuelle Umfragen</h3>
 
     <div class="sf-sidebar-surveys">
-        @if (FilteredSurveys.Any())
+        @if (SurveyListe.Any())
         {
-            @foreach (var survey in FilteredSurveys)
+            @foreach (var survey in SurveyListe)
             {
                 <SurveyCard Item="@survey" />
             }
@@ -27,11 +27,30 @@
 </aside>
 
 @code {
-    private IEnumerable<SurveyModel> FilteredSurveys => surveyStateService.GetAllSurveys()
-        .Where(s => s.OnlineUntil >= DateOnly.FromDateTime(DateTime.Today)) // Nur aktive
-        .Where(s => IsSurveyForUser(s))                                   // Dein Klassen-Filter
-        .OrderByDescending(s => s.CreatedAt)
-        .Take(2);
+    private List<SurveyModel> SurveyListe
+    {
+        get
+        {
+            var currentUser = userStateService.GetUser();
+            var userClass = currentUser?.Class?.Classname;
+            var isTeacher = currentUser?.Class.Classname == "Lehrer"; // Passe den Rollennamen ggf. an dein Model an
+
+            return surveyStateService.GetAllSurveys()
+                .Where(s =>
+                    // 1. Lehrer sehen immer alles
+                    isTeacher ||
+
+                    // 2. Allgemeine Umfragen (keine Klassenbeschränkung)
+                    s.Classes == null ||
+                    s.Classes.Count == 0 ||
+
+                    // 3. Umfragen für die eigene Klasse
+                    (!string.IsNullOrWhiteSpace(userClass) && s.Classes.Contains(userClass))
+                )
+                .Take(3)
+                .ToList();
+        }
+    }
 
     private bool IsSurveyForUser(SurveyModel survey)
     {

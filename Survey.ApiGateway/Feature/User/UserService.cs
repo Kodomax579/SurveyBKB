@@ -43,7 +43,15 @@ namespace Survey.ApiGateway.Feature.User
             var classExists = await dbContext.Classes.FirstOrDefaultAsync(c => c.ClassName.ToLower() == user.Class.ClassName.ToLower());
             if (classExists == null)
             {
-                return null;
+                //Lehrer
+                classExists = await dbContext.Classes.FirstOrDefaultAsync(c => c.ClassName.ToLower() =="Lehrer");
+                if(classExists == null)
+                {
+                    classExists = new ClassModel
+                    {
+                        ClassName = "Lehrer"
+                    };
+                }
             }
             if (string.IsNullOrWhiteSpace(user.Password))
             {

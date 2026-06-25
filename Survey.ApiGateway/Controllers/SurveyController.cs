@@ -47,25 +47,19 @@ namespace Survey.ApiGateway.Controllers
             return Ok(createdSurvey);
         }
 
-        [HttpPut("vote/{answerId}")]
+        [HttpPut("vote")]
         [Authorize]
-        public async Task<IActionResult> UpdateAnswerSelection(int answerId, [FromQuery] int userId)
+        public async Task<IActionResult> UpdateAnswerSelection([FromBody]List<int> answerIds, [FromQuery] int userId)
         {
             if (userId <= 0)
             {
                 return BadRequest("Ungültige Benutzer-ID.");
             }
 
-            var success = await surveyService.IncrementAnswerCount(answerId, userId);
-
-            if (!success)
-            {
-                // Could be because the answer was not found or the user already voted
-                return Conflict("Benutzer hat bereits abgestimmt oder Fehler beim Speichern der Abstimmung.");
-            }
+            await surveyService.IncrementAnswerCounts(answerIds, userId);
 
             // Find the survey that contains the answer and send the full survey to clients
-            var surveyContaining = (await surveyService.GetAllSurveys()).FirstOrDefault(s => s.Questions.SelectMany(q => q.Options).Any(o => o.Id == answerId));
+            var surveyContaining = (await surveyService.GetAllSurveys()).FirstOrDefault(s => s.Questions.SelectMany(q => q.Options).Any(o => o.Id == answerIds[0]));
             if (surveyContaining != null)
             {
                 var updatedSurvey = await surveyService.GetSurveyById(surveyContaining.Id);

@@ -78,19 +78,12 @@ namespace SchulFunk_Webprojekt.Feature.SurveyHandling
             return false;
         }
 
-        public async Task<bool> VoteForAnswer(int answerId, int userId)
+        public async Task<bool> VoteForAnswers(List<int> answerIds, int userId)
         {
             AddToken();
-            
-            var result = await httpClient.PutAsync($"{BaseURL}/api/Survey/vote/{answerId}?userId={userId}", null);
 
-            if (result.IsSuccessStatusCode)
-            {
-                // Server will broadcast updated survey via SignalR, but also refresh surveys to ensure immediate consistency
-                await GetAllSurveys();
-                return true;
-            }
-            return false;
+            var result = await httpClient.PutAsJsonAsync($"{BaseURL}/api/Survey/vote?userId={userId}", answerIds);
+            return result.IsSuccessStatusCode;
         }
     }
 }

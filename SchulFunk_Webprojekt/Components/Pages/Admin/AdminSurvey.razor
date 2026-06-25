@@ -57,13 +57,13 @@ else
                 <div class="admin-list-actions">
                     @if (CanVoteInSurvey(survey))
                     {
-                        <a href="/survey/@survey.GroupId" class="sf-button">
+                        <a href="/survey/results/@survey.Id" class="sf-button">
                             Öffnen
                         </a>
                     }
                     else
                     {
-                        <a href="/survey/results/@survey.GroupId" class="sf-button sf-button-dark">
+                        <a href="/survey/results/@survey.Id" class="sf-button sf-button-dark">
                             Ergebnisse
                         </a>
                     }
@@ -133,6 +133,7 @@ else
 
         if (CanManageOwnSurveys)
         {
+            return survey.User?.Id == CurrentUser?.Id;            
         }
 
         return false;

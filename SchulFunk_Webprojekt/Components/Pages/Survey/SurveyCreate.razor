@@ -202,8 +202,27 @@ else
     {
         var classes = await userService.GetAllClasses();
         AvailableClasses = classes ?? new();
-        // Initialisierung des Datums
+
         surveyModel.OnlineUntil = DateOnly.FromDateTime(DateTime.Today.AddDays(14));
+
+        // Logik für die automatische Klassen-Vorauswahl
+        if (CurrentUser != null)
+        {
+            if (CurrentUser.Group == Groups.StudentRepresentatives)
+            {
+                // Alle Klassen auswählen
+                SelectedClasses = new List<ClassModel>(AvailableClasses);
+            }
+            else if (CurrentUser.Group == Groups.ClassRepresentatives && CurrentUser.Class != null)
+            {
+                // Nur die eigene Klasse auswählen
+                var myClass = AvailableClasses.FirstOrDefault(c => c.Classname == CurrentUser.Class.Classname);
+                if (myClass != null)
+                {
+                    SelectedClasses = new List<ClassModel> { myClass };
+                }
+            }
+        }
     }
 
     private bool IstKlasseAusgewaehlt(ClassModel k) => SelectedClasses.Any(s => s.Classname == k.Classname);
