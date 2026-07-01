@@ -3,6 +3,8 @@
 @inject NewsStateService newsStateService
 @inject SignalRHub hub
 @inject NavigationManager navigationManager
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 @implements IDisposable
 @inject IConfiguration configuration
 

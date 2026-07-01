@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Components.Authorization;
 using SchulFunk_Webprojekt.Components;
 using SchulFunk_Webprojekt.Feature.NewsHandling;
 using SchulFunk_Webprojekt.Feature.SurveyHandling;
@@ -22,6 +23,9 @@ namespace SchulFunk_Webprojekt
             builder.Services.AddScoped<NewsStateService>();
             builder.Services.AddScoped<UserStateService>();
             builder.Services.AddScoped<SurveyStateService>();
+            builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+
+            // 3. Das Autorisierungs-System von Blazor aktivieren
             // Configure typed HttpClients with the API base URL from configuration
             var apiBase = builder.Configuration.GetValue<string>("ApiSettings:BaseUrl");
             if (!string.IsNullOrWhiteSpace(apiBase))
@@ -37,7 +41,15 @@ namespace SchulFunk_Webprojekt
                 builder.Services.AddHttpClient<SurveyService>();
                 builder.Services.AddHttpClient<UserService>();
             }
-
+            builder.Services.AddAuthentication();
+            builder.Services.AddAuthorizationCore();
+            builder.Services.AddAuthentication("Cookies")
+    .AddCookie("Cookies", options =>
+    {
+        // Wenn das System merkt, dass jemand nicht eingeloggt ist, 
+        // wird er automatisch direkt hierhin weitergeleitet:
+        options.LoginPath = "/";
+    });
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -53,7 +65,8 @@ namespace SchulFunk_Webprojekt
 
             app.UseAntiforgery();
 
-
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.MapStaticAssets();
             app.MapRazorComponents<App>()

@@ -1,54 +1,69 @@
 ﻿@inject SchulFunk_Webprojekt.Feature.UserHandling.UserStateService userStateService
 @inject UserService userService
 
-<div class="sf-sidebar-section">
-    <h4>Klasse @(userStateService.GetUser()?.Class?.Classname ?? "")</h4>
+@if (!IsTeacher)
+{
+    <div class="sf-sidebar-section">
+        <h4>Klasse @(CurrentUser?.Class?.Classname ?? "")</h4>
 
-    @if (_klassensprecher.Count == 0)
-    {
-        <div class="sf-person">
-            <span>Es wurde noch kein/e Klassensprecher/in gewählt</span>
-        </div>
-    }
-    else
-    {
-        @foreach (var klassensprecher in _klassensprecher)
+        @if (_klassensprecher.Count == 0)
         {
             <div class="sf-person">
-                <strong>@klassensprecher.Firstname @klassensprecher.Lastname</strong>
-                <span>Klassensprecher</span>
+                <span>Es wurde noch kein/e Klassensprecher/in gewählt</span>
             </div>
         }
-    }
-</div>
+        else
+        {
+            @foreach (var klassensprecher in _klassensprecher)
+            {
+                <div class="sf-person">
+                    <strong>@klassensprecher.Firstname @klassensprecher.Lastname</strong>
+                    <span>Klassensprecher</span>
+                </div>
+            }
+        }
+    </div>
 
-<div class="sf-sidebar-section">
-    <h4>Schule</h4>
+    <div class="sf-sidebar-section">
+        <h4>Schule</h4>
 
-    @if (_schuelerSprecher.Count == 0)
-    {
-        <div class="sf-person">
-            <span>Es wurde noch kein/e Schülersprecher/in gewählt</span>
-        </div>
-    }
-    else
-    {
-        @foreach (var schuelersprecher in _schuelerSprecher)
+        @if (_schuelerSprecher.Count == 0)
         {
             <div class="sf-person">
-                <strong>@schuelersprecher.Firstname @schuelersprecher.Lastname</strong>
-                <span>Schülersprecher</span>
+                <span>Es wurde noch kein/e Schülersprecher/in gewählt</span>
             </div>
         }
-    }
-</div>
+        else
+        {
+            @foreach (var schuelersprecher in _schuelerSprecher)
+            {
+                <div class="sf-person">
+                    <strong>@schuelersprecher.Firstname @schuelersprecher.Lastname</strong>
+                    <span>Schülersprecher</span>
+                </div>
+            }
+        }
+    </div>
+}
 
 @code {
     private List<UserModel> _klassensprecher = new();
     private List<UserModel> _schuelerSprecher = new();
 
+    // Den aktuellen Nutzer in eine Variable speichern für einfacheren Zugriff
+    private UserModel? CurrentUser => userStateService.GetUser();
+
+    // Prüfen, ob der Nutzer Lehrer (oder Admin) ist
+    private bool IsTeacher => CurrentUser?.Group == Groups.Teacher || CurrentUser?.Group == Groups.Admin;
+
     protected override async Task OnInitializedAsync()
     {
+        // Wenn es ein Lehrer ist, laden wir die Daten gar nicht erst und brechen hier ab
+        if (IsTeacher)
+        {
+            return;
+        }
+
         var users = await userService.GetAllUsers();
 
         if (users == null)
@@ -56,7 +71,7 @@
             return;
         }
 
-        _klassensprecher = users.Where(u => u.Group == Groups.ClassRepresentatives && userStateService.GetUser()?.Class?.Classname == u.Class?.Classname).ToList();
+        _klassensprecher = users.Where(u => u.Group == Groups.ClassRepresentatives && CurrentUser?.Class?.Classname == u.Class?.Classname).ToList();
         _schuelerSprecher = users.Where(u => u.Group == Groups.StudentRepresentatives).ToList();
     }
 }

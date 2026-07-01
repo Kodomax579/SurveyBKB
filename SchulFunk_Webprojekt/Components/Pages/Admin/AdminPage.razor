@@ -1,6 +1,8 @@
 ﻿@page "/admin"
 @using SchulFunk_Webprojekt.Model
 @inject UserStateService userStateService
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 
 <PageTitle>Admin Panel</PageTitle>
 

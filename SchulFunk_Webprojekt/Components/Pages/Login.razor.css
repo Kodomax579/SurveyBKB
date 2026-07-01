@@ -98,8 +98,10 @@
 }
 
     .mini-grid-item:hover {
-        transform: var(--sf-hover-lift-lg);
-        background-color: var(--sf-card-bg-hover)
+        color: var(--sf-button-hover-text);
+        border-color: var(--sf-button-hover-border);
+        transform: var(--sf-hover-lift-sm);
+        transform: translateY(0) scale(0.99);
     }
 
 .mini-grid-item img {
@@ -149,7 +151,8 @@
     width: 76px;
     height: 76px;
     object-fit: contain;
-    margin-bottom: var(--sf-space-md);
+    display: block;
+    margin: 0 auto var(--sf-space-md);
 }
 
 .auth-header h2 {

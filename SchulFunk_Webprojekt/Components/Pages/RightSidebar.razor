@@ -19,7 +19,7 @@
         {
             <div class="card sf-sticky-box">
                 <div class="card-content">
-                    <p class="preview-text">Derzeit gibt es keine aktiven Umfragen für deine Klasse.</p>
+                    <p class="preview-text">Du hast alle Umfragen beantwortet. Es gibt derzeit keine neuen Umfragen für dich.</p>
                 </div>
             </div>
         }
@@ -33,34 +33,31 @@
         {
             var currentUser = userStateService.GetUser();
             var userClass = currentUser?.Class?.Classname;
-            var isTeacher = currentUser?.Class.Classname == "Lehrer"; // Passe den Rollennamen ggf. an dein Model an
+            var currentUserId = currentUser?.Id;
+            var isTeacher = currentUser?.Class?.Classname == "Lehrer";
+
+            var today = DateOnly.FromDateTime(DateTime.Today);
 
             return surveyStateService.GetAllSurveys()
                 .Where(s =>
-                    // 1. Lehrer sehen immer alles
-                    isTeacher ||
+                    s.OnlineUntil >= today
 
-                    // 2. Allgemeine Umfragen (keine Klassenbeschränkung)
-                    s.Classes == null ||
-                    s.Classes.Count == 0 ||
+    &&
 
-                    // 3. Umfragen für die eigene Klasse
-                    (!string.IsNullOrWhiteSpace(userClass) && s.Classes.Contains(userClass))
+                    !(currentUserId.HasValue && s.UserIDs != null && s.UserIDs.Contains(currentUserId.Value))
+
+    &&
+
+                    (
+                        isTeacher ||
+                        s.Classes == null ||
+                        s.Classes.Count == 0 ||
+                        (!string.IsNullOrWhiteSpace(userClass) && s.Classes.Contains(userClass))
+                    )
                 )
                 .Take(3)
                 .ToList();
         }
-    }
-
-    private bool IsSurveyForUser(SurveyModel survey)
-    {
-        var userClass = userStateService.GetUser()?.Class?.Classname;
-
-        // Zeige an, wenn keine Klassenbeschränkung (null oder leer)
-        // ODER wenn die Benutzerklasse in der Liste enthalten ist
-        return survey.Classes == null ||
-               survey.Classes.Count == 0 ||
-               (!string.IsNullOrWhiteSpace(userClass) && survey.Classes.Contains(userClass));
     }
 
     protected override void OnInitialized()

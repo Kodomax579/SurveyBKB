@@ -5,6 +5,8 @@
 @inject UserStateService userStateService
 @inject SurveyService surveyService
 @inject NavigationManager navigationManager
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 
 <PageTitle>Umfrage erstellen</PageTitle>
 

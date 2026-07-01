@@ -3,6 +3,8 @@
 @using SchulFunk_Webprojekt.Model
 @inject SurveyStateService surveyStateService
 @inject UserStateService userStateService
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 @implements IDisposable
 
 <PageTitle>Umfragen</PageTitle>
