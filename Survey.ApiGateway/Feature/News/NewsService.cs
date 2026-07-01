@@ -21,6 +21,7 @@ namespace Survey.ApiGateway.Feature.News
                 if (userExists == null) return null;
 
                 news.User = userExists;
+                if(news.PreviewText == null) { news.PreviewText = string.Empty; }
 
                 await surveyDbContext.News.AddAsync(news);
                 await surveyDbContext.SaveChangesAsync();
