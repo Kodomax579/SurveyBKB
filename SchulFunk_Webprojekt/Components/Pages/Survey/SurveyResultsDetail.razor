@@ -2,6 +2,8 @@
 @rendermode InteractiveServer
 @using SchulFunk_Webprojekt.Model
 @inject SurveyStateService surveyStateService
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 @implements IDisposable
 
 <PageTitle>@(Survey?.Title ?? "Umfrage-Ergebnisse")</PageTitle>

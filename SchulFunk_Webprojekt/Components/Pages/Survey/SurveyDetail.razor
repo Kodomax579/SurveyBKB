@@ -4,6 +4,8 @@
 @inject UserStateService userStateService
 @inject SurveyStateService surveyStateService
 @inject SchulFunk_Webprojekt.Feature.SurveyHandling.SurveyService surveyService
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 @implements IDisposable
 
 <PageTitle>@(Survey?.Title ?? "Umfrage")</PageTitle>

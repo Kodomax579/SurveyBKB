@@ -1080,10 +1080,6 @@ select.sf-input {
         object-fit: contain;
     }
 
-.sf-flat-card:hover .sf-card-icon {
-    border-color: var(--sf-border-strong);
-    background: var(--sf-card-bg-hover);
-}
 
 /* =========================================================
    Globales Responsive-Fundament

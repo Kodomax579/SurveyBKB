@@ -38,30 +38,51 @@
             <span class="action-btn disabled">@ActionText</span>
         }
     </div>
+
 </article>
 
 @code {
     [Parameter]
     public SurveyModel Item { get; set; } = new();
 
+    // Aktuellen Benutzer abrufen
+    private UserModel CurrentUser => userStateService.GetUser();
+    private int? CurrentUserId => CurrentUser?.Id;
+
+    private bool IsTeacherOrAdmin =>
+        CurrentUser?.Group == Groups.Teacher || CurrentUser?.Group == Groups.Admin;
+
+    // Prüfen, ob die Umfrage abgelaufen ist
     private bool IsExpired =>
         Item.OnlineUntil < DateOnly.FromDateTime(DateTime.Today);
 
-    private int? CurrentUserId => userStateService?.GetUser()?.Id;
-
+    // Prüfen, ob der Nutzer bereits teilgenommen hat
     private bool HasParticipated =>
         CurrentUserId.HasValue && Item.UserIDs != null && Item.UserIDs.Contains(CurrentUserId.Value);
 
-    // Klickbar, wenn sie abgelaufen ist (Ergebnisse) ODER wenn aktiv und noch nicht teilgenommen
-    private bool CanClick => IsExpired || !HasParticipated;
+    // Klickbar, wenn: Umfrage abgelaufen ist ODER (Nutzer ist kein Lehrer/Admin UND hat noch nicht teilgenommen)
+    private bool CanClick => IsExpired || (!IsTeacherOrAdmin && !HasParticipated);
 
-    private string ActionText =>
-        IsExpired ? "Ergebnisse ansehen" : (HasParticipated ? "Bereits teilgenommen" : "Jetzt abstimmen");
+    // Button-Text dynamisch festlegen
+    private string ActionText
+    {
+        get
+        {
+            if (IsExpired) return "Ergebnisse ansehen";
+            if (IsTeacherOrAdmin) return "Nur für Schüler";
+            if (HasParticipated) return "Bereits teilgenommen";
 
-    // Wenn abgelaufen ODER bereits teilgenommen, geht es zu den Ergebnissen
+            return "Jetzt abstimmen";
+        }
+    }
+
+    // Link festlegen (Ergebnisse oder Abstimmung)
     private string ActionLink =>
-        (IsExpired || HasParticipated) ? $"/survey/results/{Item.Id}" : $"/survey/{Item.Id}";
+        (IsExpired || HasParticipated || IsTeacherOrAdmin)
+            ? $"/survey/results/{Item.Id}"
+            : $"/survey/{Item.Id}";
 
+    // Teilnehmeranzahl berechnen
     private int TeilnehmerAnzahl
     {
         get

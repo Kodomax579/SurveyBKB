@@ -5,6 +5,8 @@
 @inject UserStateService userStateService
 @inject NewsService newsService
 @inject NavigationManager navigationManager
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 
 <PageTitle>Nachricht erstellen</PageTitle>
 

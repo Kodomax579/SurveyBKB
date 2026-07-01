@@ -6,6 +6,8 @@
 @inject SurveyService surveyService
 @inject NavigationManager navigationManager
 @implements IDisposable
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 
 <PageTitle>Umfragen verwalten</PageTitle>
 

@@ -4,6 +4,8 @@
 @inject NewsStateService newsStateService
 @inject UserStateService userStateService
 @inject SchulFunk_Webprojekt.Feature.NewsHandling.NewsService newsService
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
 
 
 <PageTitle>Nachrichten verwalten</PageTitle>
