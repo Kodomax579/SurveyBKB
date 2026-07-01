@@ -149,7 +149,8 @@
     width: 76px;
     height: 76px;
     object-fit: contain;
-    margin-bottom: var(--sf-space-md);
+    display: block;
+    margin: 0 auto var(--sf-space-md);
 }
 
 .auth-header h2 {
