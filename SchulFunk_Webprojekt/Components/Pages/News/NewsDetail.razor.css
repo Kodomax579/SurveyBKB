@@ -39,6 +39,10 @@
         font-size: 2.5rem;
         margin: var(--sf-space-xs) 0;
         text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        /* Verhindert das Rausrutschen langer Titel */
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        hyphens: auto;
     }
 
 /* SIMPLE HEADER (Falls kein Bild) */
@@ -50,6 +54,10 @@
         font-size: 2.5rem;
         color: var(--sf-text-strong);
         margin: var(--sf-space-xs) 0;
+        /* Verhindert das Rausrutschen langer Titel */
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+        hyphens: auto;
     }
 
 /* TYPOGRAFIE */
@@ -85,6 +93,9 @@
     margin-bottom: var(--sf-space-lg);
     border-left: 4px solid var(--sf-accent);
     padding-left: var(--sf-space-md);
+    /* Umbruch für sehr lange Wörter im Vorschautext */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .news-article {
@@ -92,6 +103,9 @@
     font-size: 1.1rem;
     line-height: 1.8;
     white-space: pre-wrap;
+    /* Umbruch für sehr lange Wörter oder Links im Haupttext */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
 }
 
 .news-back-btn {
@@ -99,12 +113,34 @@
     display: inline-flex;
 }
 
+/* RESPONSIVE ANPASSUNGEN (Für Handys) */
 @media (max-width: 680px) {
+    /* Äußeren Abstand auf dem Handy reduzieren */
+    .news-detail-wrapper {
+        padding: var(--sf-space-md) var(--sf-space-sm);
+    }
+
     .news-hero-image {
         height: 250px;
     }
 
-    .news-hero-header h1 {
-        font-size: 1.8rem;
+    /* Inneren Abstand bei Hero und Simple Header reduzieren */
+    .news-hero-header {
+        padding: var(--sf-space-md);
+    }
+
+    .news-simple-header {
+        padding: var(--sf-space-md) var(--sf-space-md) 0;
+    }
+
+        .news-hero-header h1,
+        .news-simple-header h1 {
+            font-size: 1.8rem;
+            line-height: 1.3;
+        }
+
+    /* Inneren Abstand im Textbereich reduzieren, damit der Text mehr Platz hat */
+    .news-body {
+        padding: var(--sf-space-md);
     }
 }

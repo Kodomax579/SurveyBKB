@@ -106,8 +106,19 @@ else
 
                     <div class="form-group">
                         <label>Profilbild</label>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <img src="@GetAvatarUrl(user.ImageLink)" alt="Avatar" class="admin-avatar-preview" />
+                        <div style="display: flex; align-items: center; gap: 15px; margin-top: 5px;">
+
+                            @if (!string.IsNullOrWhiteSpace(user.ImageLink))
+                            {
+                                <img src="@GetAvatarUrl(user.ImageLink)" alt="Avatar" class="admin-avatar-preview" />
+                            }
+                            else
+                            {
+                                <div class="admin-avatar-initials">
+                                    @GetInitials(user)
+                                </div>
+                            }
+
                             <label class="sf-upload-label">
                                 Ändern
                                 <InputFile OnChange="e => OnFileSelected(e, user)" style="display:none" />
@@ -155,9 +166,6 @@ else
                         {
                             <span class="save-status">@UserFeedback[user.Id]</span>
                         }
-                        <button type="button" class="sf-button sf-danger-button" @onclick="() => ResetUserPassword(user)">
-                            Passwort zurücksetzen
-                        </button>
 
                         @if (CanDeleteUser(user))
                         {
@@ -237,6 +245,15 @@ else
                PermissionRules.GetGroupLabel(user.Group).Contains(Suchtext, StringComparison.OrdinalIgnoreCase);
     }
 
+    private string GetInitials(UserModel user)
+    {
+        var first = string.IsNullOrWhiteSpace(user.Firstname) ? "" : user.Firstname.Substring(0, 1).ToUpper();
+        var last = string.IsNullOrWhiteSpace(user.Lastname) ? "" : user.Lastname.Substring(0, 1).ToUpper();
+
+        var initials = first + last;
+        return string.IsNullOrEmpty(initials) ? "?" : initials;
+    }
+
     private bool MatchesClassFilter(UserModel user)
     {
         if (string.IsNullOrWhiteSpace(SelectedClass))
@@ -302,17 +319,6 @@ else
     private bool CanDeleteUser(UserModel user)
     {
         return CanDeleteUsers && user.Group != Groups.Admin;
-    }
-
-    private async Task ResetUserPassword(UserModel user)
-    {
-        // Hier deinen API-Call zum Zurücksetzen einbauen
-        // bool confirmed = await JS.InvokeAsync<bool>("confirm", $"Soll das Passwort für {user.Firstname} wirklich zurückgesetzt werden?");
-        // if (confirmed)
-        // {
-        //     await userService.ResetPassword(user.Id); Annahme: Diese Methode existiert im UserService
-        //                                               Optional: Feedback geben, dass es geklappt hat
-        // }
     }
     private string GetAvatarUrl(string imageLink)
     {

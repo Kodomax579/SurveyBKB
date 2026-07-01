@@ -209,3 +209,29 @@
             left: 34px;
         }
 }
+/* Das Design, wenn ein echtes Bild vorhanden ist */
+.admin-avatar-preview {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%; /* Macht das Bild komplett rund */
+    object-fit: cover;
+    border: 2px solid var(--sf-border);
+    box-shadow: var(--sf-shadow-sm);
+}
+
+/* Das Design für die Buchstaben, wenn kein Bild da ist */
+.admin-avatar-initials {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%; /* Komplett rund */
+    background: var(--sf-card-bg-hover); /* Ein weicher Hintergrund */
+    border: 2px solid var(--sf-border);
+    color: var(--sf-text-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: var(--sf-font-weight-bold);
+    letter-spacing: 1px;
+    box-shadow: var(--sf-shadow-sm);
+}
